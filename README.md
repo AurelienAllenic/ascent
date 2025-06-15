@@ -130,20 +130,20 @@ CLOUDINARY_API_SECRET="your-api-secret"
 
 ### Styles généraux
 
-![Styles généraux](./public/maquette/STYLES/styles.png)
+![Styles généraux](./public/assets/maquette/STYLES/styles.png)
 
 ### Vue d'ensemble
 
-![Vue d'ensemble](./public/maquette/maquette.png)
+![Vue d'ensemble](./public/assets/maquette/maquette.png)
 
 ### Version Desktop
 
-![Version Desktop](./public/maquette/DESKTOP/desktop.png)
+![Version Desktop](./public/assets/maquette/DESKTOP/desktop.png)
 
 ### Version Mobile
 
-![Page 3](./public/maquette/mobile.png)
+![Page 3](./public/assets/maquette//MOBILE/mobile.png)
 
-📄 [Télécharger la maquette complète (PDF)](./public/maquette.pdf)
+📄 [Télécharger la maquette complète (PDF)](./public/assets/maquette.pdf)
 
 _Architecture web moderne pour cabinets d'architecture contemporains_
