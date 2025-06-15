@@ -145,5 +145,6 @@ CLOUDINARY_API_SECRET="your-api-secret"
 ![Page 3](./public/assets/maquette//MOBILE/mobile.png)
 
 📄 [Télécharger la maquette complète (PDF)](./public/assets/maquette.pdf)
+_💡 Téléchargez le PDF pour accéder aux liens interactifs_
 
 _Architecture web moderne pour cabinets d'architecture contemporains_
