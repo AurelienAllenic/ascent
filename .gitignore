@@ -41,4 +41,8 @@ yarn-error.log*
 next-env.d.ts
 
 # assets
-/public/assets
+/public/assets/about
+/public/assets/contact
+/public/assets/nav-icons
+/public/assets/projects
+/public/assets/background.png
