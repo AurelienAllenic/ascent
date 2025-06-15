@@ -83,24 +83,6 @@ npm install
 npm run dev
 ```
 
-## ⚙️ Configuration
-
-### Variables d'environnement
-
-```env
-# Base de données
-DATABASE_URL="postgresql://user:password@localhost:5432/ascent_db"
-
-# NextAuth
-NEXTAUTH_URL="http://localhost:3000"
-NEXTAUTH_SECRET="your-secret-key"
-
-# Upload d'images
-CLOUDINARY_CLOUD_NAME="your-cloud-name"
-CLOUDINARY_API_KEY="your-api-key"
-CLOUDINARY_API_SECRET="your-api-secret"
-```
-
 ### Adaptation mobile
 
 - **Navigation** : Menu hamburger avec overlay
