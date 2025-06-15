@@ -1,0 +1,14 @@
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Epilogue:wght@300;400;600;700&family=Figtree:wght@300;400;600;700&display=swap");
+
+@import "abstract/variables";
+
+body {
+  font-family: $font-family-text;
+  font-size: $font-size-body-mobile;
+  line-height: $line-height-base;
+}
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
