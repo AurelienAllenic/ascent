@@ -67,7 +67,6 @@ Le site adopte une approche minimaliste avec :
 
 - Node.js 18.0+
 - npm ou yarn
-- Base de données PostgreSQL
 
 ### Installation
 
