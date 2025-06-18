@@ -1,9 +1,11 @@
 import Image from "next/image";
 import styles from "./hero.module.scss";
+import NavBar from "../Nav/Nav";
 
 export default function Hero() {
   return (
     <div className={styles.heroContainer}>
+      <NavBar />
       <Image
         src="/assets/background.png"
         alt="Background"

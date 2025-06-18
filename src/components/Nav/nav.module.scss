@@ -1,0 +1,208 @@
+@import "../../app/styles/abstract/variables";
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 50;
+  background: transparent;
+  font-family: $font-family-primary;
+  color: $color-text-white;
+}
+
+.navContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.2rem 1.5rem;
+}
+
+.logo {
+  font-size: $font-size-h2-mobile;
+  font-weight: $font-weight-bold;
+  letter-spacing: 0.1em;
+  color: $color-text-white;
+}
+
+.navLinks {
+  display: none;
+  list-style: none;
+
+  @media (min-width: 768px) {
+    display: flex;
+    gap: 2rem;
+    text-transform: uppercase;
+  }
+}
+.leftContainer {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.langSwitch {
+  display: none;
+  font-size: $font-size-body-mobile;
+  font-family: $font-family-primary;
+  font-weight: $font-weight-semibold;
+  color: $color-text-white;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-transform: uppercase;
+
+  @media (min-width: 768px) {
+    display: block;
+  }
+
+  &:hover {
+    color: $color-text-secondary;
+  }
+}
+
+.navItem {
+}
+
+.navLink {
+  font-size: $font-size-body-mobile;
+  color: $color-text-white;
+  font-weight: $font-weight-regular;
+  text-decoration: none;
+
+  &:hover {
+    color: $color-text-secondary;
+  }
+}
+
+.rightContainer {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.contactBtnMobile {
+  display: block;
+  font-size: $font-size-body-mobile;
+  font-weight: $font-weight-semibold;
+  color: $color-text-white;
+  text-transform: uppercase;
+  text-decoration: none;
+
+  &:hover {
+    color: $color-text-secondary;
+  }
+
+  @media (min-width: 768px) {
+    display: none;
+  }
+}
+
+.burgerBtn {
+  display: block;
+  background: none;
+  border: none;
+  color: $color-text-white;
+
+  @media (min-width: 768px) {
+    display: none;
+  }
+}
+
+.mobileMenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background-color: rgba(
+    27,
+    31,
+    35,
+    0.98
+  ); // $color-background-dark with opacity
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.mobileNavLink {
+  font-size: $font-size-body-mobile;
+  font-weight: $font-weight-regular;
+  color: $color-text-white;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 0.5rem;
+
+  &:hover {
+    color: $color-text-secondary;
+  }
+}
+
+.mobileMenu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: $color-background-dark;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 2rem 1.5rem;
+  z-index: 999;
+}
+
+.mobileLinks {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 4rem;
+
+  a {
+    color: $color-text-white;
+    font-size: $font-size-h2-mobile;
+    font-family: $font-family-primary;
+    font-weight: $font-weight-semibold;
+    text-transform: uppercase;
+    text-decoration: none;
+
+    &:hover {
+      color: $color-text-secondary;
+    }
+  }
+}
+
+.mobileBottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.loginBtn {
+  color: $color-text-white;
+  font-size: $font-size-body-mobile;
+  font-family: $font-family-primary;
+  font-weight: $font-weight-semibold;
+  text-transform: uppercase;
+  text-decoration: none;
+
+  &:hover {
+    color: $color-text-secondary;
+  }
+}
+
+.langBtnMobile {
+  background: none;
+  border: none;
+  color: $color-text-white;
+  font-size: $font-size-body-mobile;
+  font-family: $font-family-primary;
+  font-weight: $font-weight-semibold;
+  cursor: pointer;
+
+  &:hover {
+    color: $color-text-secondary;
+  }
+}
