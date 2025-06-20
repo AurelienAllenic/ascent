@@ -1,0 +1,37 @@
+@import "../../app/styles/abstract/variables";
+
+.titleSectionContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  min-height: 45px;
+  position: relative;
+  top: 20px;
+  padding: 1rem 0;
+  .titleSection {
+    font-family: $font-family-secondary;
+    font-size: $font-size-h2-mobile;
+    color: $color-text-body;
+  }
+}
+
+@media (min-width: 768px) {
+  .titleSectionContainer {
+    min-height: 60px;
+    padding: 1.5rem 0;
+    .titleSection {
+      font-size: $font-size-h2-tab;
+    }
+  }
+}
+
+@media (min-width: 1200px) {
+  .titleSectionContainer {
+    min-height: 75px;
+    padding: 2rem 0;
+    .titleSection {
+      font-size: $font-size-h2-desktop;
+    }
+  }
+}
