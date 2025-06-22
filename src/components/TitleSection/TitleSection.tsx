@@ -1,9 +1,19 @@
 import styles from "./titleSection.module.scss";
 
-export default function TitleSection({ title }: { title: string }) {
+export default function TitleSection({
+  title,
+  color,
+}: {
+  title: string;
+  color?: string;
+}) {
+  const titleClasses = `${styles.titleSection} ${
+    color === "white" ? styles.titleSectionWhite : ""
+  }`;
+
   return (
     <div className={styles.titleSectionContainer}>
-      <p className={styles.titleSection}>{title}</p>
+      <p className={titleClasses}>{title}</p>
     </div>
   );
 }

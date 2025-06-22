@@ -1,0 +1,190 @@
+@import "../../app/styles/abstract/variables";
+
+.numberCard {
+  color: $color-text-white;
+  font-family: $font-family-secondary;
+  text-align: center;
+  position: static;
+
+  & .number {
+    font-weight: $font-weight-bold;
+    line-height: $line-height-heading;
+
+    &.small {
+      font-size: $font-size-h2-mobile;
+    }
+
+    &.medium {
+      font-size: $font-size-h1-mobile;
+    }
+
+    &.large {
+      font-size: $font-size-h1-mobile;
+    }
+
+    & .unit {
+      font-size: inherit;
+    }
+  }
+
+  & .text {
+    color: $color-text-secondary;
+    font-weight: $font-weight-regular;
+
+    &.small {
+      font-size: $font-size-body-mobile;
+    }
+
+    &.medium {
+      font-size: $font-size-body-mobile;
+    }
+
+    &.large {
+      font-size: $font-size-body-mobile;
+    }
+  }
+
+  @media (min-width: 768px) {
+    position: absolute !important;
+    z-index: 1;
+
+    &:nth-child(1) {
+      top: 5% !important;
+      left: 10% !important;
+    }
+
+    &:nth-child(2) {
+      top: 15% !important;
+      right: 15% !important;
+    }
+
+    &:nth-child(3) {
+      top: 60% !important;
+      left: 5% !important;
+    }
+
+    &:nth-child(4) {
+      top: 65% !important;
+      right: 10% !important;
+    }
+
+    .number {
+      &.small {
+        font-size: $font-size-h2-tab;
+      }
+
+      &.medium {
+        font-size: $font-size-h1-tab;
+      }
+
+      &.large {
+        font-size: $font-size-h1-tab;
+      }
+    }
+
+    .text {
+      &.small {
+        font-size: $font-size-body-tab;
+      }
+
+      &.medium {
+        font-size: $font-size-body-tab;
+      }
+
+      &.large {
+        font-size: $font-size-body-tab;
+      }
+    }
+  }
+
+  @media (min-width: 1200px) {
+    &:nth-child(1) {
+      top: 10% !important;
+      left: 5% !important;
+    }
+
+    &:nth-child(2) {
+      top: 20% !important;
+      right: 30% !important;
+    }
+
+    &:nth-child(3) {
+      top: 60% !important;
+      left: 25% !important;
+    }
+
+    &:nth-child(4) {
+      top: 60% !important;
+      right: 15% !important;
+    }
+
+    .number {
+      &.small {
+        font-size: $font-size-h2-desktop;
+      }
+
+      &.medium {
+        font-size: $font-size-h1-desktop;
+      }
+
+      &.large {
+        font-size: $font-size-h1-big-desktop;
+      }
+    }
+
+    .text {
+      &.small {
+        font-size: $font-size-body-desktop;
+      }
+
+      &.medium {
+        font-size: $font-size-body-desktop;
+      }
+
+      &.large {
+        font-size: $font-size-body-big-desktop;
+      }
+    }
+  }
+}
+
+.small,
+.medium,
+.large {
+  width: 200px;
+  max-width: 200px;
+}
+
+@media (min-width: 768px) {
+  .small {
+    width: 180px !important;
+    max-width: 180px !important;
+  }
+
+  .medium {
+    width: 220px !important;
+    max-width: 220px !important;
+  }
+
+  .large {
+    width: 275px !important;
+    max-width: 275px !important;
+  }
+}
+
+@media (min-width: 1200px) {
+  .small {
+    width: 200px !important;
+    max-width: 200px !important;
+  }
+
+  .medium {
+    width: 250px !important;
+    max-width: 250px !important;
+  }
+
+  .large {
+    width: 300px !important;
+    max-width: 300px !important;
+  }
+}
