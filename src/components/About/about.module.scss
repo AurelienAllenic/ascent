@@ -17,6 +17,7 @@
   width: 100%;
   gap: 1.5rem;
   min-height: 90vh;
+  margin: 0 auto;
 }
 
 .aboutleftPartContent {
@@ -82,16 +83,21 @@
   }
 
   .aboutContent {
-    flex-direction: row;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
     align-items: center;
+    justify-items: center;
+    gap: 2rem;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
     min-height: 90vh;
   }
 
   .aboutleftPartContainer {
     text-align: left;
     position: relative;
-    height: 375px;
+    height: 190px;
   }
 
   .aboutleftPartContent {
@@ -133,10 +139,12 @@
     max-width: 1200px;
     gap: 2rem;
     min-height: 90vh;
+    grid-template-columns: 1fr auto 1fr;
   }
 
   .aboutleftPartContent {
     font-size: $font-size-h2-desktop;
+    top: 65%;
   }
 
   .aboutImageContainer {
@@ -150,8 +158,10 @@
   .aboutBtn {
     font-size: $font-size-body-desktop;
   }
-  .aboutRightPartContainer,
-  .aboutleftPartContainer {
+  .aboutRightPartContainer {
     height: 430px;
+  }
+  .aboutleftPartContainer {
+    height: 180px;
   }
 }
