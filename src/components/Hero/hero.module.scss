@@ -74,7 +74,7 @@
     }
   }
 
-  // Tablet (min-width: 768px)
+  // Tablet
   @media (min-width: 768px) {
     .content {
       flex-direction: row;
@@ -108,7 +108,7 @@
     }
   }
 
-  // Desktop (min-width: 1275px)
+  // Desktop
   @media (min-width: 1275px) {
     .content {
       justify-content: space-between;

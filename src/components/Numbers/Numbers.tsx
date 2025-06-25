@@ -14,12 +14,14 @@ const Numbers: React.FC = () => {
           text="Profits this year thanks to our customer's trust"
           size="large"
           customClass="large"
+          animationDelay={0}
         />
         <NumberCard
           number="25"
           text="Employees dedicated to your projects"
           size="small"
           customClass="small"
+          animationDelay={0.2}
         />
         <NumberCard
           number="97"
@@ -27,12 +29,14 @@ const Numbers: React.FC = () => {
           text="Of positive evaluations"
           size="medium"
           customClass="medium"
+          animationDelay={0.4}
         />
         <NumberCard
           number="150+"
           text="Projects completed with our supervision"
           size="medium"
           customClass="medium"
+          animationDelay={0.6}
         />
       </div>
     </section>
