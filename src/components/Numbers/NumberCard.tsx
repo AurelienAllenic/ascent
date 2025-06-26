@@ -88,26 +88,23 @@ const NumberCard: React.FC<NumberCardProps> = ({
         tl.restart();
       },
       onEnterBack: () => {
-        gsap.set(cardRef.current, { y: -50 });
         tl.restart();
       },
       onLeave: () => {
-        gsap.set(cardRef.current, { opacity: 0, y: 50 });
-        gsap.set(numberRef.current, { innerText: startNumber });
-        if (numberRef.current) {
-          numberRef.current.textContent =
-            startNumber + (isPlus ? "+" : unit || "");
-        }
-        tl.pause(0);
+        gsap.to(cardRef.current, {
+          opacity: 0,
+          y: 50,
+          duration: 0.5,
+          ease: "power2.in",
+        });
       },
       onLeaveBack: () => {
-        gsap.set(cardRef.current, { opacity: 0, y: -50 });
-        gsap.set(numberRef.current, { innerText: startNumber });
-        if (numberRef.current) {
-          numberRef.current.textContent =
-            startNumber + (isPlus ? "+" : unit || "");
-        }
-        tl.pause(0);
+        gsap.to(cardRef.current, {
+          opacity: 0,
+          y: -50,
+          duration: 0.5,
+          ease: "power2.in",
+        });
       },
     });
 
