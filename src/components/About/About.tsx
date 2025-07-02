@@ -5,7 +5,6 @@ import React, { useLayoutEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import styles from "./about.module.scss";
-import NavBar from "../Nav/Nav";
 import TitleSection from "../TitleSection/TitleSection";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -30,18 +29,52 @@ export default function About() {
       return;
     }
 
-    // Créer un contexte GSAP complètement isolé
-    const ctx = gsap.context(() => {
-      // États initiaux
+    const tl = gsap.timeline({ paused: true });
+
+    tl.set(leftPartRef.current, {
+      scaleY: 0,
+      transformOrigin: "top center",
+    })
+      .set(imageContainerRef.current, {
+        clipPath: "inset(100% 0% 0% 0%)",
+      })
+      .set([firstTextRef.current, secondTextRef.current, buttonRef.current], {
+        opacity: 0,
+        y: 100,
+      })
+      .to(leftPartRef.current, {
+        scaleY: 1,
+        duration: 2,
+        ease: "power2.out",
+      })
+      .to(
+        imageContainerRef.current,
+        {
+          clipPath: "inset(0% 0% 0% 0%)",
+          duration: 2,
+          ease: "power2.out",
+        },
+        0
+      )
+      .to(
+        [firstTextRef.current, secondTextRef.current, buttonRef.current],
+        {
+          opacity: 1,
+          y: 0,
+          duration: 2,
+          ease: "power2.out",
+        },
+        0
+      );
+
+    tl.eventCallback("onReverseComplete", () => {
       gsap.set(leftPartRef.current, {
         scaleY: 0,
         transformOrigin: "top center",
       });
-
       gsap.set(imageContainerRef.current, {
         clipPath: "inset(100% 0% 0% 0%)",
       });
-
       gsap.set(
         [firstTextRef.current, secondTextRef.current, buttonRef.current],
         {
@@ -49,46 +82,24 @@ export default function About() {
           y: 100,
         }
       );
+    });
 
-      // ScrollTrigger avec animation directe (pas de timeline)
-      ScrollTrigger.create({
-        trigger: aboutContentRef.current,
-        start: "top 90%",
-        end: "bottom 20%",
-        toggleActions: "play none none reverse",
-        markers: false,
-        id: "about-animation-trigger",
-        animation: gsap
-          .timeline()
-          .to(leftPartRef.current, {
-            scaleY: 1,
-            duration: 1,
-            ease: "power2.out",
-          })
-          .to(
-            imageContainerRef.current,
-            {
-              clipPath: "inset(0% 0% 0% 0%)",
-              duration: 1,
-              ease: "power2.out",
-            },
-            0
-          )
-          .to(
-            [firstTextRef.current, secondTextRef.current, buttonRef.current],
-            {
-              opacity: 1,
-              y: 0,
-              duration: 1,
-              ease: "power2.out",
-            },
-            0
-          ),
-      });
-    }, aboutContentRef.current);
+    ScrollTrigger.create({
+      trigger: aboutContentRef.current,
+      start: "top 80%",
+      end: "bottom 20%",
+      markers: false,
+      onEnter: () => {
+        tl.restart();
+      },
+      onEnterBack: () => {
+        tl.restart();
+      },
+    });
 
     return () => {
-      ctx.revert();
+      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+      tl.kill();
     };
   }, []);
 
