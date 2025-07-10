@@ -3,44 +3,60 @@
       {
         "title": "Project 1",
         "featuredImage": "/assets/projects/project-1.jpg",
+        "generalDescription": "This project emphasizes bold entrance design combined with modern architectural elegance.",
         "images": [
-          "/assets/projects/project-1.jpg",
-          "/assets/projects/project-2.jpg",
-          "/assets/projects/project-3.jpg"
-        ],
-        "descriptions": [
-          "The main entrance was our main concern during this wonderful design creation.",
-          "This design showcases our innovative approach to modern architecture.",
-          "A detailed view of the structural framework used in this project."
+          {
+            "url": "/assets/projects/project-1.jpg",
+            "description": "The main entrance was our main concern during this wonderful design creation."
+          },
+          {
+            "url": "/assets/projects/project-2.jpg",
+            "description": "This design showcases our innovative approach to modern architecture."
+          },
+          {
+            "url": "/assets/projects/project-3.jpg",
+            "description": "A detailed view of the structural framework used in this project."
+          }
         ]
       },
       {
         "title": "Project 2",
         "featuredImage": "/assets/projects/project-2.jpg",
+        "generalDescription": "A contemporary masterpiece focusing on spiraling structures and immersive interior design.",
         "images": [
-          "/assets/projects/project-1.jpg",
-          "/assets/projects/project-2.jpg",
-          "/assets/projects/project-3.jpg"
-        ],
-        "descriptions": [
-          "Exploring the unique spiral structure of this building.",
-          "A closer look at the interior design elements.",
-          "The structural integrity is highlighted in this image."
+          {
+            "url": "/assets/projects/project-1.jpg",
+            "description": "Exploring the unique spiral structure of this building."
+          },
+          {
+            "url": "/assets/projects/project-2.jpg",
+            "description": "A closer look at the interior design elements."
+          },
+          {
+            "url": "/assets/projects/project-3.jpg",
+            "description": "The structural integrity is highlighted in this image."
+          }
         ]
       },
       {
         "title": "Project 3",
         "featuredImage": "/assets/projects/project-3.jpg",
+        "generalDescription": "Combining visual impact and robust engineering, this project exemplifies form meeting function.",
         "images": [
-          "/assets/projects/project-1.jpg",
-          "/assets/projects/project-2.jpg",
-          "/assets/projects/project-3.jpg"
-        ],
-        "descriptions": [
-          "Exploring the unique spiral structure of this building.",
-          "A closer look at the interior design elements.",
-          "The structural integrity is highlighted in this image."
+          {
+            "url": "/assets/projects/project-1.jpg",
+            "description": "Exploring the unique spiral structure of this building."
+          },
+          {
+            "url": "/assets/projects/project-2.jpg",
+            "description": "A closer look at the interior design elements."
+          },
+          {
+            "url": "/assets/projects/project-3.jpg",
+            "description": "The structural integrity is highlighted in this image."
+          }
         ]
       }
     ]
   }
+  
