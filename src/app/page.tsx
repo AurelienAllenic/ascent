@@ -3,6 +3,7 @@ import styles from "./page.module.scss";
 import Hero from "@/components/Hero/Hero";
 import About from "@/components/About/About";
 import Numbers from "@/components/Numbers/Numbers";
+import Projects from "@/components/Projects/Projects";
 
 export default function Home() {
   return (
@@ -10,6 +11,7 @@ export default function Home() {
       <Hero />
       <About />
       <Numbers />
+      <Projects />
     </div>
   );
 }

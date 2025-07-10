@@ -1,0 +1,46 @@
+{
+    "projects": [
+      {
+        "title": "Project 1",
+        "featuredImage": "/assets/projects/project-1.jpg",
+        "images": [
+          "/assets/projects/project-1.jpg",
+          "/assets/projects/project-2.jpg",
+          "/assets/projects/project-3.jpg"
+        ],
+        "descriptions": [
+          "The main entrance was our main concern during this wonderful design creation.",
+          "This design showcases our innovative approach to modern architecture.",
+          "A detailed view of the structural framework used in this project."
+        ]
+      },
+      {
+        "title": "Project 2",
+        "featuredImage": "/assets/projects/project-2.jpg",
+        "images": [
+          "/assets/projects/project-1.jpg",
+          "/assets/projects/project-2.jpg",
+          "/assets/projects/project-3.jpg"
+        ],
+        "descriptions": [
+          "Exploring the unique spiral structure of this building.",
+          "A closer look at the interior design elements.",
+          "The structural integrity is highlighted in this image."
+        ]
+      },
+      {
+        "title": "Project 3",
+        "featuredImage": "/assets/projects/project-3.jpg",
+        "images": [
+          "/assets/projects/project-1.jpg",
+          "/assets/projects/project-2.jpg",
+          "/assets/projects/project-3.jpg"
+        ],
+        "descriptions": [
+          "Exploring the unique spiral structure of this building.",
+          "A closer look at the interior design elements.",
+          "The structural integrity is highlighted in this image."
+        ]
+      }
+    ]
+  }
