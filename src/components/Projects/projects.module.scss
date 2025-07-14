@@ -1,110 +1,152 @@
 @import "../../app/styles/abstract/variables";
 
-.projectsContainer{
-    background-color: $color-background-light;
+.projectsContainer {
+  background-color: $color-background-light;
+  padding: 1rem;
 }
-.containerTitleSection{
-    padding: 1rem;
+
+.containerTitleSection {
+  padding: 1rem;
+  text-align: center;
 }
+
 .projects {
   min-height: 100vh;
-  height: 100vh;
   padding: 0;
   position: relative;
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 
   .carousel {
     display: flex;
+    justify-content: center;
+    align-items: center;
     width: 100%;
-    height: 100%;
-    overflow: hidden;
+    max-width: 1200px;
+    height: 80vh;
     position: relative;
-    min-height: 90vh;
+    overflow: visible;
 
     .carouselItem {
-      flex: 0 0 33.33%;
-      width: 33.33%;
-      cursor: pointer;
-      position: relative;
-      height: 100%;
-      display: flex;
-      align-items: center;
+      position: absolute;
+      width: 30%;
+      max-width: 400px;
+      height: 60vh;
+      transition: transform 0.3s ease, opacity 0.3s ease, scale 0.3s ease;
 
       img {
         width: 100%;
+        height: 100%;
         object-fit: cover;
+        border-radius: 8px;
         display: block;
-        transition: opacity 0.3s ease;
-        border-radius: 4px;
-
-        /* Default height for all images, overridden below for sides */
-        height: 80vh;
       }
 
-      &:first-child img {
-        height: 60vh; /* Shorter height for left image */
-        transform: translateX(-45%);
+      p {
+        margin-top: 0.5rem;
+        font-size: $font-size-body-mobile;
+        color: $color-text-secondary;
+        text-align: center;
+      }
+    }
+
+    .carouselItem.left {
+      transform: translateX(-100%) scale(0.8);
+      opacity: 0.7;
+      z-index: 1;
+    }
+
+    .carouselItem.center {
+      transform: translateX(0) scale(1);
+      opacity: 1;
+      z-index: 5;
+    }
+
+    .carouselItem.right {
+      transform: translateX(100%) scale(0.8);
+      opacity: 0.7;
+      z-index: 1;
+    }
+  }
+
+  .projectDetail {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 2rem;
+    width: 100%;
+    max-width: 800px;
+
+    h2 {
+      font-family: $font-family-primary;
+      font-size: $font-size-h2-desktop;
+      color: $color-text-headline;
+    }
+
+    .generalDescription {
+      font-family: $font-family-text;
+      font-size: $font-size-body-desktop;
+      color: $color-text-secondary;
+      text-align: center;
+    }
+
+    .detailCarousel {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      max-width: 1200px;
+      height: 60vh;
+      position: relative;
+      overflow: visible;
+
+      .carouselItem {
+        position: absolute;
+        width: 30%;
+        max-width: 400px;
+        height: 50vh;
+        transition: transform 0.3s ease, opacity 0.3s ease, scale 0.3s ease;
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          border-radius: 8px;
+          display: block;
+        }
+
+        p {
+          margin-top: 0.5rem;
+          font-size: $font-size-body-mobile;
+          color: $color-text-secondary;
+          text-align: center;
+        }
+      }
+
+      .carouselItem.left {
+        transform: translateX(-100%) scale(0.8);
         opacity: 0.7;
+        z-index: 1;
       }
 
-      &:nth-child(2) img {
-        height: 80vh; /* Full height for central image */
-        transform: translateX(0);
+      .carouselItem.center {
+        transform: translateX(0) scale(1);
         opacity: 1;
         z-index: 5;
       }
 
-      &:nth-child(3) img {
-        height: 60vh; /* Shorter height for right image */
-        transform: translateX(45%);
+      .carouselItem.right {
+        transform: translateX(100%) scale(0.8);
         opacity: 0.7;
-      }
-    }
-  }
-
-  p {
-    margin-top: 10px;
-    color: $color-text-secondary;
-    font-family: $font-family-text;
-    font-size: $font-size-body-desktop;
-    line-height: $line-height-base;
-    position: absolute;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 10;
-  }
-
-  .projectDetail {
-    .detailCarousel {
-      display: flex;
-      overflow-x: auto;
-      gap: 20px;
-      padding: 10px;
-
-      .carouselItem {
-        flex: 0 0 auto;
-
-        img {
-          width: 400px;
-          height: 300px;
-          object-fit: cover;
-          border-radius: 10px;
-        }
-
-        p {
-          margin-top: 10px;
-          font-family: $font-family-text;
-          font-size: $font-size-body-desktop;
-          color: $color-text-body;
-          line-height: $line-height-base;
-        }
+        z-index: 1;
       }
     }
 
     button {
-      margin-top: 20px;
-      padding: 10px 20px;
+      padding: 0.75rem 1.5rem;
       background-color: $color-text-headline;
       color: $color-text-white;
       border: none;
@@ -117,6 +159,31 @@
       &:hover {
         background-color: darken($color-text-headline, 10%);
       }
+    }
+  }
+
+  @media (max-width: 768px) {
+    .carousel,
+    .detailCarousel {
+      height: 50vh;
+
+      .carouselItem {
+        width: 40%;
+        height: 40vh;
+      }
+
+      .carouselItem.left {
+        transform: translateX(-80%) scale(0.7);
+      }
+
+      .carouselItem.right {
+        transform: translateX(80%) scale(0.7);
+      }
+    }
+
+    .projectDetail .detailCarousel .carouselItem {
+      width: 200px;
+      height: 150px;
     }
   }
 }
