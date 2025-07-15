@@ -3,6 +3,7 @@
 .projectsContainer {
   background-color: $color-background-light;
   padding: 1rem;
+  overflow-x: hidden;
 }
 
 .containerTitleSection {
@@ -17,7 +18,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: center; // Commencer en haut pour laisser le texte en bas
 
   .carousel {
     display: flex;
@@ -25,15 +26,17 @@
     align-items: center;
     width: 100%;
     max-width: 1200px;
-    height: 80vh;
+    min-height: 500px; // Hauteur minimale pour le carousel
     position: relative;
     overflow: visible;
+    margin-bottom: 2rem; // Espace pour le texte en dessous
 
     .carouselItem {
       position: absolute;
-      width: 30%;
+      width: 40vw;
       max-width: 400px;
-      height: 60vh;
+      aspect-ratio: 3 / 4; // Maintient des images plus hautes
+      min-height: 400px; // Hauteur minimale augmentée
       transition: transform 0.3s ease, opacity 0.3s ease, scale 0.3s ease;
 
       img {
@@ -51,24 +54,15 @@
         text-align: center;
       }
     }
+  }
 
-    .carouselItem.left {
-      transform: translateX(-100%) scale(0.8);
-      opacity: 0.7;
-      z-index: 1;
-    }
-
-    .carouselItem.center {
-      transform: translateX(0) scale(1);
-      opacity: 1;
-      z-index: 5;
-    }
-
-    .carouselItem.right {
-      transform: translateX(100%) scale(0.8);
-      opacity: 0.7;
-      z-index: 1;
-    }
+  .carouselCaption {
+    margin-top: 1rem;
+    padding: 1rem;
+    text-align: center;
+    z-index: 10; // Assure que le texte est au-dessus des images
+    font-size: $font-size-body-desktop;
+    color: $color-text-secondary;
   }
 
   .projectDetail {
@@ -99,15 +93,16 @@
       align-items: center;
       width: 100%;
       max-width: 1200px;
-      height: 60vh;
+      min-height: 400px;
       position: relative;
       overflow: visible;
 
       .carouselItem {
         position: absolute;
-        width: 30%;
+        width: 30vw;
         max-width: 400px;
-        height: 50vh;
+        aspect-ratio: 3 / 4; // Changé pour correspondre au carousel principal
+        min-height: 300px;
         transition: transform 0.3s ease, opacity 0.3s ease, scale 0.3s ease;
 
         img {
@@ -124,24 +119,6 @@
           color: $color-text-secondary;
           text-align: center;
         }
-      }
-
-      .carouselItem.left {
-        transform: translateX(-100%) scale(0.8);
-        opacity: 0.7;
-        z-index: 1;
-      }
-
-      .carouselItem.center {
-        transform: translateX(0) scale(1);
-        opacity: 1;
-        z-index: 5;
-      }
-
-      .carouselItem.right {
-        transform: translateX(100%) scale(0.8);
-        opacity: 0.7;
-        z-index: 1;
       }
     }
 
@@ -162,28 +139,64 @@
     }
   }
 
-  @media (max-width: 768px) {
-    .carousel,
-    .detailCarousel {
-      height: 50vh;
+  @media (max-width: 1024px) {
+    .carousel {
+      min-height: 400px;
+      margin-bottom: 1.5rem;
 
       .carouselItem {
-        width: 40%;
-        height: 40vh;
+        width: 45vw;
+        max-width: 350px;
+        min-height: 350px;
       }
+    }
 
-      .carouselItem.left {
-        transform: translateX(-80%) scale(0.7);
-      }
+    .carouselCaption {
+      font-size: $font-size-body-mobile;
+      margin-top: 0.75rem;
+    }
+  }
 
-      .carouselItem.right {
-        transform: translateX(80%) scale(0.7);
+  @media (max-width: 768px) {
+    .carousel {
+      min-height: 350px;
+      margin-bottom: 1rem;
+
+      .carouselItem {
+        width: 50vw;
+        max-width: 300px;
+        min-height: 300px;
       }
     }
 
     .projectDetail .detailCarousel .carouselItem {
-      width: 200px;
-      height: 150px;
+      width: 60vw;
+      max-width: 250px;
+      min-height: 250px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .carousel {
+      min-height: 300px;
+      margin-bottom: 0.75rem;
+
+      .carouselItem {
+        width: 60vw;
+        max-width: 200px;
+        min-height: 250px;
+      }
+    }
+
+    .projectDetail .detailCarousel .carouselItem {
+      width: 80vw;
+      max-width: 200px;
+      min-height: 200px;
+    }
+
+    .carouselCaption {
+      font-size: $font-size-body-mobile;
+      margin-top: 0.5rem;
     }
   }
 }
