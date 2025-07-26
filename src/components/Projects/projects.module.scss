@@ -1,5 +1,15 @@
 @import "../../app/styles/abstract/variables";
 
+.containerProjects {
+  position: relative;
+}
+.overlayCarousel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
 .projectsContainer {
   background-color: $color-background-light;
   padding: 1rem;
@@ -45,26 +55,43 @@
         object-fit: cover;
         border-radius: 8px;
         display: block;
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
       }
 
       p {
         margin-top: 0.5rem;
-        font-size: $font-size-body-mobile;
+        font-size: $font-size-body-desktop;
         color: $color-text-secondary;
         text-align: center;
+        margin-bottom: 20px;
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
       }
     }
   }
 
   .carouselCaption {
-    margin-top: 1rem;
+    margin-top: 5rem;
     padding: 1rem;
     text-align: center;
     z-index: 10; // Assure que le texte est au-dessus des images
     font-size: $font-size-body-desktop;
     color: $color-text-secondary;
   }
-
+  .projectDetailBack {
+    height: 100vh;
+    width: 100%;
+    position: fixed;
+    top: 0;
+  }
+  .projectDetailBackOverlay {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+  }
   .projectDetail {
     display: flex;
     flex-direction: column;
@@ -73,11 +100,16 @@
     padding: 2rem;
     width: 100%;
     max-width: 800px;
-
+    position: relative;
+    bottom: 100px;
+    user-select: none;
     h2 {
       font-family: $font-family-primary;
       font-size: $font-size-h2-desktop;
-      color: $color-text-headline;
+      color: $color-background-light;
+      height: 50px;
+      margin-bottom: 1rem;
+      text-align: center;
     }
 
     .generalDescription {
@@ -85,6 +117,7 @@
       font-size: $font-size-body-desktop;
       color: $color-text-secondary;
       text-align: center;
+      height: 150px;
     }
 
     .detailCarousel {
@@ -96,6 +129,7 @@
       min-height: 400px;
       position: relative;
       overflow: visible;
+      user-select: none;
 
       .carouselItem {
         position: absolute;
@@ -111,31 +145,32 @@
           object-fit: cover;
           border-radius: 8px;
           display: block;
+          user-select: none;
         }
 
         p {
           margin-top: 0.5rem;
-          font-size: $font-size-body-mobile;
-          color: $color-text-secondary;
+          font-size: $font-size-body-desktop;
+          color: $color-text-white;
           text-align: center;
         }
       }
     }
+  }
+  button {
+    padding: 0.75rem 1.5rem;
+    background-color: $color-text-headline;
+    color: $color-text-white;
+    border: none;
+    border-radius: 5px;
+    margin-top: 3rem;
+    cursor: pointer;
+    font-family: $font-family-primary;
+    font-size: $font-size-body-desktop;
+    font-weight: $font-weight-semibold;
 
-    button {
-      padding: 0.75rem 1.5rem;
-      background-color: $color-text-headline;
-      color: $color-text-white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-family: $font-family-primary;
-      font-size: $font-size-body-desktop;
-      font-weight: $font-weight-semibold;
-
-      &:hover {
-        background-color: darken($color-text-headline, 10%);
-      }
+    &:hover {
+      background-color: darken($color-text-headline, 10%);
     }
   }
 
@@ -153,7 +188,6 @@
 
     .carouselCaption {
       font-size: $font-size-body-mobile;
-      margin-top: 0.75rem;
     }
   }
 
@@ -174,6 +208,15 @@
       max-width: 250px;
       min-height: 250px;
     }
+    .projectDetail {
+      bottom: 50px;
+    }
+    .generalDescription {
+      height: 100px !important;
+    }
+    .projectDetail {
+      bottom: 0 !important;
+    }
   }
 
   @media (max-width: 480px) {
@@ -193,10 +236,20 @@
       max-width: 200px;
       min-height: 200px;
     }
-
+    .projectDetail h2 {
+      font-size: calc($font-size-h1-mobile - 10px);
+    }
+    .projectDetail p {
+      font-size: $font-size-body-mobile !important;
+    }
+    .generalDescription {
+      height: 40px !important;
+    }
     .carouselCaption {
       font-size: $font-size-body-mobile;
-      margin-top: 0.5rem;
+    }
+    .carouselItem p {
+      font-size: $font-size-body-mobile !important;
     }
   }
 }
