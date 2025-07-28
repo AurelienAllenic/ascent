@@ -30,7 +30,7 @@ export default function ContactSection() {
     gsap.set(textRef.current, { autoAlpha: 1 });
     gsap.set(formRef.current.parentElement, {
       autoAlpha: 0,
-      y: 50,
+      y: 0,
       display: "none",
     });
     gsap.set(closeRef.current, { autoAlpha: 0, display: "none" });
@@ -44,7 +44,7 @@ export default function ContactSection() {
       scale: 1,
       width: "100%",
       x: 0,
-      y: 50,
+      y: 0,
     });
     gsap.set(overlayRef.current, {
       autoAlpha: 0,
@@ -57,7 +57,7 @@ export default function ContactSection() {
         textRef.current,
         {
           autoAlpha: 0,
-          y: -50,
+          y: 0,
           duration: 0.5,
           ease: "power2.out",
         },
@@ -153,7 +153,7 @@ export default function ContactSection() {
           scale: 1,
           width: "100%",
           x: 0,
-          y: 50,
+          y: 0,
         });
       if (formRef.current)
         gsap.set(formRef.current.parentElement, { display: "none" });
@@ -173,7 +173,7 @@ export default function ContactSection() {
 
   return (
     <section className={styles.contactSection}>
-        {/*<TitleSection title="CONTACT" color="white" />*/}
+        <TitleSection title="CONTACT" color="white" />
       <div className={styles.contactContent}>
         <div ref={textRef} className={styles.textContent}>
 
