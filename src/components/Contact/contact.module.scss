@@ -27,6 +27,7 @@
   position: relative;
   z-index: 1;
   height: 1000px;
+  padding: 150px 0;
 }
 
 .textContent {
@@ -96,8 +97,11 @@
   flex: 1;
   position: relative;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   z-index: 1;
-  height: 650px;
+  height: 100%;
   .overlay {
     position: absolute;
     top: 0;
@@ -109,7 +113,6 @@
     opacity: 0; // Invisible par défaut
     visibility: hidden;
     transition: opacity 0.3s ease;
-    height: 650px;
   }
 
   .mainImage {
@@ -268,260 +271,164 @@
   transition: all ease-in-out 0.3s;
   transition-delay: 0.2s;
   transform-origin: left;
-  height: 650px!important;
 }
 
 @media (max-width: 1140px) {
   .textContent {
-  .title {
-    font-size: 2rem;
+    .title,
+    .secondTitle {
+      font-size: 2rem;
+    }
   }
-  .secondTitle{
-    font-size: 2rem;
+  .learnMoreContainer {
+    margin-right: 10px;
+  }
+  .imageContainer {
+    height: 485px!important;
+    .overlay{
+      height: 525px!important;
+    }
+  }
+  .zoomed{
+    height: 525px!important;
   }
 }
-.learnMoreContainer{
-  margin-right: 10px!important;
-}
-}
+
 @media (max-width: 905px) {
   .contactSection {
     padding: 3rem 2rem;
   }
-
-  .textContent {
-    .title {
-      font-size: 2rem;
-    }
-    .secondTitle {
-      font-size: 2rem;
-    }
-    .learnMoreContainer {
-      .learnMore {
-        margin-top: 1.5rem;
-        padding-bottom: 0.25rem;
-        border-bottom: 1px solid white;
-        background: none;
-        color: white;
-        cursor: pointer;
-        font-size: 1rem;
-        border: none;
-        position: relative;
-        &::after {
-          content: "";
-          position: absolute;
-          bottom: 0;
-          height: 1px;
-          background: #fff;
-          opacity: 0.3;
-          width: 100%;
-          display: block;
-        }
-        &:hover {
-          opacity: 0.7;
-        }
-      }
-    }
-  }
-
   .imageContainer {
-    height: 650px;
-    .overlay {
-      width: 200%;
-      height: 100%;
-      height: 650px;
+    height: 685px;
+
+    .overlay,
+    .formWrapper .form {
+      //height: 585px;
     }
-    .mainImage {
-      object-fit: cover;
-    }
-    .closeBtn {
-      top: 10px;
-      left: 10px;
-      font-size: $font-size-h2-tab;
-      color: #fff;
-      background: none;
-      border: none;
-      cursor: pointer;
-      z-index: 5;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.3s ease;
-      &.isVisible {
-        opacity: 1;
-        visibility: visible;
-      }
-    }
+
     .formWrapper {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%)!important; // Assurer le centrage
       width: 100%;
-      max-width: 400px;
-      height: 650px;
+
+
       .form {
         width: 200%;
-        .formRow {
-          margin-bottom: 1rem;
-          label {
-            text-transform: uppercase;
-            font-size: calc($font-size-body-desktop + 5px);
-            color: #fff;
-            margin-bottom: 1rem;
-            display: block;
-            font-family: $font-family-secondary;
-          }
-          .inputsRow {
-            display: flex;
-            gap: 10px;
-            padding: 10px 0;
-            .inputAndLabel {
-              display: flex;
-              flex-direction: column;
-              width: 200px;
-              label {
-                font-size: $font-size-body-mobile;
-              }
-            }
-          }
-          input {
-            width: 100%;
-            padding: 0.5rem;
-            margin-bottom: 0.5rem;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            background: $color-background-light;
-            font-family: $font-family-text;
-          }
-          textarea {
-            width: 100%;
-            padding: 0.5rem;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            resize: vertical;
-            min-height: 200px;
-            resize: none;
-            background: $color-background-light;
-            font-family: $font-family-text;
-          }
-        }
-        .checkboxValidate {
-          display: flex;
-          gap: 10px;
-          justify-content: space-between;
-          .containerCheckbox {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            width: 50%;
-            input {
-              accent-color: $color-background-light;
-            }
-            label {
-              font-size: calc($font-size-base - 5px);
-            }
-          }
-          .containerValidateForm {
-            .validateFormBtn {
-              background: none;
-              border: none;
-              color: $color-text-white;
-              position: relative;
-              &::after {
-                content: "";
-                display: block;
-                position: absolute;
-                bottom: -5px;
-                height: 1px;
-                opacity: 0.3;
-                width: 100%;
-                background: $color-text-white;
-              }
-            }
-          }
+
+        .formRow .inputsRow .inputAndLabel {
+          width: 200px;
         }
       }
     }
   }
-
-  .secondImageContainer {
-    flex: 0.5;
-    position: absolute;
-    left: 70%;
-    aspect-ratio: 3 / 4;
-    overflow: hidden;
-    z-index: 0;
-    min-height: 150vh;
-    .secondImage {
-      object-fit: cover;
-      border-radius: 4px;
-      box-shadow: -10px 10px 20px rgba(0, 0, 0, 0.5);
-    }
-  }
-
   .zoomed {
-    width: 200%!important;
-    transition: all ease-in-out 0.3s;
-    transition-delay: 0.2s;
-    transform-origin: left;
-    height: 650px!important;
+    //height: 585px !important;
   }
 }
 
 @media (max-width: 750px) {
   .textContent {
-  .title {
-    font-size: 1.5rem;
+    .title,
+    .secondTitle {
+      font-size: 1.5rem;
+    }
   }
-  .secondTitle{
-    font-size: 1.5rem;
+  .imageContainer{
+    .overlay{
+      height: 550px!important;
+    }
+    .form{
+      height: 690px!important;
+    }
   }
-}
-.learnMoreContainer{
-  margin-right: 10px!important;
-}
+  .zoomed{
+    height: 550px!important;
+  }
 }
 
-@media(max-width: 510px){
+@media (max-width: 650px) {
   .imageContainer {
-    .formWrapper {
-      .form {
-        .formRow {
-          label {
-            font-size: $font-size-body-desktop;
-          }
-          .inputsRow {
-            flex-direction: column;
-            .inputAndLabel {
-              width: 100%;
-            }
+    //height: 380px !important;
+    .formWrapper .form {
+      height: 860px !important;
+    }
+  }
+  .imageContainer{
+    height: 325px!important;
+  }
+}
+@media (max-width: 555px) {
+  .textContent{
+    .title{
+      font-size: 1rem;
+    }
+    .secondTitle{
+      font-size: 1rem;
+    }
+  }
+}
+@media (max-width: 510px) {
+  .imageContainer {
+    height: 255px !important;
+
+    .overlay {
+      height: 800px;
+    }
+
+    .formWrapper .form {
+      height: 1050px !important;
+
+      .formRow {
+        label {
+          font-size: $font-size-body-desktop;
+        }
+
+        .inputsRow {
+          flex-direction: column;
+
+          .inputAndLabel {
+            width: 100%;
           }
         }
       }
     }
   }
+  .zoomed {
+   height: 650px !important;
+  }
 }
 
-@media(max-width: 405px){
-  .imageContainer {
-    .formWrapper {
-      .form {
-        .formRow {
-          label {
-            font-size: $font-size-body-mobile;
-          }
-          .inputsRow {
-            .inputAndLabel {
-              label{
-                font-size: calc($font-size-body-mobile - 5px);
-              }
-            }
-          }
-        }
-      }
+@media (max-width: 405px) {
+  .contactSection {
+    padding: 2rem 1rem;
+  }
+  .imageContainer .formWrapper .form .formRow {
+    label {
+      font-size: $font-size-body-mobile;
+    }
+
+    .inputsRow .inputAndLabel label {
+      font-size: calc($font-size-body-mobile - 5px);
     }
   }
-  .containerCheckbox label{
-    font-size: 9px!important;
+  .containerCheckbox label {
+    font-size: 9px !important;
+  }
+}
+
+@media (max-width: 369px) {
+  .contactContent{
+    gap: 1rem;
+  }
+  .textContent{
+    .title{
+      font-size: 0.75rem;
+    }
+    .secondTitle{
+      font-size: 0.75rem;
+    }
+    .learnMoreContainer{
+      .learnMore{
+        font-size: 0.75rem;
+      }
+    }
   }
 }
