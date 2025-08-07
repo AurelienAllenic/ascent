@@ -764,7 +764,7 @@ const Projects: React.FC = () => {
   };
 
   return (
-    <div className={styles.containerProjects}>
+    <div className={styles.containerProjects} id="projects">
       <div
         className={styles.overlayCarousel}
         style={

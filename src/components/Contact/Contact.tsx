@@ -172,7 +172,7 @@ export default function ContactSection() {
 
 
   return (
-    <section className={styles.contactSection}>
+    <section className={styles.contactSection} id="contact">
         <TitleSection title="CONTACT" color="white" />
       <div className={styles.contactContent}>
         <div ref={textRef} className={styles.textContent}>

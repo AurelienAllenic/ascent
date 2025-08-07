@@ -104,7 +104,7 @@ export default function About() {
   }, []);
 
   return (
-    <div className={styles.aboutContainer}>
+    <div className={styles.aboutContainer} id="about">
       <TitleSection title="ABOUT" />
       <div className={styles.aboutContent} ref={aboutContentRef}>
         <div className={styles.aboutleftPartContainer} ref={leftPartRef}>

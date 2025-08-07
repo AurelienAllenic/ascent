@@ -5,7 +5,7 @@ import styles from "./numbers.module.scss";
 
 const Numbers: React.FC = () => {
   return (
-    <section className={styles.numbersSection}>
+    <section className={styles.numbersSection} id="numbers">
       <TitleSection title="NUMBERS" color="white" />
       <div className={styles.cards}>
         <NumberCard

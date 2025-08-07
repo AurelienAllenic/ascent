@@ -4,7 +4,7 @@ import NavBar from "../Nav/Nav";
 
 export default function Hero() {
   return (
-    <div className={styles.heroContainer}>
+    <div className={styles.heroContainer} id="home">
       <NavBar />
       <Image
         src="/assets/background.png"
