@@ -7,6 +7,7 @@ import styles from "./contact.module.scss";
 import TitleSection from "../TitleSection/TitleSection";
 
 export default function ContactSection() {
+  const sectionRef = useRef<HTMLElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
@@ -27,120 +28,148 @@ export default function ContactSection() {
     )
       return;
 
-    gsap.set(textRef.current, { autoAlpha: 1 });
-    gsap.set(formRef.current.parentElement, {
-      autoAlpha: 0,
-      y: 0,
-      display: "none",
-    });
-    gsap.set(closeRef.current, { autoAlpha: 0, display: "none" });
-    gsap.set(imageRef.current, {
-      scale: 1,
-      width: "50%",
-      x: 0,
-      overflow: "hidden",
-    });
-    gsap.set(secondImageRef.current, {
-      scale: 1,
-      width: "100%",
-      x: 0,
-      y: 0,
-    });
-    gsap.set(overlayRef.current, {
-      autoAlpha: 0,
-    });
+    const handleResize = () => {
+      gsap.set(textRef.current, { autoAlpha: 1 });
+      gsap.set(formRef.current.parentElement, {
+        autoAlpha: 0,
+        y: 0,
+        display: "none",
+      });
+      gsap.set(closeRef.current, { autoAlpha: 0, display: "none" });
+      gsap.set(imageRef.current, {
+        scale: 1,
+        width: "50%",
+        x: 0,
+        overflow: "hidden",
+      });
+      gsap.set(secondImageRef.current, {
+        scale: 1,
+        width: "100%",
+        x: 0,
+        y: 0,
+      });
+      gsap.set(overlayRef.current, {
+        autoAlpha: 0,
+      });
 
-    tl.current = gsap.timeline({ paused: true });
+      tl.current = gsap.timeline({ paused: true });
 
-    tl.current
-      .to(
-        textRef.current,
-        {
-          autoAlpha: 0,
-          y: 0,
-          duration: 0.5,
-          ease: "power2.out",
-        },
-        0
-      )
-      .to(
-        imageRef.current,
-        {
-          width: "200%",
-          duration: 1,
-          ease: "power3.inOut",
-          onStart: () => setIsMainImgZoomed(true), // Active le zoom
-        },
-        0
-      )
-      .to(
-        imageRef.current,
-        {
-          x: "-100%",
-          duration: 1,
-          ease: "power3.inOut",
-        },
-        0
-      )
-      .to(
-        secondImageRef.current,
-        {
-          width: "100%",
-          x: "-15%",
-          y: -20,
-          duration: 1,
-          ease: "power3.inOut",
-        },
-        0
-      )
-      .to(
-        overlayRef.current,
-        {
-          autoAlpha: 1,
-          duration: 0.5,
-          ease: "power2.out",
-        },
-        0.1
-      )
-      .to(
-        formRef.current.parentElement,
-        {
-          autoAlpha: 1,
-          y: 0,
-          duration: 0.8,
-          ease: "power2.out",
-          display: "block",
-        },
-        0.3
-      )
-      .to(
-        closeRef.current,
-        {
-          autoAlpha: 1,
-          duration: 0.5,
-          ease: "power2.out",
-          display: "block",
-        },
-        0.3
-      )
-      .to(
-        imageRef.current,
-        {
-          overflow: "visible",
-          duration: 0,
-        },
-        0
-      );
+      const isMobile = window.innerWidth <= 767;
+      const zoomWidth = isMobile ? "150%" : "200%";
+      const xOffset = isMobile ? "0%" : "-100%";
+
+      tl.current
+        .to(
+          textRef.current,
+          {
+            autoAlpha: isMobile ? 1 : 0,
+            y: 0,
+            duration: 0.5,
+            ease: "power2.out",
+          },
+          0
+        )
+        .to(
+          imageRef.current,
+          {
+            width: zoomWidth,
+            duration: 1,
+            ease: "power3.inOut",
+            onStart: () => setIsMainImgZoomed(true),
+          },
+          0
+        )
+        .to(
+          imageRef.current,
+          {
+            x: xOffset,
+            duration: 1,
+            ease: "power3.inOut",
+          },
+          0
+        )
+        .to(
+          secondImageRef.current,
+          {
+            width: "100%",
+            x: isMobile ? "0%" : "-15%",
+            y: isMobile ? 0 : -20,
+            duration: 1,
+            ease: "power3.inOut",
+          },
+          0
+        )
+        .to(
+          overlayRef.current,
+          {
+            autoAlpha: 1,
+            duration: 0.5,
+            ease: "power2.out",
+          },
+          0.1
+        )
+        .to(
+          formRef.current.parentElement,
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.8,
+            ease: "power2.out",
+            display: "block",
+          },
+          0.3
+        )
+        .to(
+          closeRef.current,
+          {
+            autoAlpha: 1,
+            duration: 0.5,
+            ease: "power2.out",
+            display: "block",
+          },
+          0.3
+        )
+        .to(
+          imageRef.current,
+          {
+            overflow: "visible",
+            duration: 0,
+          },
+          0
+        );
+    };
+
+    handleResize(); // Initialisation
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  // 👇 Nouvelle logique : observer la sortie de la section
+  useEffect(() => {
+    if (!sectionRef.current) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (!entry.isIntersecting && isMainImgZoomed) {
+          closeModal();
+        }
+      },
+      { threshold: 0 }
+    );
+
+    observer.observe(sectionRef.current);
+    return () => observer.disconnect();
+  }, [isMainImgZoomed]);
 
   const openModal = () => {
     tl.current?.play();
   };
 
-  const closeModal = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
+  const closeModal = (e?: React.MouseEvent<HTMLButtonElement>) => {
+    e?.preventDefault();
     tl.current?.reverse().then(() => {
-      setIsMainImgZoomed(false); // Désactive le zoom après reverse
+      setIsMainImgZoomed(false);
       if (imageRef.current)
         gsap.set(imageRef.current, {
           scale: 1,
@@ -157,26 +186,20 @@ export default function ContactSection() {
         });
       if (formRef.current)
         gsap.set(formRef.current.parentElement, { display: "none" });
-      if (closeRef.current) 
-        gsap.set(closeRef.current, { display: "none" });
-      if (overlayRef.current) 
-        gsap.set(overlayRef.current, { autoAlpha: 0 });
+      if (closeRef.current) gsap.set(closeRef.current, { display: "none" });
+      if (overlayRef.current) gsap.set(overlayRef.current, { autoAlpha: 0 });
     });
   };
 
-
   const sendMessage = () => {
-    
-
-  }
-
+    // Logique d'envoi de message
+  };
 
   return (
-    <section className={styles.contactSection} id="contact">
-        <TitleSection title="CONTACT" color="white" />
+    <section className={styles.contactSection} id="contact" ref={sectionRef}>
+      <TitleSection title="CONTACT" color="white" />
       <div className={styles.contactContent}>
         <div ref={textRef} className={styles.textContent}>
-
           <h2 className={styles.title}>
             WE CAN TAKE <span>CARE</span>
           </h2>
@@ -185,20 +208,15 @@ export default function ContactSection() {
           </h2>
           <div className={styles.learnMoreContainer}>
             <button className={styles.learnMore} onClick={openModal}>
-                Learn more
+              Learn more
             </button>
           </div>
         </div>
-
         <div ref={imageRef} className={styles.imageContainer}>
           <div ref={overlayRef} className={styles.overlay}></div>
-          <button
-                ref={closeRef}
-                className={styles.closeBtn}
-                onClick={closeModal}
-              >
-                ×
-              </button>
+          <button ref={closeRef} className={styles.closeBtn} onClick={closeModal}>
+            ×
+          </button>
           <Image
             src="/assets/contact/center.jpg"
             alt="Main"
@@ -207,19 +225,18 @@ export default function ContactSection() {
             priority
           />
           <div className={styles.formWrapper}>
-          
             <form ref={formRef} className={styles.form}>
               <div className={styles.formRow}>
                 <label>Who are you?</label>
                 <div className={styles.inputsRow}>
-                    <div className={styles.inputAndLabel}>
-                        <label>Your Name</label>
-                        <input type="text" placeholder="Name" />
-                    </div>
-                    <div className={styles.inputAndLabel}>
-                        <label>Your Email</label>
-                        <input type="email" placeholder="Email" />
-                    </div>
+                  <div className={styles.inputAndLabel}>
+                    <label>Your Name</label>
+                    <input type="text" placeholder="Name" />
+                  </div>
+                  <div className={styles.inputAndLabel}>
+                    <label>Your Email</label>
+                    <input type="email" placeholder="Email" />
+                  </div>
                 </div>
               </div>
               <div className={styles.formRow}>
@@ -227,21 +244,25 @@ export default function ContactSection() {
                 <textarea placeholder="Please, describe your project here..." />
               </div>
               <div className={styles.checkboxValidate}>
-                    <div className={styles.containerCheckbox}>
-                        <input type="checkbox" id="check"/>
-                        <label htmlFor="check">By sending this message, I consent to being
-                        recontacted through the email I provided</label>
-                    </div>
-                    <div className={styles.containerValidateForm}>
-                        <button className={styles.validateFormBtn} onClick={sendMessage}>
-                            Send a message
-                        </button>
-                    </div>
+                <div className={styles.containerCheckbox}>
+                  <input type="checkbox" id="check" />
+                  <label htmlFor="check">
+                    By sending this message, I consent to being recontacted
+                    through the email I provided
+                  </label>
+                </div>
+                <div className={styles.containerValidateForm}>
+                  <button
+                    className={styles.validateFormBtn}
+                    onClick={sendMessage}
+                  >
+                    Send a message
+                  </button>
+                </div>
               </div>
             </form>
           </div>
         </div>
-
         <div ref={secondImageRef} className={styles.secondImageContainer}>
           <Image
             src="/assets/contact/right.jpg"

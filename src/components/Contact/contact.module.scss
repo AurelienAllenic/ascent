@@ -257,7 +257,7 @@
   aspect-ratio: 3 / 4;
   overflow: hidden;
   z-index: 0;
-  min-height: 150vh;
+  min-height: 200vh;
 
   .secondImage {
     object-fit: cover;
@@ -324,33 +324,37 @@
   }
 }
 
-@media (max-width: 750px) {
+@media (max-width: 767px) {
   .textContent {
+    flex: 0!important;
     .title,
     .secondTitle {
       font-size: 1.5rem;
     }
   }
   .imageContainer{
+    width: 100%!important;
     .overlay{
       height: 550px!important;
+      width: 100%!important;
     }
     .form{
-      height: 690px!important;
+      width: 100%!important;
     }
   }
   .zoomed{
     height: 550px!important;
+    width: 100%!important;
+  }
+  .contactContent{
+    flex-direction: column;
+  }
+  .secondImageContainer{
+    transform: scaleY(1.5)!important;
   }
 }
 
 @media (max-width: 650px) {
-  .imageContainer {
-    //height: 380px !important;
-    .formWrapper .form {
-      height: 860px !important;
-    }
-  }
   .imageContainer{
     height: 325px!important;
   }
@@ -367,15 +371,11 @@
 }
 @media (max-width: 510px) {
   .imageContainer {
-    height: 255px !important;
 
-    .overlay {
-      height: 800px;
-    }
+
 
     .formWrapper .form {
-      height: 1050px !important;
-
+      margin-top: 50px;
       .formRow {
         label {
           font-size: $font-size-body-desktop;
