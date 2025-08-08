@@ -24,17 +24,23 @@ export default function ContactSection() {
       !textRef.current ||
       !secondImageRef.current ||
       !formRef.current ||
+      !formRef.current.parentElement ||
       !closeRef.current
     )
       return;
-
+  
     const handleResize = () => {
       gsap.set(textRef.current, { autoAlpha: 1 });
-      gsap.set(formRef.current.parentElement, {
-        autoAlpha: 0,
-        y: 0,
-        display: "none",
-      });
+  
+      // Sécurité renforcée : on vérifie les deux refs avant d'utiliser
+      if (formRef.current && formRef.current.parentElement) {
+        gsap.set(formRef.current.parentElement, {
+          autoAlpha: 0,
+          y: 0,
+          display: "none",
+        });
+      }
+  
       gsap.set(closeRef.current, { autoAlpha: 0, display: "none" });
       gsap.set(imageRef.current, {
         scale: 1,
@@ -51,15 +57,15 @@ export default function ContactSection() {
       gsap.set(overlayRef.current, {
         autoAlpha: 0,
       });
-
-      tl.current = gsap.timeline({ paused: true });
-
+  
+      const tlInstance = gsap.timeline({ paused: true });
+  
       const isMobile = window.innerWidth <= 767;
       const zoomWidth = isMobile ? "150%" : "200%";
       const xOffset = isMobile ? "0%" : "-100%";
-
-      tl.current
-        .to(
+  
+      if (textRef.current) {
+        tlInstance.to(
           textRef.current,
           {
             autoAlpha: isMobile ? 1 : 0,
@@ -68,8 +74,11 @@ export default function ContactSection() {
             ease: "power2.out",
           },
           0
-        )
-        .to(
+        );
+      }
+  
+      if (imageRef.current) {
+        tlInstance.to(
           imageRef.current,
           {
             width: zoomWidth,
@@ -78,8 +87,8 @@ export default function ContactSection() {
             onStart: () => setIsMainImgZoomed(true),
           },
           0
-        )
-        .to(
+        );
+        tlInstance.to(
           imageRef.current,
           {
             x: xOffset,
@@ -87,8 +96,19 @@ export default function ContactSection() {
             ease: "power3.inOut",
           },
           0
-        )
-        .to(
+        );
+        tlInstance.to(
+          imageRef.current,
+          {
+            overflow: "visible",
+            duration: 0,
+          },
+          0
+        );
+      }
+  
+      if (secondImageRef.current) {
+        tlInstance.to(
           secondImageRef.current,
           {
             width: "100%",
@@ -98,8 +118,11 @@ export default function ContactSection() {
             ease: "power3.inOut",
           },
           0
-        )
-        .to(
+        );
+      }
+  
+      if (overlayRef.current) {
+        tlInstance.to(
           overlayRef.current,
           {
             autoAlpha: 1,
@@ -107,8 +130,12 @@ export default function ContactSection() {
             ease: "power2.out",
           },
           0.1
-        )
-        .to(
+        );
+      }
+  
+      // Même chose ici, on vérifie avant d'animer
+      if (formRef.current && formRef.current.parentElement) {
+        tlInstance.to(
           formRef.current.parentElement,
           {
             autoAlpha: 1,
@@ -118,8 +145,11 @@ export default function ContactSection() {
             display: "block",
           },
           0.3
-        )
-        .to(
+        );
+      }
+  
+      if (closeRef.current) {
+        tlInstance.to(
           closeRef.current,
           {
             autoAlpha: 1,
@@ -128,21 +158,18 @@ export default function ContactSection() {
             display: "block",
           },
           0.3
-        )
-        .to(
-          imageRef.current,
-          {
-            overflow: "visible",
-            duration: 0,
-          },
-          0
         );
+      }
+  
+      tl.current = tlInstance;
     };
-
-    handleResize(); // Initialisation
+  
+    handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+  
+  
 
   // 👇 Nouvelle logique : observer la sortie de la section
   useEffect(() => {
