@@ -117,10 +117,6 @@
     .navItem {
         top: calc(0.5rem + (var(--order) * 3.5rem));
     }
-    .navItem:hover .icon {
-        filter: brightness(0) invert(1);
-        transition: all 0.3s ease;
-    }
     .navItem:nth-child(1) { --order: 0; }
     .navItem:nth-child(2) { --order: 1; }
     .navItem:nth-child(3) { --order: 2; }

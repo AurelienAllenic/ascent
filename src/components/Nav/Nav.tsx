@@ -6,6 +6,7 @@ import styles from "./nav.module.scss";
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
   const [lang, setLang] = useState<"EN/FR" | "FR/EN">("EN/FR");
   const [isVisible, setIsVisible] = useState(true);
   const [windowWidth, setWindowWidth] = useState(0);
@@ -40,7 +41,25 @@ const NavBar = () => {
 
     observer.observe(homeSection);
     return () => observer.disconnect();
-  }, []); // Pas de dépendance à windowWidth pour appliquer l'observer partout
+  }, []);
+
+  // Fonction pour le défilement fluide
+  const handleScroll = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
+      element.focus({ preventScroll: true });
+    }
+  };
+
+  // Gérer la fermeture du menu mobile avec animation
+  const handleCloseMenu = () => {
+    setIsClosing(true); // Déclencher l'animation de sortie
+    setTimeout(() => {
+      setIsOpen(false); // Masquer le menu après l'animation
+      setIsClosing(false); // Réinitialiser l'état
+    }, 300); // Durée de l'animation (correspond à SCSS)
+  };
 
   // Masquer la barre en desktop si hors de #home
   if (windowWidth >= 768 && !isVisible) return null;
@@ -59,7 +78,14 @@ const NavBar = () => {
         <ul className={styles.navLinks}>
           {navLinks.map((link) => (
             <li key={link} className={styles.navItem}>
-              <a href={`#${link.toLowerCase()}`} className={styles.navLink}>
+              <a
+                href={`#${link.toLowerCase()}`}
+                className={styles.navLink}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleScroll(link.toLowerCase());
+                }}
+              >
                 {link}
               </a>
             </li>
@@ -67,7 +93,14 @@ const NavBar = () => {
         </ul>
 
         <div className={styles.rightContainer}>
-          <a href="#contact" className={styles.contactBtnMobile}>
+          <a
+            href="#contact"
+            className={styles.contactBtnMobile}
+            onClick={(e) => {
+              e.preventDefault();
+              handleScroll("contact");
+            }}
+          >
             Contact
           </a>
 
@@ -88,12 +121,12 @@ const NavBar = () => {
       {isOpen && (
         <div
           className={`${styles.mobileMenu} ${
-            !isVisible ? styles.mobileBackground : ""
-          }`}
+            windowWidth < 768 && !isVisible ? styles.mobileBackground : ""
+          } ${isClosing ? styles.closing : ""}`}
         >
           <button
             className={styles.closeBtn}
-            onClick={() => setIsOpen(false)}
+            onClick={handleCloseMenu}
             aria-label="Fermer le menu"
           >
             <X size={28} />
@@ -105,7 +138,11 @@ const NavBar = () => {
                 key={link}
                 href={`#${link.toLowerCase()}`}
                 className={styles.mobileNavLink}
-                onClick={() => setIsOpen(false)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleScroll(link.toLowerCase());
+                  handleCloseMenu();
+                }}
               >
                 {link}
               </a>
@@ -113,7 +150,15 @@ const NavBar = () => {
           </div>
 
           <div className={styles.mobileBottom}>
-            <a href="/login" className={styles.loginBtn}>
+            <a
+              href="/login"
+              className={styles.loginBtn}
+              onClick={(e) => {
+                e.preventDefault();
+                handleScroll("login");
+                handleCloseMenu();
+              }}
+            >
               LOGIN
             </a>
             <button onClick={toggleLang} className={styles.langBtnMobile}>

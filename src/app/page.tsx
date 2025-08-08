@@ -6,6 +6,7 @@ import Numbers from "@/components/Numbers/Numbers";
 import Projects from "@/components/Projects/Projects";
 import Contact from "@/components/Contact/Contact";
 import SecondNav from "@/components/Second-nav/SecondNav";
+import Footer from "@/components/Footer/Footer";
 
 export default function Home() {
   return (
@@ -16,6 +17,7 @@ export default function Home() {
       <Numbers />
       <Projects />
       <Contact />
+      <Footer />
     </div>
   );
 }
