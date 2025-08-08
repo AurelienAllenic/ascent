@@ -24,34 +24,35 @@ export default function ContactSection() {
       !textRef.current ||
       !secondImageRef.current ||
       !formRef.current ||
-      !formRef.current.parentElement ||
       !closeRef.current
-    )
+    ) {
       return;
-  
+    }
+
+    const formElement = formRef.current;
+    const formParent = formElement.parentElement;
+
+    if (!formParent) {
+      return;
+    }
+
     let initialInnerHeight = window.innerHeight;
-    
+
     const handleResize = () => {
       const currentInnerHeight = window.innerHeight;
-  
-      // Ignore le resize si clavier mobile ouvert (réduction significative de la hauteur)
-      if (currentInnerHeight < initialInnerHeight - 100) {
+
+      // Ignore resize if keyboard is likely open
+      if (currentInnerHeight < initialInnerHeight * 0.7) {
         return;
       }
-  
-      if (isMainImgZoomed) return;
-  
-      gsap.set(textRef.current, { autoAlpha: 1 });
-  
-      // Sécurité renforcée : on vérifie les deux refs avant d'utiliser
-      if (formRef.current && formRef.current.parentElement) {
-        gsap.set(formRef.current.parentElement, {
-          autoAlpha: 0,
-          y: 0,
-          display: "none",
-        });
+
+      // Skip reset if form is open
+      if (isMainImgZoomed) {
+        return;
       }
-  
+
+      gsap.set(textRef.current, { autoAlpha: 1 });
+      gsap.set(formParent, { autoAlpha: 0, y: 0, display: "none" });
       gsap.set(closeRef.current, { autoAlpha: 0, display: "none" });
       gsap.set(imageRef.current, {
         scale: 1,
@@ -65,169 +66,178 @@ export default function ContactSection() {
         x: 0,
         y: 0,
       });
-      gsap.set(overlayRef.current, {
-        autoAlpha: 0,
-      });
-  
+      gsap.set(overlayRef.current, { autoAlpha: 0 });
+
       const tlInstance = gsap.timeline({ paused: true });
-  
       const isMobile = window.innerWidth <= 767;
       const zoomWidth = isMobile ? "150%" : "200%";
       const xOffset = isMobile ? "0%" : "-100%";
-  
-      if (textRef.current) {
-        tlInstance.to(
-          textRef.current,
-          {
-            autoAlpha: isMobile ? 1 : 0,
-            y: 0,
-            duration: 0.5,
-            ease: "power2.out",
-          },
-          0
-        );
-      }
-  
-      if (imageRef.current) {
-        tlInstance.to(
-          imageRef.current,
-          {
-            width: zoomWidth,
-            duration: 1,
-            ease: "power3.inOut",
-            onStart: () => setIsMainImgZoomed(true),
-          },
-          0
-        );
-        tlInstance.to(
-          imageRef.current,
-          {
-            x: xOffset,
-            duration: 1,
-            ease: "power3.inOut",
-          },
-          0
-        );
-        tlInstance.to(
-          imageRef.current,
-          {
-            overflow: "visible",
-            duration: 0,
-          },
-          0
-        );
-      }
-  
-      if (secondImageRef.current) {
-        tlInstance.to(
-          secondImageRef.current,
-          {
-            width: "100%",
-            x: isMobile ? "0%" : "-15%",
-            y: isMobile ? 0 : -20,
-            duration: 1,
-            ease: "power3.inOut",
-          },
-          0
-        );
-      }
-  
-      if (overlayRef.current) {
-        tlInstance.to(
-          overlayRef.current,
-          {
-            autoAlpha: 1,
-            duration: 0.5,
-            ease: "power2.out",
-          },
-          0.1
-        );
-      }
-  
-      if (formRef.current && formRef.current.parentElement) {
-        tlInstance.to(
-          formRef.current.parentElement,
-          {
-            autoAlpha: 1,
-            y: 0,
-            duration: 0.8,
-            ease: "power2.out",
-            display: "block",
-          },
-          0.3
-        );
-      }
-  
-      if (closeRef.current) {
-        tlInstance.to(
-          closeRef.current,
-          {
-            autoAlpha: 1,
-            duration: 0.5,
-            ease: "power2.out",
-            display: "block",
-          },
-          0.3
-        );
-      }
-  
+
+      tlInstance.to(
+        textRef.current,
+        {
+          autoAlpha: isMobile ? 1 : 0,
+          y: 0,
+          duration: 0.5,
+          ease: "power2.out",
+        },
+        0
+      );
+      tlInstance.to(
+        imageRef.current,
+        {
+          width: zoomWidth,
+          duration: 1,
+          ease: "power3.inOut",
+          onStart: () => setIsMainImgZoomed(true),
+        },
+        0
+      );
+      tlInstance.to(
+        imageRef.current,
+        {
+          x: xOffset,
+          duration: 1,
+          ease: "power3.inOut",
+        },
+        0
+      );
+      tlInstance.to(
+        imageRef.current,
+        {
+          overflow: "visible",
+          duration: 0,
+        },
+        0
+      );
+      tlInstance.to(
+        secondImageRef.current,
+        {
+          width: "100%",
+          x: isMobile ? "0%" : "-15%",
+          y: isMobile ? 0 : -20,
+          duration: 1,
+          ease: "power3.inOut",
+        },
+        0
+      );
+      tlInstance.to(
+        overlayRef.current,
+        {
+          autoAlpha: 1,
+          duration: 0.5,
+          ease: "power2.out",
+        },
+        0.1
+      );
+      tlInstance.to(
+        formParent,
+        {
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.8,
+          ease: "power2.out",
+          display: "block",
+        },
+        0.3
+      );
+      tlInstance.to(
+        closeRef.current,
+        {
+          autoAlpha: 1,
+          duration: 0.5,
+          ease: "power2.out",
+          display: "block",
+        },
+        0.3
+      );
+
       tl.current = tlInstance;
     };
-  
+
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
-  
-  
-  
+  }, [isMainImgZoomed]);
 
-  // 👇 Nouvelle logique : observer la sortie de la section
   useEffect(() => {
     if (!sectionRef.current) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
         const entry = entries[0];
-        if (!entry.isIntersecting && isMainImgZoomed) {
-         //closeModal();
-         alert('sort')
+        // Only close if section is significantly out of view and not in footer
+        if (
+          !entry.isIntersecting &&
+          entry.intersectionRatio < 0.1 &&
+          isMainImgZoomed &&
+          !document.querySelector("#footer")?.contains(entry.target)
+        ) {
+          closeModal();
         }
       },
-      { threshold: 0 }
+      { threshold: [0, 0.1], rootMargin: "100px" }
     );
 
     observer.observe(sectionRef.current);
     return () => observer.disconnect();
   }, [isMainImgZoomed]);
 
+  useEffect(() => {
+    if (!formRef.current) return;
+
+    const preventScroll = (e: TouchEvent) => {
+      if (isMainImgZoomed && formRef.current?.contains(e.target as Node)) {
+        e.stopPropagation();
+      }
+    };
+
+    formRef.current.addEventListener("touchstart", preventScroll, { passive: false });
+    return () => formRef.current?.removeEventListener("touchstart", preventScroll);
+  }, [isMainImgZoomed]);
+
   const openModal = () => {
     tl.current?.play();
+    if (window.innerWidth <= 767) {
+      document.body.style.overflow = "hidden";
+    }
   };
 
   const closeModal = (e?: React.MouseEvent<HTMLButtonElement>) => {
     e?.preventDefault();
-    tl.current?.reverse().then(() => {
-      setIsMainImgZoomed(false);
-      if (imageRef.current)
-        gsap.set(imageRef.current, {
-          scale: 1,
-          width: "50%",
-          x: 0,
-          overflow: "hidden",
-        });
-      if (secondImageRef.current)
-        gsap.set(secondImageRef.current, {
-          scale: 1,
-          width: "100%",
-          x: 0,
-          y: 0,
-        });
-      if (formRef.current)
-        gsap.set(formRef.current.parentElement, { display: "none" });
-      if (closeRef.current) gsap.set(closeRef.current, { display: "none" });
-      if (overlayRef.current) gsap.set(overlayRef.current, { autoAlpha: 0 });
-    });
+    if (tl.current && tl.current.progress() > 0) {
+      tl.current.reverse().then(() => {
+        setIsMainImgZoomed(false);
+        if (window.innerWidth <= 767) {
+          document.body.style.overflow = "auto";
+        }
+        if (imageRef.current) {
+          gsap.set(imageRef.current, {
+            scale: 1,
+            width: "50%",
+            x: 0,
+            overflow: "hidden",
+          });
+        }
+        if (secondImageRef.current) {
+          gsap.set(secondImageRef.current, {
+            scale: 1,
+            width: "100%",
+            x: 0,
+            y: 0,
+          });
+        }
+        if (formRef.current && formRef.current.parentElement) {
+          gsap.set(formRef.current.parentElement, { display: "none" });
+        }
+        if (closeRef.current) {
+          gsap.set(closeRef.current, { display: "none" });
+        }
+        if (overlayRef.current) {
+          gsap.set(overlayRef.current, { autoAlpha: 0 });
+        }
+      });
+    }
   };
 
   const sendMessage = () => {
@@ -279,7 +289,7 @@ export default function ContactSection() {
                 </div>
               </div>
               <div className={styles.formRow}>
-                <label>What is your project ?</label>
+                <label>What is your project?</label>
                 <textarea placeholder="Please, describe your project here..." />
               </div>
               <div className={styles.checkboxValidate}>
