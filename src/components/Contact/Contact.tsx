@@ -89,7 +89,12 @@ export default function ContactSection() {
           width: zoomWidth,
           duration: 1,
           ease: "power3.inOut",
-          onStart: () => setIsMainImgZoomed(true),
+          onStart: () => {
+            setIsMainImgZoomed(true);
+            if (imageRef.current && isMobile) {
+              imageRef.current.style.overflow = "visible"; // Allow form to be visible
+            }
+          },
         },
         0
       );
@@ -186,21 +191,18 @@ export default function ContactSection() {
   useEffect(() => {
     if (!formRef.current) return;
 
-    const preventScroll = (e: TouchEvent) => {
+    const preventScrollInterference = (e: TouchEvent) => {
       if (isMainImgZoomed && formRef.current?.contains(e.target as Node)) {
         e.stopPropagation();
       }
     };
 
-    formRef.current.addEventListener("touchstart", preventScroll, { passive: false });
-    return () => formRef.current?.removeEventListener("touchstart", preventScroll);
+    formRef.current.addEventListener("touchstart", preventScrollInterference, { passive: false });
+    return () => formRef.current?.removeEventListener("touchstart", preventScrollInterference);
   }, [isMainImgZoomed]);
 
   const openModal = () => {
     tl.current?.play();
-    if (window.innerWidth <= 767) {
-      document.body.style.overflow = "hidden";
-    }
   };
 
   const closeModal = (e?: React.MouseEvent<HTMLButtonElement>) => {
@@ -208,9 +210,6 @@ export default function ContactSection() {
     if (tl.current && tl.current.progress() > 0) {
       tl.current.reverse().then(() => {
         setIsMainImgZoomed(false);
-        if (window.innerWidth <= 767) {
-          document.body.style.overflow = "auto";
-        }
         if (imageRef.current) {
           gsap.set(imageRef.current, {
             scale: 1,

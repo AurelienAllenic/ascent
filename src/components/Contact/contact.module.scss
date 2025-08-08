@@ -374,9 +374,9 @@
 }
 @media (max-width: 510px) {
   .imageContainer {
-
-
-
+    .overlay{
+      height: 650px!important;
+    }
     .formWrapper .form {
       margin-top: 50px;
       .formRow {
