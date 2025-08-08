@@ -16,6 +16,7 @@
         height: 330px;
         background-color: #DDE3E9;
     }
+    
     .navItem {
         position: relative;
         display: flex;
@@ -116,9 +117,10 @@
     .navItem:nth-child(5) { --order: 4; }
 
 @media(min-width: 767px){
-    .verticalNav {
+    .visible {
         display: flex;
-    }
+        opacity: 1;
+      }
 }
 @media(min-width: 1400px){
     .verticalNav {

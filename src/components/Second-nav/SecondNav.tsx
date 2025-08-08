@@ -1,4 +1,5 @@
-"use client"; 
+"use client";
+import { useEffect, useState } from "react";
 import styles from "./secondnav.module.scss";
 
 const navLinks = [
@@ -10,20 +11,40 @@ const navLinks = [
 ];
 
 const SecondNav = () => {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const homeSection = document.getElementById("home");
+    if (!homeSection) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const isHomeVisible = entry.isIntersecting;
+        setIsVisible(!isHomeVisible);
+      },
+      {
+        threshold: 0.3, // Si 30% de home est visible → on cache la nav
+      }
+    );
+
+    observer.observe(homeSection);
+
+    return () => observer.disconnect();
+  }, []);
+
   const handleScroll = (id: string) => {
-    console.log(id, "id");
     const element = document.getElementById(id);
     if (element) {
-      element.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
       element.focus({ preventScroll: true });
     }
   };
 
   return (
-    <nav className={styles.verticalNav} aria-label="Secondary navigation">
+    <nav
+      className={`${styles.verticalNav} ${isVisible ? styles.visible : ""}`}
+      aria-label="Secondary navigation"
+    >
       {navLinks.map((link, index) => (
         <div
           key={link.label}
