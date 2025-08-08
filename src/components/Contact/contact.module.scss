@@ -351,6 +351,9 @@
   }
   .secondImageContainer{
     transform: scaleY(1.5)!important;
+    .secondImage{
+      filter: brightness(0.85);
+    }
   }
 }
 
@@ -420,14 +423,14 @@
   }
   .textContent{
     .title{
-      font-size: 0.75rem;
+      font-size: 1.65rem;
     }
     .secondTitle{
-      font-size: 0.75rem;
+      font-size: 1.65rem;
     }
     .learnMoreContainer{
       .learnMore{
-        font-size: 0.75rem;
+        font-size: 1rem;
       }
     }
   }
