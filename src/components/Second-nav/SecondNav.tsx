@@ -1,4 +1,5 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import styles from "./secondnav.module.scss";
 
@@ -12,6 +13,7 @@ const navLinks = [
 
 const SecondNav = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   useEffect(() => {
     const homeSection = document.getElementById("home");
@@ -23,7 +25,7 @@ const SecondNav = () => {
         setIsVisible(!isHomeVisible);
       },
       {
-        threshold: 0.3, // Si 30% de home est visible → on cache la nav
+        threshold: 0.05,
       }
     );
 
@@ -50,15 +52,16 @@ const SecondNav = () => {
           key={link.label}
           className={styles.navItem}
           style={{ "--order": index } as React.CSSProperties}
+          onMouseEnter={() => setHoveredIndex(index)}
+          onMouseLeave={() => setHoveredIndex(null)}
+          onClick={() => {
+            if (hoveredIndex === index) {
+              handleScroll(link.label);
+            }
+          }}
         >
           <img src={link.icon} alt={link.label} className={styles.icon} />
-          <button
-            type="button"
-            className={styles.label}
-            onClick={() => handleScroll(link.label)}
-          >
-            {link.label.toUpperCase()}
-          </button>
+          <span className={styles.label}>{link.label.toUpperCase()}</span>
         </div>
       ))}
     </nav>

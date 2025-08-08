@@ -1,12 +1,18 @@
 
 @import "../../app/styles/abstract/variables";
 
-
+@keyframes disAppear {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
     .verticalNav {
         position: fixed;
         top: 60%;
         right: 10px;
-        display: none;
         flex-direction: column;
         border-radius: 0.75rem;
         gap: 0.5rem;
@@ -15,6 +21,7 @@
         width: 74px;
         height: 330px;
         background-color: #DDE3E9;
+        animation: disAppear 0.3s ease-in-out forwards;
     }
     
     .navItem {
@@ -110,6 +117,10 @@
     .navItem {
         top: calc(0.5rem + (var(--order) * 3.5rem));
     }
+    .navItem:hover .icon {
+        filter: brightness(0) invert(1);
+        transition: all 0.3s ease;
+    }
     .navItem:nth-child(1) { --order: 0; }
     .navItem:nth-child(2) { --order: 1; }
     .navItem:nth-child(3) { --order: 2; }
@@ -117,16 +128,24 @@
     .navItem:nth-child(5) { --order: 4; }
 
 @media(min-width: 767px){
+    @keyframes appear {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
     .visible {
         display: flex;
-        opacity: 1;
+        animation: appear 0.3s ease-in-out;
       }
 }
 @media(min-width: 1400px){
     .verticalNav {
         right: 20px;
         height: 450px;
-        top: 45%;
+        top: 7%;
     }
     .navItem .icon {
         width: 75px;
