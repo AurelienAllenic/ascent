@@ -30,6 +30,7 @@ export default function ContactSection() {
       return;
   
     const handleResize = () => {
+      if (isMainImgZoomed) return;
       gsap.set(textRef.current, { autoAlpha: 1 });
   
       // Sécurité renforcée : on vérifie les deux refs avant d'utiliser
