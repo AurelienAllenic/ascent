@@ -87,7 +87,6 @@ const Projects: React.FC = () => {
     return () => window.removeEventListener("resize", updatePositionStyles);
   }, [detailCurrentIndex, selectedProject]);
 
-  // Destacking animation when entering project list
   useEffect(() => {
     if (!projectsRef.current || !carouselRef.current) return;
 
@@ -102,7 +101,6 @@ const Projects: React.FC = () => {
           const carouselItems = carouselRef.current!.querySelectorAll(
             `.${styles.carouselItem}`
           );
-          // Initialize cards as stacked
           gsap.set(carouselItems, {
             x: 0,
             scaleX: positionStyles.scale,
@@ -112,7 +110,6 @@ const Projects: React.FC = () => {
           });
           gsap.set(`.${styles.projects}`, { opacity: 0 });
 
-          // Animate to final positions
           const timeline = gsap.timeline({
             onComplete: () => {
               console.log("Destacking complete");
@@ -125,7 +122,7 @@ const Projects: React.FC = () => {
             ease: "power2.in",
           });
           carouselItems.forEach((item, index) => {
-            const positionIndex = index; // -1, 0, 1 for left, center, right
+            const positionIndex = index;
             timeline.to(
               item,
               {
@@ -147,21 +144,13 @@ const Projects: React.FC = () => {
           });
         }
       },
-      {
-        root: null,
-        threshold: 0.1, // Trigger when 10% of section is visible
-      }
+      { root: null, threshold: 0.1 }
     );
 
     observer.observe(projectsRef.current);
-    return () => {
-      if (projectsRef.current) {
-        observer.unobserve(projectsRef.current);
-      }
-    };
+    return () => observer.unobserve(projectsRef.current);
   }, [selectedProject, isTransitioning, positionStyles]);
 
-  // Scroll-based return to project list
   useEffect(() => {
     if (selectedProject === null || isTransitioning || !projectsRef.current)
       return;
@@ -173,18 +162,11 @@ const Projects: React.FC = () => {
           handleBack();
         }
       },
-      {
-        root: null,
-        threshold: [0.5],
-      }
+      { root: null, threshold: [0.5] }
     );
 
     observer.observe(projectsRef.current);
-    return () => {
-      if (projectsRef.current) {
-        observer.unobserve(projectsRef.current);
-      }
-    };
+    return () => observer.unobserve(projectsRef.current);
   }, [selectedProject, isTransitioning]);
 
   const getItemIndex = (offset: number) =>
@@ -199,98 +181,87 @@ const Projects: React.FC = () => {
 
     const projectIndex = getItemIndex(positionIndex - 1);
 
-    // Stack carousel items at center before transitioning
     if (carouselRef.current) {
       const items = carouselRef.current.querySelectorAll(
         `.${styles.carouselItem}`
       );
       const timeline = gsap.timeline({
         onComplete: () => {
-          gsap.to(`.${styles.projects}`, {
-            opacity: 0,
-            duration: 0.2,
-            ease: "power2.out",
-            onComplete: () => {
-              setSelectedProject(projectIndex);
-              setDetailCurrentIndex(0);
-              // Initialize detail elements off-screen
-              if (
-                titleRef.current &&
-                descriptionRef.current &&
-                detailCarouselRef.current &&
-                buttonRef.current
-              ) {
-                gsap.set(titleRef.current, { opacity: 0, x: -50 });
-                gsap.set(descriptionRef.current, { opacity: 0, x: -50 });
-                gsap.set(buttonRef.current, { opacity: 0, x: -50 });
-                const detailItems = detailCarouselRef.current.querySelectorAll(
-                  `.${styles.carouselItem}`
-                );
-                gsap.set(detailItems, { opacity: 0, x: -50 });
-                // Fade in projects container
-                gsap.to(`.${styles.projects}`, {
-                  opacity: 1,
-                  duration: 0.2,
-                  ease: "power2.in",
-                  onComplete: () => {
-                    // Animate detail elements sequentially
-                    const detailTimeline = gsap.timeline({
-                      onComplete: () => setIsTransitioning(false),
-                    });
-                    detailTimeline
-                      .to(titleRef.current, {
-                        opacity: 1,
-                        x: 0,
-                        duration: 0.4,
-                        ease: "power2.out",
-                      })
-                      .to(
-                        descriptionRef.current,
-                        {
-                          opacity: 1,
-                          x: 0,
-                          duration: 0.4,
-                          ease: "power2.out",
-                        },
-                        "-=0.2"
-                      )
-                      .to(
-                        detailItems,
-                        {
-                          opacity: 1,
-                          x: 0,
-                          duration: 0.4,
-                          ease: "power2.out",
-                          stagger: 0.2,
-                        },
-                        "-=0.2"
-                      )
-                      .to(
-                        buttonRef.current,
-                        {
-                          opacity: 1,
-                          x: 0,
-                          duration: 0.4,
-                          ease: "power2.out",
-                        },
-                        "-=0.2"
-                      );
-                  },
-                });
-              } else {
-                gsap.to(`.${styles.projects}`, {
-                  opacity: 1,
-                  duration: 0.2,
-                  ease: "power2.in",
+          gsap.set(`.${styles.projects}`, { opacity: 0 });
+          setSelectedProject(projectIndex);
+          setDetailCurrentIndex(0);
+          if (
+            titleRef.current &&
+            descriptionRef.current &&
+            detailCarouselRef.current &&
+            buttonRef.current
+          ) {
+            gsap.set(titleRef.current, { opacity: 0, x: -50 });
+            gsap.set(descriptionRef.current, { opacity: 0, x: -50 });
+            gsap.set(buttonRef.current, { opacity: 0, x: -50 });
+            const detailItems = detailCarouselRef.current.querySelectorAll(
+              `.${styles.carouselItem}`
+            );
+            gsap.set(detailItems, { opacity: 0, x: -50 });
+            gsap.to(`.${styles.projects}`, {
+              opacity: 1,
+              duration: 0.2,
+              ease: "power2.in",
+              onComplete: () => {
+                const detailTimeline = gsap.timeline({
                   onComplete: () => setIsTransitioning(false),
                 });
-              }
-            },
-          });
+                detailTimeline
+                  .to(titleRef.current, {
+                    opacity: 1,
+                    x: 0,
+                    duration: 0.4,
+                    ease: "power2.out",
+                  })
+                  .to(
+                    descriptionRef.current,
+                    {
+                      opacity: 1,
+                      x: 0,
+                      duration: 0.4,
+                      ease: "power2.out",
+                    },
+                    "-=0.2"
+                  )
+                  .to(
+                    detailItems,
+                    {
+                      opacity: 1,
+                      x: 0,
+                      duration: 0.4,
+                      ease: "power2.out",
+                      stagger: 0.2,
+                    },
+                    "-=0.2"
+                  )
+                  .to(
+                    buttonRef.current,
+                    {
+                      opacity: 1,
+                      x: 0,
+                      duration: 0.4,
+                      ease: "power2.out",
+                    },
+                    "-=0.2"
+                  );
+              },
+            });
+          } else {
+            gsap.to(`.${styles.projects}`, {
+              opacity: 1,
+              duration: 0.2,
+              ease: "power2.in",
+              onComplete: () => setIsTransitioning(false),
+            });
+          }
         },
       });
 
-      // Animate cards to stack at center
       items.forEach((item) => {
         timeline.to(
           item,
@@ -392,18 +363,16 @@ const Projects: React.FC = () => {
     if (isTransitioning) return;
     setIsTransitioning(true);
 
-    // Animate out the detail elements and stack project carousel items
     const timeline = gsap.timeline({
       onComplete: () => {
         setSelectedProject(null);
         setDetailCurrentIndex(0);
-        // Set carousel items to final positions
         if (carouselRef.current) {
           const items = carouselRef.current.querySelectorAll(
             `.${styles.carouselItem}`
           );
           items.forEach((item, index) => {
-            const positionIndex = index; // -1, 0, 1 for left, center, right
+            const positionIndex = index;
             gsap.set(item, {
               x:
                 positionIndex === 0
@@ -419,7 +388,6 @@ const Projects: React.FC = () => {
             });
           });
         }
-        // Fade in projects container
         gsap.to(`.${styles.projects}`, {
           opacity: 1,
           duration: 0.2,
@@ -436,108 +404,57 @@ const Projects: React.FC = () => {
       buttonRef.current &&
       carouselRef.current
     ) {
-      // Initialize project carousel items off-screen
+      const detailItems = detailCarouselRef.current.querySelectorAll(
+        `.${styles.carouselItem}`
+      );
       const carouselItems = carouselRef.current.querySelectorAll(
         `.${styles.carouselItem}`
       );
+
       gsap.set(carouselItems, { x: 50, opacity: 0 });
 
-      // Fade out detail elements
       timeline
-        .to(
-          detailCarouselRef.current.querySelectorAll(`.${styles.carouselItem}`),
-          {
-            opacity: 0,
-            x: 50,
-            duration: 0.2,
-            ease: "power2.in",
-          },
-          0
-        )
+        .to(detailItems, {
+          opacity: 0,
+          x: 50,
+          duration: 0.2,
+          ease: "power2.in",
+        })
         .to(
           descriptionRef.current,
-          {
-            opacity: 0,
-            x: 50,
-            duration: 0.2,
-            ease: "power2.in",
-          },
+          { opacity: 0, x: 50, duration: 0.2, ease: "power2.in" },
           0
         )
         .to(
           titleRef.current,
-          {
-            opacity: 0,
-            x: 50,
-            duration: 0.2,
-            ease: "power2.in",
-          },
+          { opacity: 0, x: 50, duration: 0.2, ease: "power2.in" },
           0
         )
         .to(
           buttonRef.current,
-          {
-            opacity: 0,
-            x: 50,
-            duration: 0.2,
-            ease: "power2.in",
-          },
+          { opacity: 0, x: 50, duration: 0.2, ease: "power2.in" },
           0
-        );
-
-      // Stack project carousel items
-      carouselItems.forEach((item) => {
-        timeline.to(
-          item,
+        )
+        .to(
+          carouselItems,
           {
-            x: 0,
-            scaleX: positionStyles.scale,
-            scaleY: positionStyles.heightScale,
-            opacity: 0.8,
-            zIndex: 1,
+            x:
+              (i) =>
+                i === 0
+                  ? `-${positionStyles.translateX}`
+                  : i === 1
+                  ? "0%"
+                  : positionStyles.translateX,
+            scaleX: (i) => (i === 1 ? 1 : positionStyles.scale),
+            scaleY: (i) => (i === 1 ? 1 : positionStyles.heightScale),
+            opacity: (i) => (i === 1 ? 1 : 0.8),
+            zIndex: (i) => (i === 1 ? 5 : 1),
             duration: 0.5,
-            ease: "power2.in",
+            ease: "power2.out",
+            stagger: 0.1,
           },
-          0.2 // Start after detail elements fade out
+          0.2
         );
-      });
-    } else {
-      timeline.to(`.${styles.projects}`, {
-        opacity: 0,
-        duration: 0.2,
-        ease: "power2.out",
-        onComplete: () => {
-          setSelectedProject(null);
-          setDetailCurrentIndex(0);
-          if (carouselRef.current) {
-            const items = carouselRef.current.querySelectorAll(
-              `.${styles.carouselItem}`
-            );
-            items.forEach((item, index) => {
-              const positionIndex = index; // -1, 0, 1 for left, center, right
-              gsap.set(item, {
-                x:
-                  positionIndex === 0
-                    ? `-${positionStyles.translateX}`
-                    : positionIndex === 1
-                    ? "0%"
-                    : positionStyles.translateX,
-                scaleX: positionIndex === 1 ? 1 : positionStyles.scale,
-                scaleY: positionIndex === 1 ? 1 : positionStyles.heightScale,
-                opacity: positionIndex === 1 ? 1 : 0.8,
-                zIndex: positionIndex === 1 ? 5 : 1,
-                immediateRender: true,
-              });
-            });
-          }
-          gsap.to(`.${styles.projects}`, {
-            opacity: 1,
-            duration: 0.2,
-            ease: "power2.in",
-            onComplete: () => setIsTransitioning(false),
-          });
-        },
-      });
     }
   };
 
@@ -568,62 +485,50 @@ const Projects: React.FC = () => {
 
     if (direction === "left") {
       timeline
-        .to(
-          items[2],
-          {
-            x: translateX,
-            opacity: 0.7,
-            scaleX: scale,
-            scaleY: heightScale,
-            duration: 0.5,
-          },
-          0
-        )
-        .to(
-          items[1],
-          {
-            x: `-${translateX}`,
-            opacity: 0.7,
-            scaleX: scale,
-            scaleY: heightScale,
-            duration: 0.5,
-          },
-          0
-        )
-        .to(
-          items[0],
-          { x: "0%", opacity: 1, scaleX: 1, scaleY: 1, duration: 0.5 },
-          0
-        );
+        .to(items[2], {
+          x: translateX,
+          opacity: 0.7,
+          scaleX: scale,
+          scaleY: heightScale,
+          duration: 0.5,
+        })
+        .to(items[1], {
+          x: `-${translateX}`,
+          opacity: 0.7,
+          scaleX: scale,
+          scaleY: heightScale,
+          duration: 0.5,
+        })
+        .to(items[0], {
+          x: "0%",
+          opacity: 1,
+          scaleX: 1,
+          scaleY: 1,
+          duration: 0.5,
+        });
     } else {
       timeline
-        .to(
-          items[0],
-          {
-            x: `-${translateX}`,
-            opacity: 0.7,
-            scaleX: scale,
-            scaleY: heightScale,
-            duration: 0.5,
-          },
-          0
-        )
-        .to(
-          items[1],
-          {
-            x: translateX,
-            opacity: 0.7,
-            scaleX: scale,
-            scaleY: heightScale,
-            duration: 0.5,
-          },
-          0
-        )
-        .to(
-          items[2],
-          { x: "0%", opacity: 1, scaleX: 1, scaleY: 1, duration: 0.5 },
-          0
-        );
+        .to(items[0], {
+          x: `-${translateX}`,
+          opacity: 0.7,
+          scaleX: scale,
+          scaleY: heightScale,
+          duration: 0.5,
+        })
+        .to(items[1], {
+          x: translateX,
+          opacity: 0.7,
+          scaleX: scale,
+          scaleY: heightScale,
+          duration: 0.5,
+        })
+        .to(items[2], {
+          x: "0%",
+          opacity: 1,
+          scaleX: 1,
+          scaleY: 1,
+          duration: 0.5,
+        });
     }
   };
 
@@ -660,62 +565,50 @@ const Projects: React.FC = () => {
 
     if (direction === "left") {
       timeline
-        .to(
-          items[2],
-          {
-            x: translateX,
-            opacity: 0.7,
-            scaleX: scale,
-            scaleY: heightScale,
-            duration: 0.5,
-          },
-          0
-        )
-        .to(
-          items[1],
-          {
-            x: `-${translateX}`,
-            opacity: 0.7,
-            scaleX: scale,
-            scaleY: heightScale,
-            duration: 0.5,
-          },
-          0
-        )
-        .to(
-          items[0],
-          { x: "0%", opacity: 1, scaleX: 1, scaleY: 1, duration: 0.5 },
-          0
-        );
+        .to(items[2], {
+          x: translateX,
+          opacity: 0.7,
+          scaleX: scale,
+          scaleY: heightScale,
+          duration: 0.5,
+        })
+        .to(items[1], {
+          x: `-${translateX}`,
+          opacity: 0.7,
+          scaleX: scale,
+          scaleY: heightScale,
+          duration: 0.5,
+        })
+        .to(items[0], {
+          x: "0%",
+          opacity: 1,
+          scaleX: 1,
+          scaleY: 1,
+          duration: 0.5,
+        });
     } else {
       timeline
-        .to(
-          items[0],
-          {
-            x: `-${translateX}`,
-            opacity: 0.7,
-            scaleX: scale,
-            scaleY: heightScale,
-            duration: 0.5,
-          },
-          0
-        )
-        .to(
-          items[1],
-          {
-            x: translateX,
-            opacity: 0.7,
-            scaleX: scale,
-            scaleY: heightScale,
-            duration: 0.5,
-          },
-          0
-        )
-        .to(
-          items[2],
-          { x: "0%", opacity: 1, scaleX: 1, scaleY: 1, duration: 0.5 },
-          0
-        );
+        .to(items[0], {
+          x: `-${translateX}`,
+          opacity: 0.7,
+          scaleX: scale,
+          scaleY: heightScale,
+          duration: 0.5,
+        })
+        .to(items[1], {
+          x: translateX,
+          opacity: 0.7,
+          scaleX: scale,
+          scaleY: heightScale,
+          duration: 0.5,
+        })
+        .to(items[2], {
+          x: "0%",
+          opacity: 1,
+          scaleX: 1,
+          scaleY: 1,
+          duration: 0.5,
+        });
     }
   };
 
