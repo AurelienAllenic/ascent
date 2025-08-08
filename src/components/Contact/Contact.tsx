@@ -29,8 +29,18 @@ export default function ContactSection() {
     )
       return;
   
+    let initialInnerHeight = window.innerHeight;
+  
     const handleResize = () => {
+      const currentInnerHeight = window.innerHeight;
+  
+      // Ignore le resize si clavier mobile ouvert (réduction significative de la hauteur)
+      if (currentInnerHeight < initialInnerHeight - 100) {
+        return;
+      }
+  
       if (isMainImgZoomed) return;
+  
       gsap.set(textRef.current, { autoAlpha: 1 });
   
       // Sécurité renforcée : on vérifie les deux refs avant d'utiliser
@@ -134,7 +144,6 @@ export default function ContactSection() {
         );
       }
   
-      // Même chose ici, on vérifie avant d'animer
       if (formRef.current && formRef.current.parentElement) {
         tlInstance.to(
           formRef.current.parentElement,
@@ -169,6 +178,7 @@ export default function ContactSection() {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+  
   
   
 
