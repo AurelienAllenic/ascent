@@ -1,11 +1,14 @@
 "use client";
-import { useState } from "react";
+
+import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import styles from "./nav.module.scss";
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [lang, setLang] = useState<"EN/FR" | "FR/EN">("EN/FR");
+  const [isVisible, setIsVisible] = useState(true);
+  const [windowWidth, setWindowWidth] = useState(0);
 
   const toggleLang = () => {
     setLang((prev) => (prev === "EN/FR" ? "FR/EN" : "EN/FR"));
@@ -13,15 +16,46 @@ const NavBar = () => {
 
   const navLinks = ["Home", "About", "Numbers", "Projects", "Contact"];
 
+  // Mettre à jour windowWidth
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const updateWidth = () => setWindowWidth(window.innerWidth);
+      updateWidth(); // Appel initial
+      window.addEventListener("resize", updateWidth);
+      return () => window.removeEventListener("resize", updateWidth);
+    }
+  }, []);
+
+  // Observer pour la section #home (desktop et mobile)
+  useEffect(() => {
+    const homeSection = document.getElementById("home");
+    if (!homeSection) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsVisible(entry.isIntersecting);
+      },
+      { threshold: 0.05 }
+    );
+
+    observer.observe(homeSection);
+    return () => observer.disconnect();
+  }, []); // Pas de dépendance à windowWidth pour appliquer l'observer partout
+
+  // Masquer la barre en desktop si hors de #home
+  if (windowWidth >= 768 && !isVisible) return null;
+
   return (
-    <header className={styles.navbar}>
+    <header
+      className={`${styles.navbar} ${
+        windowWidth < 768 && !isVisible ? styles.mobileBackground : ""
+      }`}
+    >
       <nav className={styles.navContainer}>
-        {/* Logo à gauche */}
         <div className={styles.leftContainer}>
           <div className={styles.logo}>ASCENT</div>
         </div>
 
-        {/* Liens desktop */}
         <ul className={styles.navLinks}>
           {navLinks.map((link) => (
             <li key={link} className={styles.navItem}>
@@ -32,13 +66,11 @@ const NavBar = () => {
           ))}
         </ul>
 
-        {/* Droite : Contact + Lang switch (desktop) + Burger */}
         <div className={styles.rightContainer}>
           <a href="#contact" className={styles.contactBtnMobile}>
             Contact
           </a>
 
-          {/* Lang switch visible uniquement en desktop */}
           <button onClick={toggleLang} className={styles.langSwitch}>
             {lang}
           </button>
@@ -53,10 +85,12 @@ const NavBar = () => {
         </div>
       </nav>
 
-      {/* Menu mobile */}
       {isOpen && (
-        <div className={styles.mobileMenu}>
-          {/* Bouton de fermeture en haut à droite */}
+        <div
+          className={`${styles.mobileMenu} ${
+            !isVisible ? styles.mobileBackground : ""
+          }`}
+        >
           <button
             className={styles.closeBtn}
             onClick={() => setIsOpen(false)}
