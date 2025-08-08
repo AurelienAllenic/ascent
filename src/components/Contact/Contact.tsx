@@ -14,6 +14,7 @@ export default function ContactSection() {
   const secondImageRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
+  const learnMoreRef = useRef<HTMLButtonElement>(null);
   const tl = useRef<gsap.core.Timeline | null>(null);
   const [isMainImgZoomed, setIsMainImgZoomed] = useState(false);
 
@@ -24,7 +25,8 @@ export default function ContactSection() {
       !textRef.current ||
       !secondImageRef.current ||
       !formRef.current ||
-      !closeRef.current
+      !closeRef.current ||
+      !learnMoreRef.current
     ) {
       return;
     }
@@ -54,6 +56,7 @@ export default function ContactSection() {
       gsap.set(textRef.current, { autoAlpha: 1 });
       gsap.set(formParent, { autoAlpha: 0, y: 0, display: "none" });
       gsap.set(closeRef.current, { autoAlpha: 0, display: "none" });
+      gsap.set(learnMoreRef.current, { autoAlpha: 1, display: "block" });
       gsap.set(imageRef.current, {
         scale: 1,
         width: "50%",
@@ -203,6 +206,9 @@ export default function ContactSection() {
 
   const openModal = () => {
     tl.current?.play();
+    if (window.innerWidth <= 767 && learnMoreRef.current) {
+      gsap.set(learnMoreRef.current, { autoAlpha: 0, display: "none" });
+    }
   };
 
   const closeModal = (e?: React.MouseEvent<HTMLButtonElement>) => {
@@ -235,6 +241,9 @@ export default function ContactSection() {
         if (overlayRef.current) {
           gsap.set(overlayRef.current, { autoAlpha: 0 });
         }
+        if (learnMoreRef.current) {
+          gsap.set(learnMoreRef.current, { autoAlpha: 1, display: "block" });
+        }
       });
     }
   };
@@ -255,7 +264,7 @@ export default function ContactSection() {
             OF YOUR <span>PROJECTS</span>
           </h2>
           <div className={styles.learnMoreContainer}>
-            <button className={styles.learnMore} onClick={openModal}>
+            <button ref={learnMoreRef} className={styles.learnMore} onClick={openModal}>
               Learn more
             </button>
           </div>
