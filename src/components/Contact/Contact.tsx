@@ -30,7 +30,7 @@ export default function ContactSection() {
       return;
   
     let initialInnerHeight = window.innerHeight;
-  
+    
     const handleResize = () => {
       const currentInnerHeight = window.innerHeight;
   
@@ -190,7 +190,8 @@ export default function ContactSection() {
       (entries) => {
         const entry = entries[0];
         if (!entry.isIntersecting && isMainImgZoomed) {
-          closeModal();
+         //closeModal();
+         alert('sort')
         }
       },
       { threshold: 0 }
