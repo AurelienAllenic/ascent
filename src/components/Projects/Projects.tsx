@@ -148,7 +148,11 @@ const Projects: React.FC = () => {
     );
 
     observer.observe(projectsRef.current);
-    return () => observer.unobserve(projectsRef.current);
+    return () => {
+      if (projectsRef.current) {
+        observer.unobserve(projectsRef.current);
+      }
+    };
   }, [selectedProject, isTransitioning, positionStyles]);
 
   useEffect(() => {
@@ -166,7 +170,11 @@ const Projects: React.FC = () => {
     );
 
     observer.observe(projectsRef.current);
-    return () => observer.unobserve(projectsRef.current);
+    return () => {
+      if (projectsRef.current) {
+        observer.unobserve(projectsRef.current);
+      }
+    };
   }, [selectedProject, isTransitioning]);
 
   const getItemIndex = (offset: number) =>
