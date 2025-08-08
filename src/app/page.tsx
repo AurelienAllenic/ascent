@@ -7,17 +7,20 @@ import Projects from "@/components/Projects/Projects";
 import Contact from "@/components/Contact/Contact";
 import SecondNav from "@/components/Second-nav/SecondNav";
 import Footer from "@/components/Footer/Footer";
+import { LanguageProvider } from "./context/LanguageContext";
 
 export default function Home() {
   return (
     <div className={styles.page}>
-      <Hero />
-      <About />
-      <SecondNav />
-      <Numbers />
-      <Projects />
-      <Contact />
-      <Footer />
+      <LanguageProvider>
+        <Hero />
+        <About />
+        <SecondNav />
+        <Numbers />
+        <Projects />
+        <Contact />
+        <Footer />
+      </LanguageProvider>
     </div>
   );
 }

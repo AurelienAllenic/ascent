@@ -1,8 +1,12 @@
+"use client"
+
 import Image from "next/image";
 import styles from "./hero.module.scss";
 import NavBar from "../Nav/Nav";
+import { useLanguage } from "@/app/context/LanguageContext";
 
 export default function Hero() {
+  const { language } = useLanguage();
   return (
     <div className={styles.heroContainer} id="home">
       <NavBar />
@@ -20,10 +24,10 @@ export default function Hero() {
         </div>
         <div className={styles.blockContent}>
           <h2 className={styles.blockContentTitle}>
-            Time to improve your architecture
+            {language === "fr" ? "Il est temps d'améliorer votre architecture" : "Time to improve your architecture"}
           </h2>
           <p className={styles.blockContentContent}>
-            Thanks to our experts, we offer the best of architecture
+            {language === "fr" ? "Thanks to our experts, we offer the best of architecture" : "Thanks to our experts, we offer the best of architecture"}
           </p>
         </div>
       </div>

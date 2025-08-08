@@ -3,31 +3,38 @@
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import styles from "./nav.module.scss";
+import { useLanguage } from "@/app/context/LanguageContext";
 
 const NavBar = () => {
+  const { language, setLanguage } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
-  const [lang, setLang] = useState<"EN/FR" | "FR/EN">("EN/FR");
   const [isVisible, setIsVisible] = useState(true);
   const [windowWidth, setWindowWidth] = useState(0);
 
   const toggleLang = () => {
-    setLang((prev) => (prev === "EN/FR" ? "FR/EN" : "EN/FR"));
+    setLanguage(language === "en" ? "fr" : "en");
   };
 
-  const navLinks = ["Home", "About", "Numbers", "Projects", "Contact"];
+  const navLinks = [
+    { id: "home", label: language === "fr" ? "Accueil" : "Home" },
+    { id: "about", label: language === "fr" ? "À propos" : "About" },
+    { id: "numbers", label: language === "fr" ? "Chiffres" : "Numbers" },
+    { id: "projects", label: language === "fr" ? "Projets" : "Projects" },
+    { id: "contact", label: language === "fr" ? "Contact" : "Contact" },
+  ];
 
-  // Mettre à jour windowWidth
+  // Update windowWidth
   useEffect(() => {
     if (typeof window !== "undefined") {
       const updateWidth = () => setWindowWidth(window.innerWidth);
-      updateWidth(); // Appel initial
+      updateWidth();
       window.addEventListener("resize", updateWidth);
       return () => window.removeEventListener("resize", updateWidth);
     }
   }, []);
 
-  // Observer pour la section #home (desktop et mobile)
+  // Observer for #home section
   useEffect(() => {
     const homeSection = document.getElementById("home");
     if (!homeSection) return;
@@ -43,7 +50,7 @@ const NavBar = () => {
     return () => observer.disconnect();
   }, []);
 
-  // Fonction pour le défilement fluide
+  // Smooth scrolling
   const handleScroll = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
@@ -52,16 +59,16 @@ const NavBar = () => {
     }
   };
 
-  // Gérer la fermeture du menu mobile avec animation
+  // Close mobile menu with animation
   const handleCloseMenu = () => {
-    setIsClosing(true); // Déclencher l'animation de sortie
+    setIsClosing(true);
     setTimeout(() => {
-      setIsOpen(false); // Masquer le menu après l'animation
-      setIsClosing(false); // Réinitialiser l'état
-    }, 300); // Durée de l'animation (correspond à SCSS)
+      setIsOpen(false);
+      setIsClosing(false);
+    }, 300);
   };
 
-  // Masquer la barre en desktop si hors de #home
+  // Hide navbar on desktop if not in #home
   if (windowWidth >= 768 && !isVisible) return null;
 
   return (
@@ -76,17 +83,17 @@ const NavBar = () => {
         </div>
 
         <ul className={styles.navLinks}>
-          {navLinks.map((link) => (
-            <li key={link} className={styles.navItem}>
+          {navLinks.map(({ id, label }) => (
+            <li key={id} className={styles.navItem}>
               <a
-                href={`#${link.toLowerCase()}`}
+                href={`#${id}`}
                 className={styles.navLink}
                 onClick={(e) => {
                   e.preventDefault();
-                  handleScroll(link.toLowerCase());
+                  handleScroll(id);
                 }}
               >
-                {link}
+                {label}
               </a>
             </li>
           ))}
@@ -101,17 +108,17 @@ const NavBar = () => {
               handleScroll("contact");
             }}
           >
-            Contact
+            {language === "fr" ? "Contact" : "Contact"}
           </a>
 
           <button onClick={toggleLang} className={styles.langSwitch}>
-            {lang}
+            {language === "fr" ? "FR" : "EN"} / {language === "fr" ? "EN" : "FR"}
           </button>
 
           <button
             className={styles.burgerBtn}
             onClick={() => setIsOpen((prev) => !prev)}
-            aria-label="Toggle menu"
+            aria-label={language === "fr" ? "Ouvrir/Fermer le menu" : "Toggle menu"}
           >
             {isOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -127,24 +134,24 @@ const NavBar = () => {
           <button
             className={styles.closeBtn}
             onClick={handleCloseMenu}
-            aria-label="Fermer le menu"
+            aria-label={language === "fr" ? "Fermer le menu" : "Close menu"}
           >
             <X size={28} />
           </button>
 
           <div className={styles.mobileLinks}>
-            {navLinks.map((link) => (
+            {navLinks.map(({ id, label }) => (
               <a
-                key={link}
-                href={`#${link.toLowerCase()}`}
+                key={id}
+                href={`#${id}`}
                 className={styles.mobileNavLink}
                 onClick={(e) => {
                   e.preventDefault();
-                  handleScroll(link.toLowerCase());
+                  handleScroll(id);
                   handleCloseMenu();
                 }}
               >
-                {link}
+                {label}
               </a>
             ))}
           </div>
@@ -159,10 +166,10 @@ const NavBar = () => {
                 handleCloseMenu();
               }}
             >
-              LOGIN
+              {language === "fr" ? "CONNEXION" : "LOGIN"}
             </a>
             <button onClick={toggleLang} className={styles.langBtnMobile}>
-              {lang}
+              {language === "fr" ? "FR" : "EN"}
             </button>
           </div>
         </div>
