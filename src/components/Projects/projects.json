@@ -1,59 +1,74 @@
 {
     "projects": [
       {
-        "title": "Project 1",
+        "titleEn": "Project 1",
+        "titleFr": "Projet 1",
         "featuredImage": "/assets/projects/project-1.jpg",
-        "generalDescription": "This project emphasizes bold entrance design combined with modern architectural elegance.",
+        "generalDescriptionEn": "This project emphasizes bold entrance design combined with modern architectural elegance.",
+        "generalDescriptionFr": "Ce projet met en valeur un design d'entrée audacieux combiné à une élégance architecturale moderne.",
         "images": [
           {
             "url": "/assets/projects/project-1.jpg",
-            "description": "The main entrance was our main concern during this wonderful design creation."
+            "descriptionEn": "The main entrance was our main concern during this wonderful design creation.",
+            "descriptionFr": "L'entrée principale était notre préoccupation majeure lors de la création de ce merveilleux design."
           },
           {
             "url": "/assets/projects/project-2.jpg",
-            "description": "This design showcases our innovative approach to modern architecture."
+            "descriptionEn": "This design showcases our innovative approach to modern architecture.",
+            "descriptionFr": "Ce design met en valeur notre approche innovante de l'architecture moderne."
           },
           {
             "url": "/assets/projects/project-3.jpg",
-            "description": "A detailed view of the structural framework used in this project."
+            "descriptionEn": "A detailed view of the structural framework used in this project.",
+            "descriptionFr": "Une vue détaillée du cadre structurel utilisé dans ce projet."
           }
         ]
       },
       {
-        "title": "Project 2",
+        "titleEn": "Project 2",
+        "titleFr": "Projet 2",
         "featuredImage": "/assets/projects/project-2.jpg",
-        "generalDescription": "A contemporary masterpiece focusing on spiraling structures and immersive interior design.",
+        "generalDescriptionEn": "A contemporary masterpiece focusing on spiraling structures and immersive interior design.",
+        "generalDescriptionFr": "Un chef-d'œuvre contemporain mettant en valeur les structures spirales et l'intérieur immersif.",
         "images": [
           {
             "url": "/assets/projects/project-1.jpg",
-            "description": "Exploring the unique spiral structure of this building."
+            "descriptionEn": "Exploring the unique spiral structure of this building.",
+            "descriptionFr": "Exploration de la structure spirale unique de ce bâtiment."
           },
           {
             "url": "/assets/projects/project-2.jpg",
-            "description": "A closer look at the interior design elements."
+            "descriptionEn": "A closer look at the interior design elements.",
+            "descriptionFr": "Un regard plus près sur les éléments de design intérieur."
           },
           {
             "url": "/assets/projects/project-3.jpg",
-            "description": "The structural integrity is highlighted in this image."
+            "descriptionEn": "The structural integrity is highlighted in this image.",
+            "descriptionFr": "L'intégrité structurelle est mise en valeur dans cette image."
           }
         ]
       },
       {
-        "title": "Project 3",
+        "titleEn": "Project 3",
+        "titleFr": "Projet 3",
         "featuredImage": "/assets/projects/project-3.jpg",
-        "generalDescription": "Combining visual impact and robust engineering, this project exemplifies form meeting function.",
+        "generalDescriptionEn": "Combining visual impact and robust engineering, this project exemplifies form meeting function.",
+        "generalDescriptionFr": "Combinant l'impact visuel et l'ingénierie robuste, ce projet illustre la mise en fonction de la forme.",
         "images": [
           {
             "url": "/assets/projects/project-1.jpg",
-            "description": "Exploring the unique spiral structure of this building."
+            "descriptionEn": "Exploring the unique spiral structure of this building.",
+            "descriptionFr": "Exploration de la structure spirale unique de ce bâtiment."
           },
           {
             "url": "/assets/projects/project-2.jpg",
-            "description": "A closer look at the interior design elements."
+            "descriptionEn": "A closer look at the interior design elements.",
+            "descriptionFr": "Un regard plus près sur les éléments de design intérieur."
           },
           {
             "url": "/assets/projects/project-3.jpg",
-            "description": "The structural integrity is highlighted in this image."
+            "descriptionEn": "The structural integrity is highlighted in this image.",
+            "descriptionFr": "L'intégrité structurelle est mise en valeur dans cette image."
           }
         ]
       }

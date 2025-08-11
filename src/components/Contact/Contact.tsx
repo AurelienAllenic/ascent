@@ -5,6 +5,7 @@ import Image from "next/image";
 import { gsap } from "gsap";
 import styles from "./contact.module.scss";
 import TitleSection from "../TitleSection/TitleSection";
+import { useLanguage } from "@/app/context/LanguageContext";
 
 export default function ContactSection() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -17,6 +18,7 @@ export default function ContactSection() {
   const learnMoreRef = useRef<HTMLButtonElement>(null);
   const tl = useRef<gsap.core.Timeline | null>(null);
   const [isMainImgZoomed, setIsMainImgZoomed] = useState(false);
+  const { language } = useLanguage();
 
   useEffect(() => {
     if (
@@ -254,18 +256,18 @@ export default function ContactSection() {
 
   return (
     <section className={styles.contactSection} id="contact" ref={sectionRef}>
-      <TitleSection title="CONTACT" color="white" />
+      <TitleSection titleEn="CONTACT" titleFr="CONTACT" color="white" />
       <div className={styles.contactContent}>
         <div ref={textRef} className={styles.textContent}>
           <h2 className={styles.title}>
-            WE CAN TAKE <span>CARE</span>
+            {language === "fr" ? "NOUS NOUS" : "WE CAN TAKE"} <span>{language === "fr" ? "OCCUPONS" : "CARE"}</span>
           </h2>
           <h2 className={styles.secondTitle}>
-            OF YOUR <span>PROJECTS</span>
+            {language === "fr" ? "DE VOS" : "OF YOUR"} <span>{language === "fr" ? "PROJETS" : "PROJECTS"}</span>
           </h2>
           <div className={styles.learnMoreContainer}>
             <button ref={learnMoreRef} className={styles.learnMore} onClick={openModal}>
-              Learn more
+              {language === "fr" ? "En savoir plus" : "Learn more"}
             </button>
           </div>
         </div>
@@ -284,28 +286,27 @@ export default function ContactSection() {
           <div className={styles.formWrapper}>
             <form ref={formRef} className={styles.form}>
               <div className={styles.formRow}>
-                <label>Who are you?</label>
+                <label>{language === "fr" ? "Qui êtes-vous ?" : "Who are you?"}</label>
                 <div className={styles.inputsRow}>
                   <div className={styles.inputAndLabel}>
-                    <label>Your Name</label>
-                    <input type="text" placeholder="Name" />
+                    <label>{language === "fr" ? "Votre nom" : "Your Name"}</label>
+                    <input type="text" placeholder={language === "fr" ? "Nom" : "Name"} />
                   </div>
                   <div className={styles.inputAndLabel}>
-                    <label>Your Email</label>
+                    <label>{language === "fr" ? "Votre email" : "Your Email"}</label>
                     <input type="email" placeholder="Email" />
                   </div>
                 </div>
               </div>
               <div className={styles.formRow}>
-                <label>What is your project?</label>
-                <textarea placeholder="Please, describe your project here..." />
+                <label>{language === "fr" ? "Quel est votre projet ?" : "What is your project?"}</label>
+                <textarea placeholder={language === "fr" ? "Veuillez décrire votre projet ici..." : "Please, describe your project here..."} />
               </div>
               <div className={styles.checkboxValidate}>
                 <div className={styles.containerCheckbox}>
                   <input type="checkbox" id="check" />
                   <label htmlFor="check">
-                    By sending this message, I consent to being recontacted
-                    through the email I provided
+                    {language === "fr" ? "En envoyant ce message, je consent à être recontacté via l'email que j'ai fourni" : "By sending this message, I consent to being recontacted through the email I provided"}
                   </label>
                 </div>
                 <div className={styles.containerValidateForm}>
@@ -313,7 +314,7 @@ export default function ContactSection() {
                     className={styles.validateFormBtn}
                     onClick={sendMessage}
                   >
-                    Send a message
+                    {language === "fr" ? "Envoyer" : "Send a message"}
                   </button>
                 </div>
               </div>

@@ -11,7 +11,7 @@
 }
     .verticalNav {
         position: fixed;
-        top: 60%;
+        top: 50%;
         right: 10px;
         flex-direction: column;
         border-radius: 0.75rem;
@@ -19,7 +19,7 @@
         z-index: 10;
         border: 1px solid white;
         width: 74px;
-        height: 330px;
+        height: 375px;
         background-color: #DDE3E9;
         visibility: hidden;
         animation: disAppear 0.3s ease-in-out forwards;
@@ -44,10 +44,40 @@
         top: 0;
         border-radius: 0;
     }
+    .navItemLang {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        background-color: #DDE3E9;
+        color: #333;
+        width: 4.5rem;
+        height: 3.5rem;
+        padding: 0.75rem 0.5rem;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        z-index: 1;
+        position: absolute;
+        bottom: 10px;
+        border-radius: 0;
+    }
+    .navItemLangSwitch{
+        background: none;
+        border: none;
+        color: $color-text-body;
+        transition: all 0.3s ease;
+    }
+    .navItemLangSwitch:hover{
+        cursor: pointer;
+        color: $color-text-white;
+        transition: all 0.3s ease;
+    }
     .navItem:first-child {
         border-radius: 0.75rem 0.75rem 0 0;
     }
-    .navItem:last-child {
+    .navItem:nth-child(5) {
         border-radius: 0 0 0.75rem 0.75rem;
     }
     .navItem .icon {
@@ -91,24 +121,24 @@
     .navItem:first-child:hover {
         border-radius: 0.75rem;
     }
-    .navItem:last-child:hover {
+    .navItem:nth-child(5):hover {
         height: 8.5rem;
         transform-origin: bottom;
-        transform: translateY(-3rem);
+        transform: translateY(-5rem);
         border-radius: 0.75rem 0.75rem 0 0;
         -webkit-box-shadow: 0px -13px 23px -13px rgba(0,0,0,0.85);
         box-shadow: 0px -13px 23px -13px rgba(0,0,0,0.85);
     }
-    .navItem:last-child:hover .icon {
+    .navItem:nth-child(5):hover .icon {
         transform: translateY(70px);
     }
-    .navItem:last-child:hover .label {
+    .navItem:nth-child(5):hover .label {
         top: 3rem;
     }
     .navItem:hover .label {
         opacity: 1;
     }
-    .navItem:last-child .label {
+    .navItem:nth-child(5) .label {
         bottom: auto;
         top: 1rem;
     }
@@ -141,7 +171,7 @@
 @media(min-width: 1400px){
     .verticalNav {
         right: 20px;
-        height: 450px;
+        height: 500px;
         top: 7%;
     }
     .navItem .icon {
@@ -154,7 +184,7 @@
     .navItem:hover {
         height: 10.5rem;
     }
-    .navItem:last-child:hover {
+    .navItem:nth-child(5):hover {
         height: 10.5rem;
         transform: translateY(-4rem);
     }
@@ -176,7 +206,7 @@
 }
 @media(max-height: 507px){
     .verticalNav{
-        height: 290px;
+        height: 315px;
         top: 25%;
     }
     .navItem .icon {
@@ -186,12 +216,12 @@
     .navItem {
         top: calc(0.5rem + (var(--order) * 3rem));
     }
-    .navItem:hover, .navItem:last-child:hover {
+    .navItem:hover, .navItem:nth-child(5):hover {
         height: 8.5rem;
     }
-    .navItem:last-child:hover {
+    .navItem:nth-child(5):hover {
         border-radius: 0.75rem;
-        transform: translateY(-3rem);
+        transform: translateY(-5rem);
     }
     .navItem .label {
         font-size: 10px;
@@ -210,7 +240,7 @@
         width: 30px;
         height: 30px;
     }
-    .navItem:hover, .navItem:last-child:hover {
+    .navItem:hover, .navItem:nth-child(5):hover {
         height: 7rem;
     }
 }

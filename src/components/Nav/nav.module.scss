@@ -65,8 +65,11 @@
 
   @media (min-width: 768px) {
     display: flex;
-    gap: 2rem;
+    gap: 1rem;
     text-transform: uppercase;
+  }
+  @media (min-width: 917px) {
+    gap: 2rem;
   }
 }
 .leftContainer {
@@ -92,6 +95,9 @@
 
   &:hover {
     color: $color-text-secondary;
+  }
+  &:focus {
+    color: $color-text-white;
   }
 }
 
@@ -137,6 +143,10 @@
   background: none;
   border: none;
   color: $color-text-white;
+
+  @media (min-width: 768px) {
+    display: none;
+  }
 }
 
 .mobileMenu {
@@ -217,7 +227,23 @@
   justify-content: space-between;
   align-items: center;
 }
-
+.loginLinkNotNav {
+  background: none;
+  border: none;
+  display: none;
+  .loginLink{
+    text-decoration: none;
+    color: $color-text-white;
+    font-size: $font-size-body-mobile;
+    font-family: $font-family-primary;
+    font-weight: $font-weight-semibold;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+  @media (min-width: 917px) {
+    display: block;
+  }
+}
 .loginBtn {
   color: $color-text-body;
   font-size: $font-size-body-mobile;

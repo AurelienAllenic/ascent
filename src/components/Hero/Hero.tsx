@@ -27,7 +27,7 @@ export default function Hero() {
             {language === "fr" ? "Il est temps d'améliorer votre architecture" : "Time to improve your architecture"}
           </h2>
           <p className={styles.blockContentContent}>
-            {language === "fr" ? "Thanks to our experts, we offer the best of architecture" : "Thanks to our experts, we offer the best of architecture"}
+            {language === "fr" ? "Grâce à nos experts, nous offrons le meilleur de l'architecture" : "Thanks to our experts, we offer the best of architecture"}
           </p>
         </div>
       </div>

@@ -1,0 +1,40 @@
+@import "../../app/styles/abstract/variables";
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+  
+  .backdrop {
+    position: fixed;
+    inset: 0;
+    background: $color-background-light;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 1;
+  }
+  
+  .fadeIn {
+    animation: fadeIn 0.3s ease-in-out forwards;
+  }
+  
+  .fadeOut {
+    animation: fadeOut 0.3s ease-in-out forwards;
+  }
+  
+  .titleModal {
+    color: $color-text-body;
+    font-size: 1.5rem;
+    text-align: center;
+    margin: 0;
+    font-family: $font-family-primary;
+    padding: 20px;
+  }
+  

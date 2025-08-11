@@ -4,13 +4,15 @@ import React, { useLayoutEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import styles from "./numberCard.module.scss";
+import { useLanguage } from "@/app/context/LanguageContext";
 
 gsap.registerPlugin(ScrollTrigger);
 
 interface NumberCardProps {
   number: number | string;
   unit?: string;
-  text: string;
+  textFr: string;
+  textEn: string;
   size: "small" | "medium" | "large";
   customClass?: string;
   animationDelay: number;
@@ -19,13 +21,15 @@ interface NumberCardProps {
 const NumberCard: React.FC<NumberCardProps> = ({
   number,
   unit,
-  text,
+  textFr,
+  textEn,
   size,
   customClass,
   animationDelay,
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const numberRef = useRef<HTMLSpanElement>(null);
+  const { language } = useLanguage();
 
   useLayoutEffect(() => {
     if (!gsap || !ScrollTrigger) {
@@ -120,7 +124,7 @@ const NumberCard: React.FC<NumberCardProps> = ({
         {number}
         {unit && <span className={styles.unit}>{unit}</span>}
       </span>
-      <p className={`${styles.text} ${styles[size]}`}>{text}</p>
+      <p className={`${styles.text} ${styles[size]}`}>{language === "fr" ? textFr : textEn}</p>
     </div>
   );
 };

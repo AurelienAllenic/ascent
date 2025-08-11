@@ -6,19 +6,21 @@ import styles from "./numbers.module.scss";
 const Numbers: React.FC = () => {
   return (
     <section className={styles.numbersSection} id="numbers">
-      <TitleSection title="NUMBERS" color="white" />
+      <TitleSection titleEn="NUMBERS" titleFr="CHIFFRES" color="white" />
       <div className={styles.cards}>
         <NumberCard
           number="100"
           unit="K€"
-          text="Profits this year thanks to our customer's trust"
+          textFr="De bénéfices cette année grâce à la confiance de nos clients"
+          textEn="Profits this year thanks to our customer's trust"
           size="large"
           customClass="large"
           animationDelay={0}
         />
         <NumberCard
           number="25"
-          text="Employees dedicated to your projects"
+          textFr="Employés dédiés à vos projets"
+          textEn="Employees dedicated to your projects"
           size="small"
           customClass="small"
           animationDelay={0.2}
@@ -26,14 +28,16 @@ const Numbers: React.FC = () => {
         <NumberCard
           number="97"
           unit="%"
-          text="Of positive evaluations"
+          textFr="D'évaluations positives"
+          textEn="Of positive evaluations"
           size="medium"
           customClass="medium"
           animationDelay={0.4}
         />
         <NumberCard
           number="150+"
-          text="Projects completed with our supervision"
+          textFr="Projets terminés sous notre supervision"
+          textEn="Projects completed with our supervision"
           size="medium"
           customClass="medium"
           animationDelay={0.6}

@@ -5,6 +5,7 @@ import gsap from "gsap";
 import styles from "./projects.module.scss";
 import projectsData from "./projects.json";
 import TitleSection from "../TitleSection/TitleSection";
+import { useLanguage } from "@/app/context/LanguageContext";
 
 const Projects: React.FC = () => {
   const [selectedProject, setSelectedProject] = useState<number | null>(null);
@@ -16,6 +17,7 @@ const Projects: React.FC = () => {
     scale: 0.75,
     heightScale: 0.75,
   });
+  const { language } = useLanguage();
   const isDragging = useRef(false);
   const dragStartX = useRef<number | null>(null);
   const animating = useRef(false);
@@ -689,7 +691,8 @@ const Projects: React.FC = () => {
       >
         <div className={styles.containerTitleSection}>
           <TitleSection
-            title="PROJECTS"
+            titleEn="PROJECTS"
+            titleFr="PROJETS"
             color={selectedProject !== null ? "white" : ""}
           />
         </div>
@@ -723,10 +726,10 @@ const Projects: React.FC = () => {
                       }}
                       onClick={() => handleImageClick(positionIndex)}
                     >
-                      <p>{projectsData.projects[projectIndex].title}</p>
-                      <img
+                        <p>{language === "fr" ? projectsData.projects[projectIndex].titleFr : projectsData.projects[projectIndex].titleEn}</p>
+                        <img
                         src={projectsData.projects[projectIndex].featuredImage}
-                        alt={projectsData.projects[projectIndex].title}
+                        alt={language === "fr" ? projectsData.projects[projectIndex].titleFr : projectsData.projects[projectIndex].titleEn}
                         loading="lazy"
                       />
                     </div>
@@ -741,10 +744,10 @@ const Projects: React.FC = () => {
             <>
               <div className={styles.projectDetail}>
                 <h2 ref={titleRef}>
-                  {projectsData.projects[selectedProject].title}
+                  {language === "fr" ? projectsData.projects[selectedProject].titleFr : projectsData.projects[selectedProject].titleEn}
                 </h2>
                 <p ref={descriptionRef} className={styles.generalDescription}>
-                  {projectsData.projects[selectedProject].generalDescription}
+                  {language === "fr" ? projectsData.projects[selectedProject].generalDescriptionFr : projectsData.projects[selectedProject].generalDescriptionEn}
                 </p>
                 <div
                   className={styles.detailCarousel}
@@ -786,14 +789,16 @@ const Projects: React.FC = () => {
                             imageIndex
                           ].url
                         }
-                        alt={`${projectsData.projects[selectedProject].title} - ${imageIndex}`}
+                        alt={`${language === "fr" ? projectsData.projects[selectedProject].titleFr : projectsData.projects[selectedProject].titleEn} - ${imageIndex}`}
                         loading="lazy"
                       />
                       <p>
                         {
-                          projectsData.projects[selectedProject].images[
+                          language === "fr" ? projectsData.projects[selectedProject].images[
                             imageIndex
-                          ].description
+                          ].descriptionFr : projectsData.projects[selectedProject].images[
+                            imageIndex
+                          ].descriptionEn
                         }
                       </p>
                     </div>

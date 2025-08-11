@@ -1,7 +1,19 @@
+"use client";
+
 import Image from "next/image";
 import styles from "./footer.module.scss";
+import { useLanguage } from "@/app/context/LanguageContext";
 
 export default function Footer() {
+  const { language } = useLanguage();
+
+  // Fonction qui retourne l'année actuelle
+  function getCurrentYear() {
+    return new Date().getFullYear();
+  }
+
+  const year = getCurrentYear();
+
   return (
     <div className={styles.footerContainer} id="footer">
       <Image
@@ -18,7 +30,9 @@ export default function Footer() {
         </div>
         <div className={styles.footerBottom}>
           <p className={styles.copyright}>
-            © 2025 Ascent. All rights reserved.
+            {language === "fr"
+              ? `© ${year} Ascent. Tous droits réservés.`
+              : `© ${year} Ascent. All rights reserved.`}
           </p>
         </div>
       </div>

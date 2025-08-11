@@ -54,7 +54,7 @@
 }
 
 .aboutRightText {
-  font-size: $font-size-body-mobile;
+  font-size: calc($font-size-body-mobile - 1rem);
   color: $color-text-body;
   line-height: 1.5;
   margin: 0;
@@ -112,7 +112,6 @@
   }
 
   .aboutRightPartContainer {
-    text-align: right;
     position: relative;
     height: 375px;
   }
@@ -151,9 +150,7 @@
     min-height: auto;
   }
 
-  .aboutRightText {
-    font-size: $font-size-body-desktop;
-  }
+
 
   .aboutBtn {
     font-size: $font-size-body-desktop;

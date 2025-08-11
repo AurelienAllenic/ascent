@@ -6,6 +6,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import styles from "./about.module.scss";
 import TitleSection from "../TitleSection/TitleSection";
+import { useLanguage } from "@/app/context/LanguageContext";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -17,6 +18,7 @@ export default function About() {
   const firstTextRef = useRef<HTMLDivElement>(null);
   const secondTextRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLDivElement>(null);
+  const { language } = useLanguage();
 
   useLayoutEffect(() => {
     if (!gsap || !ScrollTrigger) {
@@ -105,11 +107,11 @@ export default function About() {
 
   return (
     <div className={styles.aboutContainer} id="about">
-      <TitleSection title="ABOUT" />
+      <TitleSection titleEn="ABOUT" titleFr="À PROPOS" />
       <div className={styles.aboutContent} ref={aboutContentRef}>
         <div className={styles.aboutleftPartContainer} ref={leftPartRef}>
           <p className={styles.aboutleftPartContent}>
-            A MODERN CONCEPTION OF DESIGN
+            {language === "fr" ? "UNE CONCEPTION MODERNE DE L'ARCHITECTURE" : "A MODERN CONCEPTION OF ARCHITECTURE"}
           </p>
         </div>
 
@@ -127,18 +129,18 @@ export default function About() {
           <div className={styles.aboutRightPartSubContainer}>
             <div className={styles.aboutPartContainer} ref={firstTextRef}>
               <p className={styles.aboutRightText}>
-                Since 2025, Ascent is one of the first company to innovate
+                {language === "fr" ? "Depuis 2025, Ascent est l'une des premières entreprises à innover" : "Since 2025, Ascent is one of the first company to innovate"}
               </p>
             </div>
 
             <div className={styles.aboutPartContainer} ref={secondTextRef}>
               <p className={styles.aboutRightText}>
-                Since 2025, Ascent is one of the first company to innovate
+                {language === "fr" ? "Depuis 2025, Ascent est l'une des premières entreprises à innover" : "Since 2025, Ascent is one of the first company to innovate"}
               </p>
             </div>
 
             <div className={styles.aboutBtnContainer} ref={buttonRef}>
-              <button className={styles.aboutBtn}>Learn more</button>
+              <button className={styles.aboutBtn}>{language === "fr" ? "En savoir plus" : "Learn more"}</button>
             </div>
           </div>
         </div>

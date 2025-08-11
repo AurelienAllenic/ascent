@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import styles from "./nav.module.scss";
 import { useLanguage } from "@/app/context/LanguageContext";
+import ChangeLanguageModal from "../ChangeLanguageModal/ChangeLanguageModal";
 
 const NavBar = () => {
   const { language, setLanguage } = useLanguage();
@@ -11,9 +12,11 @@ const NavBar = () => {
   const [isClosing, setIsClosing] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [windowWidth, setWindowWidth] = useState(0);
+  const [isLangModalOpen, setLangModalOpen] = useState(false);
 
   const toggleLang = () => {
     setLanguage(language === "en" ? "fr" : "en");
+    setLangModalOpen(true);
   };
 
   const navLinks = [
@@ -72,6 +75,7 @@ const NavBar = () => {
   if (windowWidth >= 768 && !isVisible) return null;
 
   return (
+    <>
     <header
       className={`${styles.navbar} ${
         windowWidth < 768 && !isVisible ? styles.mobileBackground : ""
@@ -114,6 +118,16 @@ const NavBar = () => {
           <button onClick={toggleLang} className={styles.langSwitch}>
             {language === "fr" ? "FR" : "EN"} / {language === "fr" ? "EN" : "FR"}
           </button>
+            <button className={styles.loginLinkNotNav}><a
+              href="#login"
+              className={styles.loginLink}
+              onClick={(e) => {
+                e.preventDefault();
+                handleScroll("login");
+                handleCloseMenu();
+              }}
+            >{language === "fr" ? "CONNEXION" : "LOGIN"}</a></button>
+          
 
           <button
             className={styles.burgerBtn}
@@ -175,6 +189,13 @@ const NavBar = () => {
         </div>
       )}
     </header>
+    <ChangeLanguageModal
+    isOpen={isLangModalOpen}
+    onClose={() => setLangModalOpen(false)}
+    currentLanguage={language}
+    onChangeLanguage={(lang) => setLanguage(lang)}
+  />
+  </>
   );
 };
 
