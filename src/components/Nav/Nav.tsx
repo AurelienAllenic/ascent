@@ -183,7 +183,7 @@ const NavBar = () => {
               {language === "fr" ? "CONNEXION" : "LOGIN"}
             </a>
             <button onClick={toggleLang} className={styles.langBtnMobile}>
-              {language === "fr" ? "FR" : "EN"}
+              {language === "fr" ? "FR/EN" : "EN/FR"}
             </button>
           </div>
         </div>
@@ -193,7 +193,6 @@ const NavBar = () => {
     isOpen={isLangModalOpen}
     onClose={() => setLangModalOpen(false)}
     currentLanguage={language}
-    onChangeLanguage={(lang) => setLanguage(lang)}
   />
   </>
   );

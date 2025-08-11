@@ -86,7 +86,6 @@ const SecondNav = () => {
       isOpen={isLangModalOpen}
       onClose={() => setLangModalOpen(false)}
       currentLanguage={language}
-      onChangeLanguage={(lang) => setLanguage(lang)}
     />
   </>
   );
