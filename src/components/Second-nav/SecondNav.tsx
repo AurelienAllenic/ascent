@@ -58,7 +58,6 @@ const SecondNav = () => {
         aria-label="Secondary navigation"
       >
         {navLinks.map((link, index) => (
-          <>
             <div
               key={link.labelFr}
               className={styles.navItem}
@@ -74,7 +73,6 @@ const SecondNav = () => {
               <img src={link.icon} alt={language === "fr" ? link.labelFr : link.labelEn} className={styles.icon} />
               <span className={styles.label}>{language === "fr" ? link.labelFr : link.labelEn}</span>
             </div>
-          </>
         ))}
         <div className={styles.navItemLang} style={{ "--order": 5 } as React.CSSProperties}>
           <button onClick={toggleLang} className={styles.navItemLangSwitch}>
