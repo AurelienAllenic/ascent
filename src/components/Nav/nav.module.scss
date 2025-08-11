@@ -239,6 +239,12 @@
     font-weight: $font-weight-semibold;
     text-transform: uppercase;
     text-decoration: none;
+    &:hover {
+      color: $color-text-secondary;
+    }
+    &:focus {
+      color: $color-text-white;
+    }
   }
   @media (min-width: 917px) {
     display: block;
