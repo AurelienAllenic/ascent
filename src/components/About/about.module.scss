@@ -54,7 +54,7 @@
 }
 
 .aboutRightText {
-  font-size: calc($font-size-body-mobile - 1rem);
+  font-size: $font-size-body-mobile;
   color: $color-text-body;
   line-height: 1.5;
   margin: 0;
@@ -70,9 +70,12 @@
   border-bottom: 1px solid $color-text-body;
   font-family: $font-family-secondary;
   margin-top: 15px;
+  transition: all 0.3s ease;
 
   &:hover {
-    background-color: darken($color-text-headline, 10%);
+    color: $color-text-white;
+    border-bottom: 1px solid $color-text-white;
+    transition: all 0.3s ease;
   }
 }
 
