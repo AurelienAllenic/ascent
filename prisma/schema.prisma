@@ -1,0 +1,184 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @map("_id") @default(auto()) @db.ObjectId
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  homeSections     HomeSection[]    @relation("UserHomeSections")
+  aboutSections    AboutSection[]   @relation("UserAboutSections")
+  numberSections   NumberSection[]  @relation("UserNumberSections")
+  projects         Project[]        @relation("UserProjects")
+  contactSections  ContactSection[] @relation("UserContactSections")
+  siteSettings     SiteSetting[]    @relation("UserSiteSettings")
+  footerSettings   FooterSetting[]  @relation("UserFooterSettings")
+  cguSections      CguSection[]     @relation("UserCguSections")
+}
+
+model HomeSection {
+  id          String   @id @map("_id") @default(auto()) @db.ObjectId
+  userId      String   @db.ObjectId @map("user_id")
+  user        User     @relation("UserHomeSections", fields: [userId], references: [id])
+
+  imageUrl    String?  @map("image_url")
+  titleEn     String?  @map("titleEn")
+  titleFr     String?  @map("titleFr")
+  subtitleEn  String?  @map("subtitleEn")
+  subtitleFr  String?  @map("subtitleFr")
+  contentEn   String?  @map("contentEn")
+  contentFr   String?  @map("contentFr")
+  updatedAt   DateTime @default(now()) @map("updated_at")
+}
+
+model AboutSection {
+  id                  String   @id @map("_id") @default(auto()) @db.ObjectId
+  userId              String   @db.ObjectId @map("user_id")
+  user                User     @relation("UserAboutSections", fields: [userId], references: [id])
+
+  leftPartTitleEn     String   @map("left_part_titleEn")
+  leftPartTitleFr     String   @map("left_part_titleFr")
+
+  rightPartContent1En String   @map("right_part_content_1En")
+  rightPartContent2En String?  @map("right_part_content_2En")
+  rightPartContent1Fr String   @map("right_part_content_1Fr")
+  rightPartContent2Fr String?  @map("right_part_content_2Fr")
+
+  btnTextEn           String   @map("btn_textEn")
+  btnTextFr           String   @map("btn_textFr")
+  btnLink             String   @map("btn_link")
+
+  updatedAt           DateTime @default(now()) @map("updated_at")
+}
+
+model NumberSection {
+  id          String   @id @map("_id") @default(auto()) @db.ObjectId
+  userId      String   @db.ObjectId @map("user_id")
+  user        User     @relation("UserNumberSections", fields: [userId], references: [id])
+  updatedAt   DateTime @default(now()) @map("updated_at")
+
+  cards       CardNumber[] @relation("NumberSectionCards")
+}
+
+model CardNumber {
+  id               String   @id @map("_id") @default(auto()) @db.ObjectId
+  numberSectionId  String   @db.ObjectId @map("number_section_id")
+  numberSection    NumberSection @relation("NumberSectionCards", fields: [numberSectionId], references: [id])
+
+  number           String
+  unit             String?
+  textEn           String   @map("textEn")
+  textFr           String   @map("textFr")
+  size             String
+}
+
+model Project {
+  id                  String   @id @map("_id") @default(auto()) @db.ObjectId
+  userId              String   @db.ObjectId @map("user_id")
+  user                User     @relation("UserProjects", fields: [userId], references: [id])
+
+  titleEn             String   @map("titleEn")
+  titleFr             String   @map("titleFr")
+  featuredImageUrl    String   @map("featured_image_url")
+  generalDescriptionEn String  @map("general_descriptionEn")
+  generalDescriptionFr String  @map("general_descriptionFr")
+
+  createdAt           DateTime @default(now()) @map("created_at")
+  updatedAt           DateTime @default(now()) @map("updated_at")
+
+  images              ProjectImage[]
+}
+
+model ProjectImage {
+  id           String  @id @map("_id") @default(auto()) @db.ObjectId
+  projectId    String  @db.ObjectId @map("project_id")
+  project      Project @relation(fields: [projectId], references: [id])
+
+  url          String
+  descriptionEn String @map("descriptionEn")
+  descriptionFr String @map("descriptionFr")
+}
+
+model ContactSection {
+  id                 String   @id @map("_id") @default(auto()) @db.ObjectId
+  userId             String   @db.ObjectId @map("user_id")
+  user               User     @relation("UserContactSections", fields: [userId], references: [id])
+
+  imageUrl           String   @map("image_url")
+  titleEn            String   @map("titleEn")
+  titleFr            String   @map("titleFr")
+
+  buttonTextEn       String   @map("button_textEn")
+  buttonTextFr       String   @map("button_textFr")
+  buttonLink         String   @map("button_link")
+
+  formTitle1En       String   @map("form_title_1En")
+  formTitle2En       String   @map("form_title_2En")
+  formTitle1Fr       String   @map("form_title_1Fr")
+  formTitle2Fr       String   @map("form_title_2Fr")
+
+  submitButtonTextEn String   @map("submit_button_textEn")
+  submitButtonTextFr String   @map("submit_button_textFr")
+
+  updatedAt          DateTime @default(now()) @map("updated_at")
+
+  formFields         ContactFormField[]
+}
+
+model ContactFormField {
+  id               String   @id @map("_id") @default(auto()) @db.ObjectId
+  contactSectionId  String   @db.ObjectId @map("contact_section_id")
+  contactSection   ContactSection @relation(fields: [contactSectionId], references: [id])
+
+  fieldNameEn      String   @map("field_nameEn")
+  fieldNameFr      String   @map("field_nameFr")
+  fieldTypeEn      String   @map("field_typeEn")
+  fieldTypeFr      String   @map("field_typeFr")
+  required         Boolean  @default(true)
+  order            Int?
+}
+
+model SiteSetting {
+  id          String   @id @map("_id") @default(auto()) @db.ObjectId
+  userId      String   @db.ObjectId @map("user_id")
+  user        User     @relation("UserSiteSettings", fields: [userId], references: [id])
+
+  siteTitleEn String   @map("site_titleEn")
+  siteTitleFr String   @map("site_titleFr")
+
+  updatedAt   DateTime @default(now()) @map("updated_at")
+}
+
+model FooterSetting {
+  id                String   @id @map("_id") @default(auto()) @db.ObjectId
+  userId            String   @db.ObjectId @map("user_id")
+  user              User     @relation("UserFooterSettings", fields: [userId], references: [id])
+
+  cguButtonTextEn   String   @default("CGU") @map("cgu_button_textEn")
+  cguButtonTextFr   String   @default("CGU") @map("cgu_button_textFr")
+  cguButtonLink     String?  @map("cgu_button_link")
+
+  showCguButton     Boolean  @default(true) @map("show_cgu_button")
+
+  updatedAt         DateTime @default(now()) @map("updated_at")
+}
+
+model CguSection {
+  id            String   @id @map("_id") @default(auto()) @db.ObjectId
+  userId        String   @db.ObjectId @map("user_id")
+  user          User     @relation("UserCguSections", fields: [userId], references: [id])
+
+  sectionNumber Int      @map("section_number")
+  titleEn       String   @map("titleEn")
+  titleFr       String   @map("titleFr")
+  contentEn     String   @map("contentEn")
+  contentFr     String   @map("contentFr")
+  updatedAt     DateTime @default(now()) @map("updated_at")
+}
