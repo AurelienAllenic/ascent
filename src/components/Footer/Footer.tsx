@@ -26,7 +26,7 @@ export default function Footer() {
       <div className={styles.overlay}></div>
       <div className={styles.content}>
         <div className={styles.mainTitleContainer}>
-          <a href="#" className={styles.mainTitle}>CGU</a>
+          <a href="/cgu" target="_blank" rel="noopener noreferrer" className={styles.mainTitle}>CGU</a>
         </div>
         <div className={styles.footerBottom}>
           <p className={styles.copyright}>
