@@ -129,3 +129,9 @@ npm run dev
 _💡 Téléchargez le PDF pour accéder aux liens interactifs_
 
 _Architecture web moderne pour cabinets d'architecture contemporains_
+
+## Backend du projet
+
+### Structure de la bdd
+
+![bdd](./public/assets/backend-schema.png)
