@@ -101,9 +101,6 @@
   }
 }
 
-.navItem {
-}
-
 .navLink {
   font-size: $font-size-body-mobile;
   color: $color-text-white;
@@ -143,6 +140,12 @@
   background: none;
   border: none;
   color: $color-text-white;
+  transition: opacity 0.3s ease;
+  &:hover{
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+  }
 
   @media (min-width: 768px) {
     display: none;
@@ -173,6 +176,12 @@
   color: $color-text-body;
   cursor: pointer;
   z-index: 1000;
+  transition: opacity 0.3s ease;
+  &:hover{
+    cursor: pointer;
+    color: #a9b0b8;
+    transition: opacity 0.3s ease;
+  }
 }
 .mobileNavLink {
   font-size: $font-size-body-mobile;

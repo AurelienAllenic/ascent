@@ -27,7 +27,6 @@ const NavBar = () => {
     { id: "contact", label: language === "fr" ? "Contact" : "Contact" },
   ];
 
-  // Update windowWidth
   useEffect(() => {
     if (typeof window !== "undefined") {
       const updateWidth = () => setWindowWidth(window.innerWidth);
@@ -37,7 +36,6 @@ const NavBar = () => {
     }
   }, []);
 
-  // Observer for #home section
   useEffect(() => {
     const homeSection = document.getElementById("home");
     if (!homeSection) return;
@@ -53,7 +51,6 @@ const NavBar = () => {
     return () => observer.disconnect();
   }, []);
 
-  // Smooth scrolling
   const handleScroll = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
@@ -62,7 +59,6 @@ const NavBar = () => {
     }
   };
 
-  // Close mobile menu with animation
   const handleCloseMenu = () => {
     setIsClosing(true);
     setTimeout(() => {
@@ -71,7 +67,6 @@ const NavBar = () => {
     }, 300);
   };
 
-  // Hide navbar on desktop if not in #home
   if (windowWidth >= 768 && !isVisible) return null;
 
   return (
@@ -119,13 +114,8 @@ const NavBar = () => {
             {language === "fr" ? "FR" : "EN"} / {language === "fr" ? "EN" : "FR"}
           </button>
             <button className={styles.loginLinkNotNav}><a
-              href="#login"
+              href="/login"
               className={styles.loginLink}
-              onClick={(e) => {
-                e.preventDefault();
-                handleScroll("login");
-                handleCloseMenu();
-              }}
             >{language === "fr" ? "CONNEXION" : "LOGIN"}</a></button>
           
 
@@ -174,11 +164,6 @@ const NavBar = () => {
             <a
               href="/login"
               className={styles.loginBtn}
-              onClick={(e) => {
-                e.preventDefault();
-                handleScroll("login");
-                handleCloseMenu();
-              }}
             >
               {language === "fr" ? "CONNEXION" : "LOGIN"}
             </a>

@@ -12,7 +12,7 @@ const SIRET = "SIRET / Identifiant (si applicable)";
 const HOST = "Hébergeur (ex: Vercel, OVH)";
 const CONTACT_EMAIL = "contact@ascent.example";
 
-export default function CguPage(): JSX.Element {
+export default function CguPage(){
   const { language, setLanguage } = useLanguage();
   const [isLangModalOpen, setLangModalOpen] = useState(false);
 
