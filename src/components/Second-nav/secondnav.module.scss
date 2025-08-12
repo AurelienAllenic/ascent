@@ -227,10 +227,10 @@
         font-size: 10px;
     }
 }
-@media(max-height: 397px){
+@media(max-height: 426px){
     .verticalNav{
         top: 15%;
-        height: 250px;
+        height: 300px;
     }
     .navItem {
         top: calc(0.5rem + (var(--order) * 2.5rem));
@@ -244,8 +244,17 @@
         height: 7rem;
     }
 }
-@media(max-height: 305px){
+@media(max-height: 359px){
     .verticalNav{
+        height: 275px;
         top: 7%;
+    }
+}
+@media(max-height: 301px){
+    .verticalNav{
+        top: 2%;
+    }
+    .navItemLang{
+        height: 3rem;
     }
 }

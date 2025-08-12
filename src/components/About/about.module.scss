@@ -1,12 +1,13 @@
 @import "../../app/styles/abstract/variables";
 
 .aboutContainer {
-  min-height: 100vh;
+  min-height: 800px;
   background-color: $color-background-light;
   padding: 1rem;
   display: flex;
   flex-direction: column;
   align-items: center;
+  height: 100vh;
 }
 
 .aboutContent {
@@ -16,7 +17,7 @@
   justify-content: center;
   width: 100%;
   gap: 1.5rem;
-  min-height: 90vh;
+  min-height: 800px;
   margin: 0 auto;
 }
 
@@ -120,7 +121,7 @@
   }
   .aboutRightPartSubContainer {
     position: relative;
-    bottom: 35%;
+    bottom: 80px;
   }
   .aboutRightText {
     font-size: $font-size-body-tab;
@@ -152,15 +153,10 @@
   .aboutImageContainer {
     min-height: auto;
   }
-
-
-
   .aboutBtn {
     font-size: $font-size-body-desktop;
   }
-  .aboutRightPartContainer {
-    height: 430px;
-  }
+
   .aboutleftPartContainer {
     height: 180px;
   }

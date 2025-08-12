@@ -4,6 +4,7 @@
   background-color: $color-background-dark;
   padding: 1rem;
   position: relative;
+  min-height: 800px;
   & .cards {
     display: flex;
     flex-direction: column;

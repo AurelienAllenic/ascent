@@ -163,9 +163,12 @@
 
         p {
           margin-top: 0.5rem;
-          font-size: $font-size-body-desktop;
+          font-size: $font-size-body-mobile;
           color: $color-text-white;
           text-align: center;
+          @media(min-width: 767px){
+            font-size: $font-size-body-desktop;
+          }
         }
       }
     }
@@ -179,11 +182,14 @@
     margin-top: 3rem;
     cursor: pointer;
     font-family: $font-family-primary;
-    font-size: $font-size-body-desktop;
+    font-size: $font-size-body-mobile;
     font-weight: $font-weight-semibold;
 
     &:hover {
       background-color: darken($color-text-headline, 10%);
+    }
+    @media(min-width: 767px){
+      font-size: $font-size-body-tab;
     }
   }
 
