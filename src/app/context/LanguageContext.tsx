@@ -33,27 +33,25 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     } else {
       const localLang = (localStorage.getItem("language") as Language) || "en";
       setLanguageState(localLang);
-
-      // Mettre à jour l'URL avec la langue locale si pas déjà présent
+  
       if (!urlLang) {
         const search = new URLSearchParams(window.location.search);
         search.set("lang", localLang);
-        router.replace(`${pathname}?${search.toString()}`);
+        const hash = window.location.hash || "";
+        router.replace(`${pathname}?${search.toString()}${hash}`, { scroll: false });
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  // Fonction pour changer la langue (modifie état + URL + localStorage)
+  
   function setLanguage(lang: Language) {
     setLanguageState(lang);
     localStorage.setItem("language", lang);
-
+  
     const search = new URLSearchParams(window.location.search);
     search.set("lang", lang);
-
-    // On remplace l'URL sans recharger la page
-    router.replace(`${pathname}?${search.toString()}`);
+    const hash = window.location.hash || "";
+  
+    router.replace(`${pathname}?${search.toString()}${hash}`, { scroll: false });
   }
 
   return (
