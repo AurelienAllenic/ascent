@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./styles/global.scss";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "Ascent",
@@ -13,7 +14,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <Suspense fallback={null}>{children}</Suspense>
+      </body>
     </html>
   );
 }
