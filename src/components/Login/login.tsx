@@ -42,31 +42,36 @@ export default function Login() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-
+  
     try {
       const res = await fetch("/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-
+  
       if (!res.ok) {
         const text = await res.text();
         setError(text);
         return;
       }
-
+  
       const data = await res.json();
       console.log("Login success:", data);
-
-      // Redirection après connexion réussie (exemple)
-      alert("Login success");
-      //router.push("/dashboard");
+  
+      // ⚡ Sauvegarde du token dans le localStorage
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+      }
+  
+      // Redirection après connexion réussie
+      router.push("/");
     } catch (err) {
       console.error(err);
       setError("Erreur serveur");
     }
   };
+  
 
   return (
     <div className={styles.container}>

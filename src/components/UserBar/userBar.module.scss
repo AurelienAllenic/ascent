@@ -1,0 +1,25 @@
+@import "../../app/styles/abstract/variables";
+
+.userBar{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 25px;
+    z-index: 1000;
+    position: fixed;
+    top: 70px;
+    left: 0;
+    right: 0;
+    background-color: #fff;
+    .userBarText{
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #000;
+        font-family: $font-family-primary;
+    }
+    .userBarLogout{
+        background-color: transparent;
+        border: none;
+        font-family: $font-family-secondary;
+    }
+}
