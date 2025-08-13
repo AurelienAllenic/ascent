@@ -22,15 +22,14 @@ export default function Home() {
           <EditableContentProvider>
             <ConditionalUserBar />
             <Hero />
-            
-          </EditableContentProvider>
-          <About />
+            <About />
           <SecondNav />
-          
           <Numbers />
           <Projects />
           <Contact />
           <Footer />
+          </EditableContentProvider>
+         
         </LanguageProvider>
       </AuthProvider>
     </div>

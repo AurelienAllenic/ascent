@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
 import Image from "next/image";
 import NavBar from "../Nav/Nav";
 import { useLanguage } from "@/app/context/LanguageContext";
@@ -27,15 +26,8 @@ export default function Hero({ onSave }: HeroProps) {
   const { isLoggedIn } = useAuth();
   const { editableHome, setEditableHome } = useEditableContent();
 
-  // Fetch initial data si contexte vide
-  useEffect(() => {
-    if (!editableHome) {
-      fetch("/api/homeSection")
-        .then(res => res.json())
-        .then(data => setEditableHome(data))
-        .catch(err => console.error("Erreur fetch editableHome:", err));
-    }
-  }, [editableHome, setEditableHome]);
+
+
 
   const handleChange = (field: keyof HomeSectionType, value: string) => {
     setEditableHome(prev => prev ? { ...prev, [field]: value } : null);
@@ -49,8 +41,6 @@ export default function Hero({ onSave }: HeroProps) {
       console.error("Erreur lors de la sauvegarde :", err);
     }
   };
-
-  if (!editableHome) return <p>Chargement...</p>;
 
   const title = language === "fr" ? editableHome.titleFr : editableHome.titleEn;
   const subtitle = language === "fr" ? editableHome.subtitleFr : editableHome.subtitleEn;
