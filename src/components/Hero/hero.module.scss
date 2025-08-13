@@ -46,6 +46,8 @@
         line-height: $line-height-heading;
         margin: 0;
         color: $color-text-white;
+        background: transparent;
+        border: none;
       }
     }
 
@@ -61,6 +63,8 @@
         font-weight: $font-weight-semibold;
         line-height: $line-height-heading;
         color: $color-text-white;
+        background: transparent;
+        border: none;
       }
 
       .blockContentContent {
@@ -70,9 +74,27 @@
         line-height: $line-height-base;
         margin: 0;
         color: $color-text-white;
+        background: transparent;
+        border: none;
       }
     }
   }
+  .mainTitle,
+.blockContentTitle,
+.blockContentContent {
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  color: inherit;
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  resize: none; // pour textarea
+  outline: none; // supprime le focus outline si tu le veux
+}
+
 
   // Tablet
   @media (min-width: 768px) {

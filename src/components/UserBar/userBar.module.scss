@@ -4,15 +4,50 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-direction: column;
     padding: 25px;
     z-index: 1000;
     position: fixed;
     top: 70px;
     left: 0;
     right: 0;
-    background-color: #fff;
-    .userBarText{
+    background-color: $color-background-light;
+    gap: 20px;
+    .innerUserBar{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+    }
+    .userBarButtonLogout{
+        background-color: #d51717;
+        border: none;
+        font-family: $font-family-primary;
+        padding: 10px 20px;
+        color: $color-text-white;
+        border-radius: 3px;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .userBarButtonSave{
+        background-color: $color-background-dark;
+        border: none;
+        font-family: $font-family-primary;
+        padding: 10px 20px;
+        color: $color-text-white;
+        border-radius: 3px;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .userBarButtonIcon{
         font-size: 1.2rem;
+    }
+    .userBarText{
+        font-size: 1.4rem;
         font-weight: 600;
         color: #000;
         font-family: $font-family-primary;

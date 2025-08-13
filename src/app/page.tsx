@@ -12,16 +12,21 @@ import Footer from "@/components/Footer/Footer";
 import { LanguageProvider } from "./context/LanguageContext";
 import UserBar from "@/components/UserBar/UserBar";
 import { AuthProvider, useAuth } from "./context/AuthContext";
+import { EditableContentProvider } from "./context/EditableContentContext";
 
 export default function Home() {
   return (
     <div className={styles.page}>
       <AuthProvider>
         <LanguageProvider>
-          <ConditionalUserBar />
-          <Hero />
+          <EditableContentProvider>
+            <ConditionalUserBar />
+            <Hero />
+            
+          </EditableContentProvider>
           <About />
           <SecondNav />
+          
           <Numbers />
           <Projects />
           <Contact />
