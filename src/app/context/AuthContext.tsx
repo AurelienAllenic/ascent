@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, ReactNode, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 interface AuthContextType {
   isLoggedIn: boolean;
@@ -12,7 +13,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
+  const router = useRouter();
   useEffect(() => {
     // Exemple : vérifier si token est présent dans localStorage
     const token = localStorage.getItem("token");
@@ -23,6 +24,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const logout = () => {
     localStorage.removeItem("token");
     setIsLoggedIn(false);
+    router.push("/");
   };
 
   return (
