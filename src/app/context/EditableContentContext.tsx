@@ -1,10 +1,14 @@
 "use client";
-import { createContext, useContext, useState, ReactNode, useEffect } from "react";
+
+import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import type { HomeSectionType } from "@/components/Hero/Hero";
+import type { AboutSectionType } from "@/components/About/About"; // Assure-toi que ce chemin est correct
 
 type EditableContentContextType = {
   editableHome: HomeSectionType | null;
   setEditableHome: React.Dispatch<React.SetStateAction<HomeSectionType | null>>;
+  editableAbout: AboutSectionType | null;
+  setEditableAbout: React.Dispatch<React.SetStateAction<AboutSectionType | null>>;
   loading: boolean;
 };
 
@@ -12,11 +16,11 @@ const EditableContentContext = createContext<EditableContentContextType | undefi
 
 export function EditableContentProvider({ children }: { children: ReactNode }) {
   const [editableHome, setEditableHome] = useState<HomeSectionType | null>(null);
+  const [editableAbout, setEditableAbout] = useState<AboutSectionType | null>(null);
   const [loading, setLoading] = useState(true);
   const [fadeOut, setFadeOut] = useState(false);
 
   useEffect(() => {
-    // Sauvegarde position actuelle
     const scrollY = window.scrollY;
     document.body.style.top = `-${scrollY}px`;
     document.body.style.position = "fixed";
@@ -24,24 +28,28 @@ export function EditableContentProvider({ children }: { children: ReactNode }) {
 
     const startTime = Date.now();
 
-    fetch("/api/homeSection")
-      .then(res => res.json())
-      .then(data => setEditableHome(data))
-      .catch(err => console.error("Erreur fetch editableHome:", err))
+    Promise.all([
+      fetch("/api/homeSection").then(res => res.json()),
+      fetch("/api/aboutSection").then(res => res.json())
+    ])
+      .then(([homeData, aboutData]) => {
+        setEditableHome(homeData);
+        setEditableAbout(aboutData);
+      })
+      .catch(err => console.error("Erreur fetch sections éditables:", err))
       .finally(() => {
         const elapsed = Date.now() - startTime;
-        const remainingTime = Math.max(0, 1000 - elapsed); // min 1 sec
+        const remainingTime = Math.max(0, 1000 - elapsed);
 
         setTimeout(() => {
-          setFadeOut(true); // lance la transition de disparition
+          setFadeOut(true);
           setTimeout(() => {
             setLoading(false);
-            // Restauration scroll
             document.body.style.position = "";
             document.body.style.top = "";
             document.body.style.width = "";
             window.scrollTo(0, scrollY);
-          }, 500); // durée de l’animation de fade-out
+          }, 500);
         }, remainingTime);
       });
 
@@ -71,22 +79,20 @@ export function EditableContentProvider({ children }: { children: ReactNode }) {
         }}
       >
         <svg xmlns="http://www.w3.org/2000/svg" width="159" height="159" viewBox="0 0 159 159" version="1.1">
-	        <path d="M 56.742 51.758 L 34 74.516 34 102.258 L 34 130 47.500 130 L 61 130 61 114 L 61 98 68 98 L 75 98 75 114 L 75 130 100 130 L 125 130 125 102.242 L 125 74.484 102.242 51.742 L 79.484 29 56.742 51.758 M 68.734 43.765 L 59.007 53.529 75.503 70.003 L 92 86.477 92 106.739 L 92 127 107 127 L 122 127 122 101.241 L 122 75.482 101.241 54.741 C 89.824 43.333, 80.028 34, 79.473 34 C 78.917 34, 74.085 38.394, 68.734 43.765 M 46.735 65.764 L 37 75.536 37 101.268 L 37 127 40 127 L 43 127 43 106.731 L 43 86.462 52.984 76.516 C 59.644 69.881, 63.302 66.902, 63.969 67.569 C 64.637 68.237, 61.811 71.715, 55.485 78.015 L 46 87.460 46 107.230 L 46 127 51.975 127 L 57.949 127 58.225 111.250 L 58.500 95.500 68 95.500 L 77.500 95.500 77.775 111.250 L 78.051 127 83.525 127 L 89 127 89 107.739 L 89 88.477 72.735 72.235 L 56.470 55.992 46.735 65.764" stroke="none" fill="#000000" fillRule="evenodd"/>
-            <animate
-                attributeName="stroke-dashoffset"
-                from="100"
-                to="0"
-                dur="1s"
-                fill="freeze"
-            />
+          <path
+            d="M 56.742 51.758 L 34 74.516 34 102.258 L 34 130 47.500 130 L 61 130 61 114 L 61 98 68 98 L 75 98 75 114 L 75 130 100 130 L 125 130 125 102.242 L 125 74.484 102.242 51.742 L 79.484 29 56.742 51.758 M 68.734 43.765 L 59.007 53.529 75.503 70.003 L 92 86.477 92 106.739 L 92 127 107 127 L 122 127 122 101.241 L 122 75.482 101.241 54.741 C 89.824 43.333, 80.028 34, 79.473 34 C 78.917 34, 74.085 38.394, 68.734 43.765 M 46.735 65.764 L 37 75.536 37 101.268 L 37 127 40 127 L 43 127 43 106.731 L 43 86.462 52.984 76.516 C 59.644 69.881, 63.302 66.902, 63.969 67.569 C 64.637 68.237, 61.811 71.715, 55.485 78.015 L 46 87.460 46 107.230 L 46 127 51.975 127 L 57.949 127 58.225 111.250 L 58.500 95.500 68 95.500 L 77.500 95.500 77.775 111.250 L 78.051 127 83.525 127 L 89 127 89 107.739 L 89 88.477 72.735 72.235 L 56.470 55.992 46.735 65.764"
+            stroke="none"
+            fill="#000000"
+            fillRule="evenodd"
+          />
+          <animate attributeName="stroke-dashoffset" from="100" to="0" dur="1s" fill="freeze" />
         </svg>
       </div>
     );
   }
-  
 
   return (
-    <EditableContentContext.Provider value={{ editableHome, setEditableHome, loading }}>
+    <EditableContentContext.Provider value={{ editableHome, setEditableHome, editableAbout, setEditableAbout, loading }}>
       {children}
     </EditableContentContext.Provider>
   );
@@ -94,6 +100,6 @@ export function EditableContentProvider({ children }: { children: ReactNode }) {
 
 export function useEditableContent() {
   const context = useContext(EditableContentContext);
-  if (!context) throw new Error("useEditableContent must be used within EditableContentProvider");
+  if (!context) throw new Error("useEditableContent must be utilisé dans EditableContentProvider");
   return context;
 }

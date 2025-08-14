@@ -9,6 +9,7 @@
     "lint": "next lint",
     "create-user": "node scripts/createUser.js",
     "create-home-section": "node scripts/createHomeSection.js",
+    "create-about-section": "node scripts/createAboutSection.js",
     "postinstall": "prisma generate"
   },
   "dependencies": {

@@ -37,7 +37,7 @@ function ConditionalContent() {
     <>
       <UserBar />
       <Hero isEditMode={true} />
-      <About />
+      <About isEditMode={true} />
       <SecondNav />
       <Numbers />
       <Projects />

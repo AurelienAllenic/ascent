@@ -21,7 +21,7 @@ export default function Home() {
         <LanguageProvider>
           <EditableContentProvider>
           <Hero isEditMode={false} />
-          <About />
+          <About isEditMode={false} />
           <SecondNav />
           <Numbers />
           <Projects />
