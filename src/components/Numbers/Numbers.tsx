@@ -142,6 +142,7 @@ export default function Numbers({ onSave, isEditMode }: NumberProps) {
               size={card.size}
               customClass={card.size}
               animationDelay={index * 0.2}
+              isEditMode={isEditMode}
             />
           )
         ))}

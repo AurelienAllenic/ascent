@@ -26,6 +26,7 @@ const NumberCard: React.FC<NumberCardProps> = ({
   size,
   customClass,
   animationDelay,
+  isEditMode
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const numberRef = useRef<HTMLSpanElement>(null);
@@ -36,6 +37,7 @@ const NumberCard: React.FC<NumberCardProps> = ({
       console.error("GSAP or ScrollTrigger not loaded");
       return;
     }
+    if(isEditMode) return;
 
     if (!cardRef.current || !numberRef.current) {
       console.error(

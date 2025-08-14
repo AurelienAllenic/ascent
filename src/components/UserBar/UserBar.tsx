@@ -67,7 +67,7 @@ export default function UserBar() {
   };
 
   const handleSee = () => {
-    window.open("/numbers", "_blank");
+    window.open("/", "_blank");
   };
 
   return (
