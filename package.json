@@ -10,6 +10,7 @@
     "create-user": "node scripts/createUser.js",
     "create-home-section": "node scripts/createHomeSection.js",
     "create-about-section": "node scripts/createAboutSection.js",
+    "create-numbers": "node scripts/createNumbers.js",
     "postinstall": "prisma generate"
   },
   "dependencies": {

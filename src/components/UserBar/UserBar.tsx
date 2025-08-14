@@ -9,7 +9,7 @@ import { FaRegEye } from "react-icons/fa";
 
 export default function UserBar() {
   const { logout } = useAuth();
-  const { editableAbout } = useEditableContent();
+  const { editableAbout, editableNumberSection } = useEditableContent();
   const { language } = useLanguage();
 
   const [message, setMessage] = useState<string | null>(null);
@@ -17,21 +17,42 @@ export default function UserBar() {
 
   const handleSave = async () => {
     try {
-      // On ne prend que les champs définis
-      const body: Record<string, any> = {};
-      Object.entries(editableAbout || {}).forEach(([key, value]) => {
-        if (value !== undefined) body[key] = value;
-      });
-      console.log("body front =>", body);
-      const res = await fetch("/api/aboutSection", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
+      // Sauvegarde pour About
+      if (editableAbout) {
+        const aboutBody: Record<string, any> = {};
+        Object.entries(editableAbout).forEach(([key, value]) => {
+          if (value !== undefined) aboutBody[key] = value;
+        });
+        console.log("body front (about) =>", aboutBody);
+        const aboutRes = await fetch("/api/aboutSection", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(aboutBody),
+        });
 
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => null);
-        throw new Error(errorData?.message || "Erreur inconnue");
+        if (!aboutRes.ok) {
+          const errorData = await aboutRes.json().catch(() => null);
+          throw new Error(errorData?.message || "Erreur inconnue (about)");
+        }
+      }
+
+      // Sauvegarde pour NumberSection
+      if (editableNumberSection) {
+        const numberBody: Record<string, any> = {};
+        Object.entries(editableNumberSection).forEach(([key, value]) => {
+          if (value !== undefined) numberBody[key] = value;
+        });
+        console.log("body front (numbers) =>", numberBody);
+        const numberRes = await fetch("/api/numberSection", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(numberBody),
+        });
+
+        if (!numberRes.ok) {
+          const errorData = await numberRes.json().catch(() => null);
+          throw new Error(errorData?.message || "Erreur inconnue (numbers)");
+        }
       }
 
       setIsError(false);
@@ -46,7 +67,7 @@ export default function UserBar() {
   };
 
   const handleSee = () => {
-    window.open("/about", "_blank");
+    window.open("/numbers", "_blank");
   };
 
   return (

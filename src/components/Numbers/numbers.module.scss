@@ -28,3 +28,25 @@
     }
   }
 }
+
+.editableCard {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin: 1rem;
+}
+.editableInput,
+.editableTextarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+.editableTextarea {
+  min-height: 80px;
+  resize: vertical;
+}

@@ -39,7 +39,7 @@ function ConditionalContent() {
       <Hero isEditMode={true} />
       <About isEditMode={true} />
       <SecondNav />
-      <Numbers />
+      <Numbers isEditMode={true}/>
       <Projects />
       <Contact />
       <Footer />
