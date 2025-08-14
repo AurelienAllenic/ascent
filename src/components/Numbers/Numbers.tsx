@@ -11,12 +11,28 @@ import { useEditableContent } from "@/app/context/EditableContentContext";
 
 gsap.registerPlugin(ScrollTrigger);
 
-type NumbersProps = {
-  onSave?: (data: any) => Promise<void>;
+export type NumberSectionType = {
+  id: string;
+  userId: string;
+  updatedAt: Date;
+  cards: {
+    id: string;
+    numberSectionId: string;
+    number: string;
+    unit?: string;
+    textEn: string;
+    textFr: string;
+    size: string;
+  }[];
+};
+
+type NumberProps = {
+  onSave?: (data: NumberSectionType) => Promise<void>;
   isEditMode?: boolean;
 };
 
-export default function Numbers({ onSave, isEditMode }: NumbersProps) {
+
+export default function Numbers({ onSave, isEditMode }: NumberProps) {
   const numbersSectionRef = useRef<HTMLDivElement>(null);
   const cardsContainerRef = useRef<HTMLDivElement>(null);
   const { language } = useLanguage();

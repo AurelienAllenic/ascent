@@ -3,25 +3,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import type { HomeSectionType } from "@/components/Hero/Hero";
 import type { AboutSectionType } from "@/components/About/About";
-import type { NumberSectionType } from "@/components/Numbers/Numbers"; // Assure-toi que ce chemin est correct
-
-// Définir le type pour NumberSection et ses CardNumber
-export type CardNumberType = {
-  id: string;
-  numberSectionId: string;
-  number: string;
-  unit?: string;
-  textEn: string;
-  textFr: string;
-  size: string;
-};
-
-export type NumberSectionType = {
-  id: string;
-  userId: string;
-  updatedAt: Date;
-  cards: CardNumberType[];
-};
+import type { NumberSectionType } from "@/components/Numbers/Numbers";
 
 // Mettre à jour le type du contexte
 type EditableContentContextType = {
