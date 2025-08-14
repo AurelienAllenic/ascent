@@ -22,7 +22,7 @@ export type NumberSectionType = {
     unit?: string;
     textEn: string;
     textFr: string;
-    size: string;
+    size: "small" | "medium" | "large";
   }[];
 };
 
