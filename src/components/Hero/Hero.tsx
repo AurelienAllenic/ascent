@@ -19,9 +19,10 @@ export type HomeSectionType = {
 
 type HeroProps = {
   onSave?: (data: HomeSectionType) => Promise<void>;
+  isEditMode?: boolean;
 };
 
-export default function Hero({ onSave }: HeroProps) {
+export default function Hero({ onSave, isEditMode }: HeroProps) {
   const { language } = useLanguage();
   const { isLoggedIn } = useAuth();
   const { editableHome, setEditableHome } = useEditableContent();
@@ -60,7 +61,7 @@ export default function Hero({ onSave }: HeroProps) {
 
       <div className={styles.content}>
         <div className={styles.mainTitleContainer}>
-          {isLoggedIn ? (
+          {isLoggedIn && isEditMode ? (
             <input
               className={styles.mainTitle}
               value={title || ""}
@@ -74,7 +75,7 @@ export default function Hero({ onSave }: HeroProps) {
         </div>
 
         <div className={styles.blockContent}>
-          {isLoggedIn ? (
+          {isLoggedIn && isEditMode ? (
             <>
               <textarea
                 className={styles.blockContentTitle}

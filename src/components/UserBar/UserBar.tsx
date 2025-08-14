@@ -5,6 +5,7 @@ import { useLanguage } from "@/app/context/LanguageContext";
 import styles from "./userBar.module.scss";
 import { CiSaveDown1 } from "react-icons/ci";
 import { IoLogOutOutline } from "react-icons/io5"
+import { FaRegEye } from "react-icons/fa";
 
 export default function UserBar() {
   const { logout } = useAuth();
@@ -43,7 +44,11 @@ export default function UserBar() {
       setTimeout(() => setMessage(null), 5000);
     }
   };
-  
+
+
+  const handleSee = () => {
+    window.open("/", "_blank");
+  };
   
   
 
@@ -53,6 +58,9 @@ export default function UserBar() {
       <div className={styles.innerUserBar}>
         <button className={styles.userBarButtonSave} onClick={handleSave}>
             {language === "fr" ? "Sauvegarder" : "Save"}<CiSaveDown1 className={styles.userBarButtonIcon}/>
+        </button>
+        <button className={styles.userBarButtonSee} onClick={handleSee}>
+            {language === "fr" ? "Voir" : "See"}<FaRegEye className={styles.userBarButtonIcon}/>
         </button>
         <button className={styles.userBarButtonLogout} onClick={logout}>
             {language === "fr" ? "Se déconnecter" : "Logout"}< IoLogOutOutline className={styles.userBarButtonIcon}/> 

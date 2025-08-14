@@ -65,7 +65,7 @@ export default function Login() {
       }
   
       // Redirection après connexion réussie
-      router.push("/");
+      router.push("/edit-page");
     } catch (err) {
       console.error(err);
       setError("Erreur serveur");

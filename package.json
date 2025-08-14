@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "create-user": "node scripts/createUser.js",
-    "create-home-section": "node scripts/createHomeSection.js"
+    "create-home-section": "node scripts/createHomeSection.js",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@prisma/client": "^6.13.0",

@@ -34,6 +34,7 @@
         transition: all 0.3s ease;
         &:hover{
             background-color: #b31212;
+            transition: all 0.3s ease;
         }
     }
     .userBarButtonSave{
@@ -51,6 +52,25 @@
         transition: all 0.3s ease;
         &:hover{
             background-color: #424141;
+            transition: all 0.3s ease;
+        }
+    }
+    .userBarButtonSee{
+        background-color: #646464;
+        border: none;
+        font-family: $font-family-primary;
+        padding: 10px 20px;
+        color: $color-text-white;
+        border-radius: 3px;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        &:hover{
+            background-color: #424141;
+            transition: all 0.3s ease;
         }
     }
     .userBarButtonIcon{
