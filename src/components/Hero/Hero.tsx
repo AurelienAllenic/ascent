@@ -46,7 +46,7 @@ export default function Hero({ onSave, isEditMode }: HeroProps) {
 
   return (
     <div className={styles.heroContainer} id="home">
-      <NavBar />
+      <NavBar isEditMode={isEditMode}/>
 
       <Image
         src={editableHome?.imageUrl || "/assets/background.png"}

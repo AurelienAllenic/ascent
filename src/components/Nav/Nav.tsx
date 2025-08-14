@@ -7,7 +7,7 @@ import { useLanguage } from "@/app/context/LanguageContext";
 import ChangeLanguageModal from "../ChangeLanguageModal/ChangeLanguageModal";
 import { useAuth } from "@/app/context/AuthContext";
 
-const NavBar = () => {
+const NavBar = ({ isEditMode }: { isEditMode?: boolean }) => {
   const { language, setLanguage } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
@@ -117,7 +117,9 @@ const NavBar = () => {
           <button onClick={toggleLang} className={styles.langSwitch}>
             {language === "fr" ? "FR" : "EN"} / {language === "fr" ? "EN" : "FR"}
           </button>
-            <button className={styles.loginLinkNotNav}> {isLoggedIn ? <a
+          {isEditMode ? 
+          <></>:
+           <button className={styles.loginLinkNotNav}> {isLoggedIn ? <a
             href="/edit-page"
             className={styles.loginBtn}
           >
@@ -130,6 +132,8 @@ const NavBar = () => {
             {language === "fr" ? "CONNEXION" : "LOGIN"}
           </a>
           }</button>
+        }
+           
           
 
           <button
