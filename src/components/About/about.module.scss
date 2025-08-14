@@ -163,7 +163,7 @@
     max-width: 1200px;
     gap: 2rem;
     min-height: 90vh;
-    grid-template-columns: 1fr auto 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
   }
 
   .aboutleftPartContent {
@@ -172,7 +172,8 @@
   }
 
   .aboutImageContainer {
-    min-height: auto;
+    min-height: 500px;
+    height: 500px;
   }
   .aboutBtn {
     font-size: $font-size-body-desktop;

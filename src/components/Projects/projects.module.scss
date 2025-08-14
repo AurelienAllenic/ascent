@@ -57,8 +57,9 @@
       position: absolute;
       width: 40vw;
       max-width: 400px;
-      aspect-ratio: 3 / 4; // Maintient des images plus hautes
-      min-height: 400px; // Hauteur minimale augmentée
+      aspect-ratio: 3 / 4;
+      min-height: 400px;
+      max-height: 450px;
       transition: transform 0.3s ease, opacity 0.3s ease, scale 0.3s ease;
 
       img {
@@ -202,6 +203,7 @@
         width: 45vw;
         max-width: 350px;
         min-height: 350px;
+        max-height: 400px;
       }
     }
 
@@ -219,6 +221,7 @@
         width: 50vw;
         max-width: 300px;
         min-height: 300px;
+        max-height: 350px;
       }
     }
 
