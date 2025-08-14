@@ -78,7 +78,41 @@
         border: none;
       }
     }
+
+    .blockContentEdit {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+
+      .blockContentTitle {
+        font-family: $font-family-secondary;
+        font-size: $font-size-h2-mobile;
+        font-weight: $font-weight-semibold;
+        line-height: $line-height-heading;
+        color: $color-text-white;
+        background: transparent;
+        border: none;
+        text-align: right;
+      }
+
+      .blockContentContent {
+        font-family: $font-family-text;
+        font-size: $font-size-body-mobile;
+        font-weight: $font-weight-regular;
+        line-height: $line-height-base;
+        margin: 0;
+        color: $color-text-white;
+        background: transparent;
+        border: none;
+        text-align: right;
+      }
+    }
   }
+
+  
+
+
   .mainTitle,
 .blockContentTitle,
 .blockContentContent {

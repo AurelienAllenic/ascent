@@ -23,7 +23,7 @@
         background-color: #d51717;
         border: none;
         font-family: $font-family-primary;
-        padding: 10px 20px;
+        padding: 5px 10px;
         color: $color-text-white;
         border-radius: 3px;
         font-weight: bold;
@@ -36,12 +36,15 @@
             background-color: #b31212;
             transition: all 0.3s ease;
         }
+        @media(min-width: 368px){
+            padding: 10px 20px;
+        }
     }
     .userBarButtonSave{
         background-color: $color-background-dark;
         border: none;
         font-family: $font-family-primary;
-        padding: 10px 20px;
+        padding: 5px 10px;
         color: $color-text-white;
         border-radius: 3px;
         font-weight: bold;
@@ -54,12 +57,15 @@
             background-color: #424141;
             transition: all 0.3s ease;
         }
+        @media(min-width: 368px){
+            padding: 10px 20px;
+        }
     }
     .userBarButtonSee{
         background-color: #646464;
         border: none;
         font-family: $font-family-primary;
-        padding: 10px 20px;
+        padding: 5px 10px;
         color: $color-text-white;
         border-radius: 3px;
         font-weight: bold;
@@ -71,6 +77,9 @@
         &:hover{
             background-color: #424141;
             transition: all 0.3s ease;
+        }
+        @media(min-width: 368px){
+            padding: 10px 20px;
         }
     }
     .userBarButtonIcon{

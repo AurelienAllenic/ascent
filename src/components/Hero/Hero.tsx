@@ -27,9 +27,8 @@ export default function Hero({ onSave, isEditMode }: HeroProps) {
   const { isLoggedIn } = useAuth();
   const { editableHome, setEditableHome } = useEditableContent();
 
-
   const handleChange = (field: keyof HomeSectionType, value: string) => {
-    setEditableHome(prev => prev ? { ...prev, [field]: value } : null);
+    setEditableHome(prev => (prev ? { ...prev, [field]: value } : null));
   };
 
   const handleSave = async () => {
@@ -74,31 +73,29 @@ export default function Hero({ onSave, isEditMode }: HeroProps) {
           )}
         </div>
 
-        <div className={styles.blockContent}>
-          {isLoggedIn && isEditMode ? (
-            <>
-              <textarea
-                className={styles.blockContentTitle}
-                value={subtitle || ""}
-                onChange={(e) =>
-                  handleChange(language === "fr" ? "subtitleFr" : "subtitleEn", e.target.value)
-                }
-              />
-              <textarea
-                className={styles.blockContentContent}
-                value={content || ""}
-                onChange={(e) =>
-                  handleChange(language === "fr" ? "contentFr" : "contentEn", e.target.value)
-                }
-              />
-            </>
-          ) : (
-            <>
-              <h2 className={styles.blockContentTitle}>{subtitle}</h2>
-              <p className={styles.blockContentContent}>{content}</p>
-            </>
-          )}
-        </div>
+        {isLoggedIn && isEditMode ? (
+          <div className={styles.blockContentEdit}>
+            <textarea
+              className={styles.blockContentTitle}
+              value={subtitle || ""}
+              onChange={(e) =>
+                handleChange(language === "fr" ? "subtitleFr" : "subtitleEn", e.target.value)
+              }
+            />
+            <textarea
+              className={styles.blockContentContent}
+              value={content || ""}
+              onChange={(e) =>
+                handleChange(language === "fr" ? "contentFr" : "contentEn", e.target.value)
+              }
+            />
+          </div>
+        ) : (
+          <div className={styles.blockContent}>
+            <h2 className={styles.blockContentTitle}>{subtitle}</h2>
+            <p className={styles.blockContentContent}>{content}</p>
+          </div>
+        )}
       </div>
     </div>
   );
