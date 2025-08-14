@@ -7,10 +7,29 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import styles from "./about.module.scss";
 import TitleSection from "../TitleSection/TitleSection";
 import { useLanguage } from "@/app/context/LanguageContext";
+import { useEditableContent } from "@/app/context/EditableContentContext";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export default function About() {
+export type AboutSectionType = {
+  id: string;
+  leftPartTitleEn: string;
+  leftPartTitleFr: string;
+  rightPartContent1En: string;
+  rightPartContent2En?: string;
+  rightPartContent1Fr: string;
+  rightPartContent2Fr?: string;
+  btnTextEn: string;
+  btnTextFr: string;
+  btnLink: string;
+};
+
+type AboutProps = {
+  onSave?: (data: AboutSectionType) => Promise<void>;
+  isEditMode?: boolean;
+};
+
+export default function About({ onSave, isEditMode }: AboutProps) {
   const aboutContentRef = useRef<HTMLDivElement>(null);
   const leftPartRef = useRef<HTMLDivElement>(null);
   const imageContainerRef = useRef<HTMLDivElement>(null);
@@ -19,6 +38,8 @@ export default function About() {
   const secondTextRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLDivElement>(null);
   const { language } = useLanguage();
+  const { editableAbout, setEditableAbout } = useEditableContent();
+  const isLoggedIn = true;
 
   useLayoutEffect(() => {
     if (!gsap || !ScrollTrigger) {
@@ -105,13 +126,82 @@ export default function About() {
     };
   }, []);
 
+  const handleChange = (field: keyof AboutSectionType, value: string) => {
+    setEditableAbout(prev => (prev ? { ...prev, [field]: value } : null));
+  };
+
+  const handleSave = async () => {
+    if (!editableAbout || !onSave) return;
+    try {
+      await onSave(editableAbout);
+    } catch (err) {
+      console.error("Erreur lors de la sauvegarde :", err);
+    }
+  };
+
+  const leftText = language === "fr" ? editableAbout?.leftPartTitleFr : editableAbout?.leftPartTitleEn;
+  const firstRightText = language === "fr" ? editableAbout?.rightPartContent1Fr : editableAbout?.rightPartContent1En;
+  const secondRightText = language === "fr" ? editableAbout?.rightPartContent2Fr : editableAbout?.rightPartContent2En;
+  const btnText = language === "fr" ? editableAbout?.btnTextFr : editableAbout?.btnTextEn;
+
   return (
     <div className={styles.aboutContainer} id="about">
       <TitleSection titleEn="ABOUT" titleFr="À PROPOS" />
+      
+      {isLoggedIn && isEditMode ? (
       <div className={styles.aboutContent} ref={aboutContentRef}>
         <div className={styles.aboutleftPartContainer} ref={leftPartRef}>
+          <textarea
+            className={styles.editableTextarea}
+            value={leftText || ""}
+            onChange={(e) => handleChange(language === "fr" ? "leftPartTitleFr" : "leftPartTitleEn", e.target.value)}
+          />
+        </div>
+
+        <div className={styles.aboutImageContainer} ref={imageContainerRef}>
+          <Image
+            src="/assets/about/about.jpg"
+            alt="About Image"
+            fill
+            style={{ objectFit: "cover" }}
+            className={styles.aboutImage}
+          />
+        </div>
+
+        <div className={styles.aboutRightPartContainer} ref={rightPartRef}>
+          <div className={styles.aboutRightPartSubContainer}>
+            <div className={styles.aboutPartContainer} ref={firstTextRef}>
+              <textarea
+                className={styles.editableTextarea}
+                value={firstRightText || ""}
+                onChange={(e) => handleChange(language === "fr" ? "rightPartContent1Fr" : "rightPartContent1En", e.target.value)}
+              />
+            </div>
+
+            <div className={styles.aboutPartContainer} ref={secondTextRef}>
+              <textarea
+                className={styles.editableTextarea}
+                value={secondRightText || ""}
+                onChange={(e) => handleChange(language === "fr" ? "rightPartContent2Fr" : "rightPartContent2En", e.target.value)}
+              />
+            </div>
+
+            <div className={styles.aboutBtnContainer} ref={buttonRef}>
+              <input
+                type="text"
+                className={styles.editableInput}
+                value={btnText || ""}
+                onChange={(e) => handleChange(language === "fr" ? "btnTextFr" : "btnTextEn", e.target.value)}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      ) : (
+        <div className={styles.aboutContent} ref={aboutContentRef}>
+        <div className={styles.aboutleftPartContainer} ref={leftPartRef}>
           <p className={styles.aboutleftPartContent}>
-            {language === "fr" ? "UNE CONCEPTION MODERNE DE L'ARCHITECTURE" : "A MODERN CONCEPTION OF ARCHITECTURE"}
+            {leftText}
           </p>
         </div>
 
@@ -129,22 +219,23 @@ export default function About() {
           <div className={styles.aboutRightPartSubContainer}>
             <div className={styles.aboutPartContainer} ref={firstTextRef}>
               <p className={styles.aboutRightText}>
-                {language === "fr" ? "Depuis 2025, Ascent est l'une des premières entreprises à innover" : "Since 2025, Ascent is one of the first company to innovate"}
+                {firstRightText}
               </p>
             </div>
 
             <div className={styles.aboutPartContainer} ref={secondTextRef}>
               <p className={styles.aboutRightText}>
-                {language === "fr" ? "Depuis 2025, Ascent est l'une des premières entreprises à innover" : "Since 2025, Ascent is one of the first company to innovate"}
+                {secondRightText}
               </p>
             </div>
 
             <div className={styles.aboutBtnContainer} ref={buttonRef}>
-              <button className={styles.aboutBtn}>{language === "fr" ? "En savoir plus" : "Learn more"}</button>
+              <button className={styles.aboutBtn}>{btnText}</button>
             </div>
           </div>
         </div>
       </div>
+      )}
     </div>
   );
 }

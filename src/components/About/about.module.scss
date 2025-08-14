@@ -29,6 +29,27 @@
   margin: 0;
   font-family: $font-family-primary;
 }
+.editableTextarea{
+  background: transparent;
+  border: none;
+  color: $color-text-body;
+  font-size: $font-size-body-mobile;
+  font-family: $font-family-text;
+  font-weight: $font-weight-regular;
+  line-height: $line-height-base;
+  resize: none;
+  overflow: hidden;
+  min-height: 85px;
+}
+.editableInput{
+  background: transparent;
+  border: none;
+  color: $color-text-body;
+  font-size: $font-size-body-mobile;
+  font-family: $font-family-text;
+  font-weight: $font-weight-regular;
+  line-height: $line-height-base;
+}
 
 .aboutImageContainer {
   position: relative;
