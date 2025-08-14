@@ -4,12 +4,12 @@ import { useAuth } from "@/app/context/AuthContext";
 import { useLanguage } from "@/app/context/LanguageContext";
 import styles from "./userBar.module.scss";
 import { CiSaveDown1 } from "react-icons/ci";
-import { IoLogOutOutline } from "react-icons/io5"
+import { IoLogOutOutline } from "react-icons/io5";
 import { FaRegEye } from "react-icons/fa";
 
 export default function UserBar() {
   const { logout } = useAuth();
-  const { editableHome } = useEditableContent();
+  const { editableAbout } = useEditableContent();
   const { language } = useLanguage();
 
   const [message, setMessage] = useState<string | null>(null);
@@ -19,21 +19,21 @@ export default function UserBar() {
     try {
       // On ne prend que les champs définis
       const body: Record<string, any> = {};
-      Object.entries(editableHome || {}).forEach(([key, value]) => {
+      Object.entries(editableAbout || {}).forEach(([key, value]) => {
         if (value !== undefined) body[key] = value;
       });
       console.log("body front =>", body);
-      const res = await fetch("/api/homeSection", {
+      const res = await fetch("/api/aboutSection", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
-  
+
       if (!res.ok) {
         const errorData = await res.json().catch(() => null);
         throw new Error(errorData?.message || "Erreur inconnue");
       }
-  
+
       setIsError(false);
       setMessage(language === "fr" ? "Modifications enregistrées !" : "Changes saved!");
       setTimeout(() => setMessage(null), 3000);
@@ -45,28 +45,29 @@ export default function UserBar() {
     }
   };
 
-
   const handleSee = () => {
-    window.open("/", "_blank");
+    window.open("/about", "_blank");
   };
-  
-  
 
   return (
     <div className={styles.userBar}>
-        <h2 className={styles.userBarText}>{language === "fr" ? "Vous êtes connecté !" : "You are connected !"}</h2>
+      <h2 className={styles.userBarText}>
+        {language === "fr" ? "Vous êtes connecté !" : "You are connected !"}
+      </h2>
       <div className={styles.innerUserBar}>
         <button className={styles.userBarButtonSave} onClick={handleSave}>
-            {language === "fr" ? "Sauvegarder" : "Save"}<CiSaveDown1 className={styles.userBarButtonIcon}/>
+          {language === "fr" ? "Sauvegarder" : "Save"}
+          <CiSaveDown1 className={styles.userBarButtonIcon} />
         </button>
         <button className={styles.userBarButtonSee} onClick={handleSee}>
-            {language === "fr" ? "Voir" : "See"}<FaRegEye className={styles.userBarButtonIcon}/>
+          {language === "fr" ? "Voir" : "See"}
+          <FaRegEye className={styles.userBarButtonIcon} />
         </button>
         <button className={styles.userBarButtonLogout} onClick={logout}>
-            {language === "fr" ? "Se déconnecter" : "Logout"}< IoLogOutOutline className={styles.userBarButtonIcon}/> 
+          {language === "fr" ? "Se déconnecter" : "Logout"}
+          <IoLogOutOutline className={styles.userBarButtonIcon} />
         </button>
       </div>
-     
 
       {message && (
         <div
