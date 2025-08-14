@@ -30,6 +30,11 @@
         display: flex;
         align-items: center;
         gap: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        &:hover{
+            background-color: #b31212;
+        }
     }
     .userBarButtonSave{
         background-color: $color-background-dark;
@@ -42,6 +47,11 @@
         display: flex;
         align-items: center;
         gap: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        &:hover{
+            background-color: #424141;
+        }
     }
     .userBarButtonIcon{
         font-size: 1.2rem;

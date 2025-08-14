@@ -27,8 +27,6 @@ export default function Hero({ onSave }: HeroProps) {
   const { editableHome, setEditableHome } = useEditableContent();
 
 
-
-
   const handleChange = (field: keyof HomeSectionType, value: string) => {
     setEditableHome(prev => prev ? { ...prev, [field]: value } : null);
   };
@@ -42,16 +40,16 @@ export default function Hero({ onSave }: HeroProps) {
     }
   };
 
-  const title = language === "fr" ? editableHome.titleFr : editableHome.titleEn;
-  const subtitle = language === "fr" ? editableHome.subtitleFr : editableHome.subtitleEn;
-  const content = language === "fr" ? editableHome.contentFr : editableHome.contentEn;
+  const title = language === "fr" ? editableHome?.titleFr : editableHome?.titleEn;
+  const subtitle = language === "fr" ? editableHome?.subtitleFr : editableHome?.subtitleEn;
+  const content = language === "fr" ? editableHome?.contentFr : editableHome?.contentEn;
 
   return (
     <div className={styles.heroContainer} id="home">
-      <NavBar onSave={handleSave} />
+      <NavBar />
 
       <Image
-        src={editableHome.imageUrl || "/assets/background.png"}
+        src={editableHome?.imageUrl || "/assets/background.png"}
         alt="Background"
         fill
         style={{ objectFit: "cover" }}
