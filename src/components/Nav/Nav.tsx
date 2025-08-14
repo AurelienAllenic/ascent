@@ -5,6 +5,7 @@ import { Menu, X } from "lucide-react";
 import styles from "./nav.module.scss";
 import { useLanguage } from "@/app/context/LanguageContext";
 import ChangeLanguageModal from "../ChangeLanguageModal/ChangeLanguageModal";
+import { useAuth } from "@/app/context/AuthContext";
 
 const NavBar = () => {
   const { language, setLanguage } = useLanguage();
@@ -13,6 +14,9 @@ const NavBar = () => {
   const [isVisible, setIsVisible] = useState(true);
   const [windowWidth, setWindowWidth] = useState(0);
   const [isLangModalOpen, setLangModalOpen] = useState(false);
+  const { isLoggedIn } = useAuth();
+
+  console.log(isLoggedIn, "isLoggedIn");
 
   const toggleLang = () => {
     setLanguage(language === "en" ? "fr" : "en");
@@ -113,10 +117,19 @@ const NavBar = () => {
           <button onClick={toggleLang} className={styles.langSwitch}>
             {language === "fr" ? "FR" : "EN"} / {language === "fr" ? "EN" : "FR"}
           </button>
-            <button className={styles.loginLinkNotNav}><a
-              href="/login"
-              className={styles.loginLink}
-            >{language === "fr" ? "CONNEXION" : "LOGIN"}</a></button>
+            <button className={styles.loginLinkNotNav}> {isLoggedIn ? <a
+            href="/edit-page"
+            className={styles.loginBtn}
+          >
+            {language === "fr" ? "EDITER" : "EDIT"}
+          </a>: 
+            <a
+            href="/login"
+            className={styles.loginBtn}
+          >
+            {language === "fr" ? "CONNEXION" : "LOGIN"}
+          </a>
+          }</button>
           
 
           <button
@@ -161,12 +174,20 @@ const NavBar = () => {
           </div>
 
           <div className={styles.mobileBottom}>
+            {isLoggedIn ? <a
+            href="/edit-page"
+            className={styles.loginBtn}
+          >
+            {language === "fr" ? "EDITER" : "EDIT"}
+          </a>: 
             <a
-              href="/login"
-              className={styles.loginBtn}
-            >
-              {language === "fr" ? "CONNEXION" : "LOGIN"}
-            </a>
+            href="/login"
+            className={styles.loginBtn}
+          >
+            {language === "fr" ? "CONNEXION" : "LOGIN"}
+          </a>
+          }
+            
             <button onClick={toggleLang} className={styles.langBtnMobile}>
               {language === "fr" ? "FR/EN" : "EN/FR"}
             </button>
