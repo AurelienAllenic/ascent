@@ -31,12 +31,12 @@ type NumberProps = {
   isEditMode?: boolean;
 };
 
-
 export default function Numbers({ onSave, isEditMode }: NumberProps) {
   const numbersSectionRef = useRef<HTMLDivElement>(null);
   const cardsContainerRef = useRef<HTMLDivElement>(null);
   const { language } = useLanguage();
-  const { editableNumberSection, setEditableNumberSection } = useEditableContent();
+  const { editableNumberSection, setEditableNumberSection } =
+    useEditableContent();
   const isLoggedIn = true;
 
   useLayoutEffect(() => {
@@ -98,53 +98,26 @@ export default function Numbers({ onSave, isEditMode }: NumberProps) {
   };
 
   return (
-    <section className={styles.numbersSection} id="numbers" ref={numbersSectionRef}>
+    <section
+      className={styles.numbersSection}
+      id="numbers"
+      ref={numbersSectionRef}
+    >
       <TitleSection titleEn="NUMBERS" titleFr="CHIFFRES" color="white" />
       <div className={styles.cards} ref={cardsContainerRef}>
         {editableNumberSection?.cards.map((card, index) => (
-          isLoggedIn && isEditMode ? (
-            <div key={card.id} className={styles.editableCard}>
-              <input
-                type="text"
-                className={styles.editableInput}
-                value={card.number}
-                onChange={(e) => handleChange(index, "number", e.target.value)}
-              />
-              <input
-                type="text"
-                className={styles.editableInput}
-                value={card.unit || ""}
-                onChange={(e) => handleChange(index, "unit", e.target.value)}
-                placeholder="Unit (optional)"
-              />
-              <textarea
-                className={styles.editableTextarea}
-                value={language === "fr" ? card.textFr : card.textEn}
-                onChange={(e) =>
-                  handleChange(index, language === "fr" ? "textFr" : "textEn", e.target.value)
-                }
-              />
-              <input
-                type="text"
-                className={styles.editableInput}
-                value={card.size}
-                onChange={(e) => handleChange(index, "size", e.target.value)}
-                placeholder="Size (e.g., small, medium, large)"
-              />
-            </div>
-          ) : (
-            <NumberCard
-              key={card.id}
-              number={card.number}
-              unit={card.unit}
-              textFr={card.textFr}
-              textEn={card.textEn}
-              size={card.size}
-              customClass={card.size}
-              animationDelay={index * 0.2}
-              isEditMode={isEditMode}
-            />
-          )
+          <NumberCard
+            key={card.id}
+            number={card.number}
+            unit={card.unit}
+            textFr={card.textFr}
+            textEn={card.textEn}
+            size={card.size}
+            customClass={card.size}
+            animationDelay={index * 0.2}
+            isEditMode={isEditMode}
+            onChange={(field, value) => handleChange(index, field, value)}
+          />
         ))}
       </div>
     </section>

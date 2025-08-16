@@ -148,6 +148,164 @@
   }
 }
 
+.numberCardInputs {
+  color: $color-text-white;
+  font-family: $font-family-secondary;
+  text-align: center;
+  position: static;
+  display: flex;
+  flex-direction: column;
+
+  & .numberInput {
+    font-weight: $font-weight-bold;
+    line-height: $line-height-heading;
+    background: transparent;
+    border: none;
+    color: $color-text-white;
+
+    &.small {
+      font-size: $font-size-h2-mobile;
+    }
+
+    &.medium {
+      font-size: $font-size-h1-mobile;
+    }
+
+    &.large {
+      font-size: $font-size-h1-mobile;
+    }
+  }
+  .unitInput {
+    font-size: inherit;
+    background: transparent;
+    border: none;
+    color: $color-text-white;
+  }
+
+  & .textInput {
+    color: $color-text-secondary;
+    font-weight: $font-weight-regular;
+    background: transparent;
+    border: none;
+    color: $color-text-white;
+
+    &.small {
+      font-size: $font-size-body-mobile;
+    }
+
+    &.medium {
+      font-size: $font-size-body-mobile;
+    }
+
+    &.large {
+      font-size: $font-size-body-mobile;
+    }
+  }
+
+  @media (min-width: 768px) {
+    position: absolute !important;
+    z-index: 1;
+
+    &:nth-child(1) {
+      top: 5% !important;
+      left: 10% !important;
+    }
+
+    &:nth-child(2) {
+      top: 15% !important;
+      right: 25% !important;
+    }
+
+    &:nth-child(3) {
+      top: 60% !important;
+      left: 5% !important;
+    }
+
+    &:nth-child(4) {
+      top: 65% !important;
+      right: 10% !important;
+    }
+
+    .numberInput {
+      &.small {
+        font-size: $font-size-h2-tab;
+      }
+
+      &.medium {
+        font-size: $font-size-h1-tab;
+      }
+
+      &.large {
+        font-size: $font-size-h1-tab;
+      }
+    }
+
+    .textInput {
+      &.small {
+        font-size: $font-size-body-tab;
+      }
+
+      &.medium {
+        font-size: $font-size-body-tab;
+      }
+
+      &.large {
+        font-size: $font-size-body-tab;
+      }
+    }
+  }
+
+  @media (min-width: 1200px) {
+    &:nth-child(1) {
+      top: 10% !important;
+      left: 5% !important;
+    }
+
+    &:nth-child(2) {
+      top: 20% !important;
+      right: 35% !important;
+    }
+
+    &:nth-child(3) {
+      top: 60% !important;
+      left: 25% !important;
+    }
+
+    &:nth-child(4) {
+      top: 60% !important;
+      right: 15% !important;
+    }
+
+    .number {
+      &.small {
+        font-size: $font-size-h2-desktop;
+      }
+
+      &.medium {
+        font-size: $font-size-h1-desktop;
+      }
+
+      &.large {
+        font-size: $font-size-h1-big-desktop;
+      }
+    }
+
+    .text {
+      &.small {
+        font-size: $font-size-body-desktop;
+      }
+
+      &.medium {
+        font-size: $font-size-body-desktop;
+      }
+
+      &.large {
+        font-size: $font-size-body-big-desktop;
+      }
+    }
+  }
+}
+
 .small,
 .medium,
 .large {

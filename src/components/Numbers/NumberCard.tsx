@@ -16,6 +16,8 @@ interface NumberCardProps {
   size: "small" | "medium" | "large";
   customClass?: string;
   animationDelay: number;
+  isEditMode?: boolean;
+  onChange?: (field: string, value: string) => void;
 }
 
 const NumberCard: React.FC<NumberCardProps> = ({
@@ -26,7 +28,8 @@ const NumberCard: React.FC<NumberCardProps> = ({
   size,
   customClass,
   animationDelay,
-  isEditMode
+  isEditMode,
+  onChange,
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const numberRef = useRef<HTMLSpanElement>(null);
@@ -37,7 +40,7 @@ const NumberCard: React.FC<NumberCardProps> = ({
       console.error("GSAP or ScrollTrigger not loaded");
       return;
     }
-    if(isEditMode) return;
+    if (isEditMode) return;
 
     if (!cardRef.current || !numberRef.current) {
       console.error(
@@ -121,13 +124,66 @@ const NumberCard: React.FC<NumberCardProps> = ({
   }, [number, unit, animationDelay]);
 
   return (
-    <div className={`${styles.numberCard} ${customClass || ""}`} ref={cardRef}>
-      <span className={`${styles.number} ${styles[size]}`} ref={numberRef}>
-        {number}
-        {unit && <span className={styles.unit}>{unit}</span>}
-      </span>
-      <p className={`${styles.text} ${styles[size]}`}>{language === "fr" ? textFr : textEn}</p>
-    </div>
+    <>
+      {isEditMode ? (
+        <div
+          className={`${styles.numberCardInputs} ${customClass || ""}`}
+          ref={cardRef}
+        >
+          <input
+            type="text"
+            className={`${styles.numberInput} ${styles[size]}`}
+            value={number}
+            onChange={(e) => onChange?.("number", e.target.value)}
+          />
+          <input
+            type="text"
+            className={styles.unitInput}
+            value={unit || ""}
+            onChange={(e) => onChange?.("unit", e.target.value)}
+            placeholder="Unit (optional)"
+          />
+          <textarea
+            className={`${styles.textInput} ${styles[size]}`}
+            value={language === "fr" ? textFr : textEn}
+            onChange={(e) =>
+              onChange?.(
+                language === "fr" ? "textFr" : "textEn",
+                e.target.value
+              )
+            }
+          />
+          <select
+            className={styles.sizeInput}
+            value={size}
+            onChange={(e) => onChange?.("size", e.target.value)}
+          >
+            <option value="small">
+              {language === "en" ? "Size: Small" : "Taille : Petite"}
+            </option>
+            <option value="medium">
+              {language === "en" ? "Size: Medium" : "Taille : Moyenne"}
+            </option>
+            <option value="large">
+              {language === "en" ? "Size: Large" : "Taille : Grande"}
+            </option>
+          </select>
+        </div>
+      ) : (
+        <div
+          className={`${styles.numberCard} ${customClass || ""}`}
+          ref={cardRef}
+        >
+          <span className={`${styles.number} ${styles[size]}`} ref={numberRef}>
+            {number}
+            {unit && <span className={styles.unit}>{unit}</span>}
+          </span>
+          <p className={`${styles.text} ${styles[size]}`}>
+            {language === "fr" ? textFr : textEn}
+          </p>
+        </div>
+      )}
+    </>
   );
 };
 
