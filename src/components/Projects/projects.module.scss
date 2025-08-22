@@ -130,6 +130,17 @@
       font-size: $font-size-body-desktop;
       color: $color-text-secondary;
       text-align: center;
+      height: 25px;
+      @media(min-width: 910px){
+        height: 45px;
+      }
+      @media(min-width: 1100px){
+        height: 100 px;
+      }
+      @media(min-width: 1199px){
+        height: 150px;
+      }
+
     }
 
     .detailCarousel {
@@ -231,9 +242,6 @@
     .projectDetail {
       bottom: 50px;
     }
-    .generalDescription {
-      height: 100px !important;
-    }
     .projectDetail {
       bottom: 0 !important;
     }
@@ -269,9 +277,6 @@
     }
     .projectDetail p {
       font-size: $font-size-body-mobile !important;
-    }
-    .generalDescription {
-      height: 40px !important;
     }
     .carouselCaption {
       font-size: $font-size-body-mobile;
