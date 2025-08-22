@@ -7,6 +7,7 @@ import { useLanguage } from "@/app/context/LanguageContext";
 import ChangeLanguageModal from "../ChangeLanguageModal/ChangeLanguageModal";
 import { Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { FaArrowLeftLong } from "react-icons/fa6";
 
 export default function Login() {
   const { language, setLanguage } = useLanguage();
@@ -28,6 +29,7 @@ export default function Login() {
     toggleLangButton: language === "fr" ? "EN / FR" : "FR / EN",
     showPassword: language === "fr" ? "Afficher le mot de passe" : "Show password",
     hidePassword: language === "fr" ? "Masquer le mot de passe" : "Hide password",
+    returnToHome: language === "fr" ? "Accueil" : "Home",
   };
 
   const toggleLang = () => {
@@ -70,7 +72,10 @@ export default function Login() {
       setError("Erreur serveur");
     }
   };
-  
+
+  const returnToHome = () => {
+    router.push("/");
+  };
 
   return (
     <div className={styles.container}>
@@ -118,7 +123,9 @@ export default function Login() {
 
           <button type="submit" className={styles.validate}>{texts.validate}</button>
         </form>
-
+        <button onClick={returnToHome} className={styles.returnToHome}>
+          <FaArrowLeftLong size={15} /> {texts.returnToHome}
+        </button>
         <a href="/forgot-password" className={styles.passwordIssue}>{texts.passwordIssue}</a>
       </div>
 

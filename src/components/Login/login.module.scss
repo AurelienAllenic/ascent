@@ -206,3 +206,22 @@
     }
   }
   
+.returnToHome{
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  background-color: transparent;
+  border: none;
+  color: white;
+  font-size: 0.8rem;
+  cursor: pointer;
+  text-decoration: none;
+  font-family: $font-family-secondary;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  &:hover{
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+  }
+}

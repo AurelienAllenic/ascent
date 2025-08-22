@@ -5,12 +5,15 @@ import Image from "next/image";
 import styles from "./forgotpassword.module.scss";
 import { useLanguage } from "@/app/context/LanguageContext";
 import ChangeLanguageModal from "../ChangeLanguageModal/ChangeLanguageModal";
+import { useRouter } from "next/navigation";
+import { FaArrowLeftLong } from "react-icons/fa6";
 
 export default function ForgotPassword() {
   const { language, setLanguage } = useLanguage();
   const [isLangModalOpen, setLangModalOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [statusMessage, setStatusMessage] = useState("");
+  const router = useRouter();
 
   const texts = {
     emailLabel: language === "fr" ? "Adresse email" : "Email address",
@@ -20,6 +23,7 @@ export default function ForgotPassword() {
     validate: language === "fr" ? "Valider" : "Validate",
     passwordIssue: language === "fr" ? "Page de connexion" : "Connexion page",
     toggleLangButton: language === "fr" ? "EN / FR" : "FR / EN",
+    returnToHome: language === "fr" ? "Accueil" : "Home",
   };
 
   const toggleLang = () => {
@@ -56,6 +60,10 @@ export default function ForgotPassword() {
           : "Error sending the email"
       );
     }
+  };
+
+  const returnToHome = () => {
+    router.push("/");
   };
 
   return (
@@ -105,7 +113,9 @@ export default function ForgotPassword() {
         </form>
 
         {statusMessage && <p className={styles.statusMessage}>{statusMessage}</p>}
-
+        <button onClick={returnToHome} className={styles.returnToHome}>
+          <FaArrowLeftLong size={15} /> {texts.returnToHome}
+        </button>
         <a href="/login" className={styles.passwordIssue}>
           {texts.passwordIssue}
         </a>
