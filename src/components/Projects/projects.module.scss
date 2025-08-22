@@ -24,8 +24,7 @@
   h2,
   p.generalDescription,
   .carouselItem {
-    opacity: 0;
-    transform: translateX(-50px);
+    opacity: 1;
   }
 }
 .containerTitleSection {
@@ -131,7 +130,6 @@
       font-size: $font-size-body-desktop;
       color: $color-text-secondary;
       text-align: center;
-      height: 150px;
     }
 
     .detailCarousel {

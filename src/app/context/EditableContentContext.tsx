@@ -5,6 +5,20 @@ import type { HomeSectionType } from "@/components/Hero/Hero";
 import type { AboutSectionType } from "@/components/About/About";
 import type { NumberSectionType } from "@/components/Numbers/Numbers";
 
+// Définir le type pour les projets
+export interface ProjectType {
+  titleEn: string;
+  titleFr: string;
+  featuredImage: string;
+  generalDescriptionEn?: string;
+  generalDescriptionFr?: string;
+  images: Array<{
+    url: string;
+    descriptionEn: string;
+    descriptionFr: string;
+  }>;
+}
+
 // Mettre à jour le type du contexte
 type EditableContentContextType = {
   editableHome: HomeSectionType | null;
@@ -13,7 +27,10 @@ type EditableContentContextType = {
   setEditableAbout: React.Dispatch<React.SetStateAction<AboutSectionType | null>>;
   editableNumberSection: NumberSectionType | null;
   setEditableNumberSection: React.Dispatch<React.SetStateAction<NumberSectionType | null>>;
+  projects: ProjectType[] | null;
+  setProjects: React.Dispatch<React.SetStateAction<ProjectType[] | null>>;
   loading: boolean;
+  error: string | null;
 };
 
 const EditableContentContext = createContext<EditableContentContextType | undefined>(undefined);
@@ -22,8 +39,10 @@ export function EditableContentProvider({ children }: { children: ReactNode }) {
   const [editableHome, setEditableHome] = useState<HomeSectionType | null>(null);
   const [editableAbout, setEditableAbout] = useState<AboutSectionType | null>(null);
   const [editableNumberSection, setEditableNumberSection] = useState<NumberSectionType | null>(null);
+  const [projects, setProjects] = useState<ProjectType[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [fadeOut, setFadeOut] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const scrollY = window.scrollY;
@@ -34,16 +53,34 @@ export function EditableContentProvider({ children }: { children: ReactNode }) {
     const startTime = Date.now();
 
     Promise.all([
-      fetch("/api/homeSection").then(res => res.json()),
-      fetch("/api/aboutSection").then(res => res.json()),
-      fetch("/api/numberSection").then(res => res.json()),
+      fetch("/api/homeSection").then(res => {
+        if (!res.ok) throw new Error("Failed to fetch home section");
+        return res.json();
+      }),
+      fetch("/api/aboutSection").then(res => {
+        if (!res.ok) throw new Error("Failed to fetch about section");
+        return res.json();
+      }),
+      fetch("/api/numberSection").then(res => {
+        if (!res.ok) throw new Error("Failed to fetch number section");
+        return res.json();
+      }),
+      fetch("/api/projectsSection").then(res => {
+        if (!res.ok) throw new Error("Failed to fetch projects");
+        return res.json().then(data => data.projects); // Extraire le tableau projects
+      }),
     ])
-      .then(([homeData, aboutData, numberSectionData]) => {
+      .then(([homeData, aboutData, numberSectionData, projectsData]) => {
         setEditableHome(homeData);
         setEditableAbout(aboutData);
         setEditableNumberSection(numberSectionData);
+        setProjects(projectsData);
+        setError(null);
       })
-      .catch(err => console.error("Erreur fetch sections éditables:", err))
+      .catch(err => {
+        console.error("Erreur fetch sections éditables:", err);
+        setError(err.message);
+      })
       .finally(() => {
         const elapsed = Date.now() - startTime;
         const remainingTime = Math.max(0, 1000 - elapsed);
@@ -112,7 +149,10 @@ export function EditableContentProvider({ children }: { children: ReactNode }) {
         setEditableAbout,
         editableNumberSection,
         setEditableNumberSection,
+        projects,
+        setProjects,
         loading,
+        error,
       }}
     >
       {children}

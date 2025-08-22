@@ -3,11 +3,12 @@
 import React, { useState, useRef, useEffect } from "react";
 import gsap from "gsap";
 import styles from "./projects.module.scss";
-import projectsData from "./projects.json";
 import TitleSection from "../TitleSection/TitleSection";
 import { useLanguage } from "@/app/context/LanguageContext";
+import { useEditableContent, ProjectType } from "@/app/context/EditableContentContext";
 
 const Projects: React.FC = () => {
+  const { projects, loading, error } = useEditableContent();
   const [selectedProject, setSelectedProject] = useState<number | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [detailCurrentIndex, setDetailCurrentIndex] = useState(0);
@@ -28,10 +29,8 @@ const Projects: React.FC = () => {
   const titleRef = useRef<HTMLHeadingElement>(null);
   const descriptionRef = useRef<HTMLParagraphElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const scrollYRef = useRef(0);
-  const [scrollProgress, setScrollProgress] = useState(0);
 
-  const totalProjects = projectsData.projects.length;
+  const totalProjects = projects?.length || 0;
 
   const positionConfig = [
     { maxWidth: 768, translateX: "100%", scale: 0.75, heightScale: 0.75 },
@@ -57,13 +56,12 @@ const Projects: React.FC = () => {
         detailCarouselRef.current.classList.add(styles.noTransition);
       }
 
-      if (detailCarouselRef.current && selectedProject !== null) {
+      if (detailCarouselRef.current && selectedProject !== null && projects) {
         const detailItems = detailCarouselRef.current.querySelectorAll(
           `.${styles.carouselItem}`
         );
         detailItems.forEach((item, index) => {
-          const totalImages =
-            projectsData.projects[selectedProject].images.length;
+          const totalImages = projects[selectedProject].images.length;
           const itemIndex =
             (detailCurrentIndex + index - 1 + totalImages) % totalImages;
           gsap.set(item, {
@@ -87,10 +85,10 @@ const Projects: React.FC = () => {
     updatePositionStyles();
     window.addEventListener("resize", updatePositionStyles);
     return () => window.removeEventListener("resize", updatePositionStyles);
-  }, [detailCurrentIndex, selectedProject]);
+  }, [detailCurrentIndex, selectedProject, projects]);
 
   useEffect(() => {
-    if (!projectsRef.current || !carouselRef.current) return;
+    if (!projectsRef.current || !carouselRef.current || !projects) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -153,7 +151,7 @@ const Projects: React.FC = () => {
         observer.unobserve(projectsRef.current);
       }
     };
-  }, [selectedProject, isTransitioning, positionStyles]);
+  }, [selectedProject, isTransitioning, positionStyles, projects]);
 
   useEffect(() => {
     if (selectedProject === null || isTransitioning || !projectsRef.current)
@@ -543,12 +541,13 @@ const Projects: React.FC = () => {
     if (
       detailAnimating.current ||
       !detailCarouselRef.current ||
-      selectedProject === null
+      selectedProject === null ||
+      !projects
     )
       return;
     detailAnimating.current = true;
 
-    const totalImages = projectsData.projects[selectedProject].images.length;
+    const totalImages = projects[selectedProject].images.length;
     const items = detailCarouselRef.current.querySelectorAll(
       `.${styles.carouselItem}`
     );
@@ -663,6 +662,44 @@ const Projects: React.FC = () => {
     }
   };
 
+  if (loading) {
+    return null;
+  }
+
+  if (error) {
+    return (
+      <div className={styles.containerProjects} id="projects">
+        <div className={styles.containerTitleSection}>
+          <TitleSection
+            titleEn="PROJECTS"
+            titleFr="PROJETS"
+            color=""
+          />
+        </div>
+        <div className={styles.projects}>
+          <p>Error loading projects: {error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!projects || projects.length === 0) {
+    return (
+      <div className={styles.containerProjects} id="projects">
+        <div className={styles.containerTitleSection}>
+          <TitleSection
+            titleEn="PROJECTS"
+            titleFr="PROJETS"
+            color=""
+          />
+        </div>
+        <div className={styles.projects}>
+          <p>No projects available</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.containerProjects} id="projects">
       <div
@@ -679,7 +716,7 @@ const Projects: React.FC = () => {
         style={
           selectedProject !== null
             ? {
-                backgroundImage: `url(${projectsData.projects[selectedProject].featuredImage})`,
+                backgroundImage: `url(${projects[selectedProject].featuredImage})`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
               }
@@ -723,10 +760,10 @@ const Projects: React.FC = () => {
                       }}
                       onClick={() => handleImageClick(positionIndex)}
                     >
-                        <p>{language === "fr" ? projectsData.projects[projectIndex].titleFr : projectsData.projects[projectIndex].titleEn}</p>
-                        <img
-                        src={projectsData.projects[projectIndex].featuredImage}
-                        alt={language === "fr" ? projectsData.projects[projectIndex].titleFr : projectsData.projects[projectIndex].titleEn}
+                      <p>{language === "fr" ? projects[projectIndex].titleFr : projects[projectIndex].titleEn}</p>
+                      <img
+                        src={projects[projectIndex].featuredImage}
+                        alt={language === "fr" ? projects[projectIndex].titleFr : projects[projectIndex].titleEn}
                         loading="lazy"
                       />
                     </div>
@@ -741,10 +778,10 @@ const Projects: React.FC = () => {
             <>
               <div className={styles.projectDetail}>
                 <h2 ref={titleRef}>
-                  {language === "fr" ? projectsData.projects[selectedProject].titleFr : projectsData.projects[selectedProject].titleEn}
+                  {language === "fr" ? projects[selectedProject].titleFr : projects[selectedProject].titleEn}
                 </h2>
                 <p ref={descriptionRef} className={styles.generalDescription}>
-                  {language === "fr" ? projectsData.projects[selectedProject].generalDescriptionFr : projectsData.projects[selectedProject].generalDescriptionEn}
+                  {language === "fr" ? projects[selectedProject].generalDescriptionFr : projects[selectedProject].generalDescriptionEn}
                 </p>
                 <div
                   className={styles.detailCarousel}
@@ -759,15 +796,15 @@ const Projects: React.FC = () => {
                   {[
                     getDetailItemIndex(
                       -1,
-                      projectsData.projects[selectedProject].images.length
+                      projects[selectedProject].images.length
                     ),
                     getDetailItemIndex(
                       0,
-                      projectsData.projects[selectedProject].images.length
+                      projects[selectedProject].images.length
                     ),
                     getDetailItemIndex(
                       1,
-                      projectsData.projects[selectedProject].images.length
+                      projects[selectedProject].images.length
                     ),
                   ].map((imageIndex, positionIndex) => (
                     <div
@@ -781,22 +818,14 @@ const Projects: React.FC = () => {
                       }}
                     >
                       <img
-                        src={
-                          projectsData.projects[selectedProject].images[
-                            imageIndex
-                          ].url
-                        }
-                        alt={`${language === "fr" ? projectsData.projects[selectedProject].titleFr : projectsData.projects[selectedProject].titleEn} - ${imageIndex}`}
+                        src={projects[selectedProject].images[imageIndex].url}
+                        alt={`${language === "fr" ? projects[selectedProject].titleFr : projects[selectedProject].titleEn} - ${imageIndex}`}
                         loading="lazy"
                       />
                       <p>
-                        {
-                          language === "fr" ? projectsData.projects[selectedProject].images[
-                            imageIndex
-                          ].descriptionFr : projectsData.projects[selectedProject].images[
-                            imageIndex
-                          ].descriptionEn
-                        }
+                        {language === "fr"
+                          ? projects[selectedProject].images[imageIndex].descriptionFr
+                          : projects[selectedProject].images[imageIndex].descriptionEn}
                       </p>
                     </div>
                   ))}
