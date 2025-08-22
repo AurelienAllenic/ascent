@@ -16,8 +16,6 @@ const NavBar = ({ isEditMode }: { isEditMode?: boolean }) => {
   const [isLangModalOpen, setLangModalOpen] = useState(false);
   const { isLoggedIn } = useAuth();
 
-  console.log(isLoggedIn, "isLoggedIn");
-
   const toggleLang = () => {
     setLanguage(language === "en" ? "fr" : "en");
     setLangModalOpen(true);

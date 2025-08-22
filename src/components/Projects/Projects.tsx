@@ -99,7 +99,6 @@ const Projects: React.FC = () => {
           entry.isIntersecting &&
           !isTransitioning
         ) {
-          console.log("Destacking triggered: section visible");
           const carouselItems = carouselRef.current!.querySelectorAll(
             `.${styles.carouselItem}`
           );
@@ -114,7 +113,6 @@ const Projects: React.FC = () => {
 
           const timeline = gsap.timeline({
             onComplete: () => {
-              console.log("Destacking complete");
               setIsTransitioning(false);
             },
           });
@@ -164,7 +162,6 @@ const Projects: React.FC = () => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.intersectionRatio < 0.5) {
-          console.log("Triggering handleBack: section visibility < 50%");
           handleBack();
         }
       },

@@ -27,7 +27,6 @@ export async function GET() {
 export async function PUT(request: Request) {
   try {
     const body = await request.json();
-    console.log("body =>", body);
 
     const numberSection = await prisma.numberSection.findFirst();
     if (!numberSection) {

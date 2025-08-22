@@ -57,7 +57,6 @@ export default function Login() {
       }
   
       const data = await res.json();
-      console.log("Login success:", data);
   
       // ⚡ Sauvegarde du token dans le localStorage
       if (data.token) {

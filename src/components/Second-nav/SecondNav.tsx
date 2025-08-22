@@ -38,7 +38,7 @@ const SecondNav = () => {
       },
       {
         threshold: 0.05,
-        rootMargin: "100px",
+        rootMargin: "0px",
       }
     );
 

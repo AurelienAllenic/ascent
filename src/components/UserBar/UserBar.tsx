@@ -23,7 +23,6 @@ export default function UserBar() {
         Object.entries(editableAbout).forEach(([key, value]) => {
           if (value !== undefined) aboutBody[key] = value;
         });
-        console.log("body front (about) =>", aboutBody);
         const aboutRes = await fetch("/api/aboutSection", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -42,7 +41,6 @@ export default function UserBar() {
         Object.entries(editableNumberSection).forEach(([key, value]) => {
           if (value !== undefined) numberBody[key] = value;
         });
-        console.log("body front (numbers) =>", numberBody);
         const numberRes = await fetch("/api/numberSection", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
