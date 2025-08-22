@@ -1,44 +1,75 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import styles from "./resetpassword.module.scss";
 import { useLanguage } from "@/app/context/LanguageContext";
 import ChangeLanguageModal from "../ChangeLanguageModal/ChangeLanguageModal";
-import { Eye, EyeOff } from "lucide-react";
 
 export default function ResetPassword() {
   const { language, setLanguage } = useLanguage();
   const [isLangModalOpen, setLangModalOpen] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [statusMessage, setStatusMessage] = useState("");
+  const [token, setToken] = useState<string | null>(null);
+
+  // Extract token on the client side to avoid SSR issues
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const tokenFromUrl = searchParams.get("token");
+    setToken(tokenFromUrl);
+  }, []);
 
   const texts = {
-    emailLabel: language === "fr" ? "Adresse email" : "Email address",
-    emailPlaceholder:
-      language === "fr"
-        ? "Votre email"
-        : "Please enter your email",
-    passwordLabel: language === "fr" ? "Mot de passe" : "Password",
-    passwordPlaceholder:
-      language === "fr"
-        ? "Votre mot de passe"
-        : "Please enter your password",
-    loginText: language === "fr" ? "Mot de passe oublié" : "Forgot password",
+    passwordLabel: language === "fr" ? "Nouveau mot de passe" : "New password",
+    confirmPasswordLabel: language === "fr" ? "Confirmer le mot de passe" : "Confirm password",
     validate: language === "fr" ? "Valider" : "Validate",
-    passwordIssue: language === "fr" ? "Page de connexion" : "Connexion page",
+    passwordIssue: language === "fr" ? "Page de connexion" : "Login page",
     toggleLangButton: language === "fr" ? "EN / FR" : "FR / EN",
-    showPassword: language === "fr" ? "Afficher le mot de passe" : "Show password",
-    hidePassword: language === "fr" ? "Masquer le mot de passe" : "Hide password",
+    pageTitle: language === "fr" ? "Réinitialisation du mot de passe" : "Reset password",
   };
 
   const toggleLang = () => {
-    console.log("BOUTON CLIQUÉ !!! Langue actuelle:", language);
     setLanguage(language === "en" ? "fr" : "en");
     setLangModalOpen(true);
   };
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!password || !confirmPassword) {
+      setStatusMessage(language === "fr" ? "Veuillez remplir tous les champs" : "Please fill all fields");
+      return;
+    }
+    if (password !== confirmPassword) {
+      setStatusMessage(language === "fr" ? "Les mots de passe ne correspondent pas" : "Passwords do not match");
+      return;
+    }
+    if (!token) {
+      setStatusMessage(language === "fr" ? "Token manquant" : "Missing token");
+      return;
+    }
+
+    setStatusMessage(language === "fr" ? "Envoi en cours..." : "Submitting...");
+
+    try {
+      const res = await fetch("/api/reset-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token, password }),
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        setStatusMessage(language === "fr" ? "Mot de passe changé avec succès !" : "Password changed successfully!");
+        setTimeout(() => window.location.href = "/login", 2000);
+      } else {
+        setStatusMessage(data.error || "Erreur");
+      }
+    } catch (err) {
+      console.error(err);
+      setStatusMessage(language === "fr" ? "Erreur serveur" : "Server error");
+    }
   };
 
   return (
@@ -46,11 +77,7 @@ export default function ResetPassword() {
       <button
         onClick={toggleLang}
         className={styles.langButtonLogin}
-        aria-label={
-          language === "fr"
-            ? "Changer la langue en anglais"
-            : "Switch language to French"
-        }
+        aria-label={language === "fr" ? "Changer la langue en anglais" : "Switch language to French"}
         type="button"
       >
         {texts.toggleLangButton}
@@ -66,27 +93,38 @@ export default function ResetPassword() {
       />
 
       <div className={styles.content}>
-        <p className={styles.loginLink}>
-          {texts.loginText}
-        </p>
-        <form className={styles.form}>
+        <p className={styles.loginLink}>{texts.pageTitle}</p>
+        <form className={styles.form} onSubmit={handleSubmit}>
           <div className={styles.formPart}>
-            <label className={styles.label} htmlFor="email">
-              {texts.emailLabel}
-            </label>
-            <div className={styles.passwordContainer}>
-                <input
-                id="email"
-                type="email"
-                placeholder={texts.emailPlaceholder}
-                className={styles.input}
-                />
-            </div>
+            <label className={styles.label}>{texts.passwordLabel}</label>
+            <input
+              type="password"
+              placeholder={texts.passwordLabel}
+              className={styles.input}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
           </div>
+
+          <div className={styles.formPart}>
+            <label className={styles.label}>{texts.confirmPasswordLabel}</label>
+            <input
+              type="password"
+              placeholder={texts.confirmPasswordLabel}
+              className={styles.input}
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+            />
+          </div>
+
           <button type="submit" className={styles.validate}>
             {texts.validate}
           </button>
         </form>
+
+        {statusMessage && <p className={styles.statusMessage}>{statusMessage}</p>}
 
         <a href="/login" className={styles.passwordIssue}>
           {texts.passwordIssue}

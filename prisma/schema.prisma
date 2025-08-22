@@ -13,6 +13,10 @@ model User {
   password  String
   createdAt DateTime @default(now()) @map("created_at")
 
+  // champs pour reset password
+  resetToken     String?   @map("reset_token")
+  resetTokenExp  DateTime? @map("reset_token_exp")
+
   homeSections     HomeSection[]    @relation("UserHomeSections")
   aboutSections    AboutSection[]   @relation("UserAboutSections")
   numberSections   NumberSection[]  @relation("UserNumberSections")
@@ -22,6 +26,7 @@ model User {
   footerSettings   FooterSetting[]  @relation("UserFooterSettings")
   cguSections      CguSection[]     @relation("UserCguSections")
 }
+
 
 model HomeSection {
   id          String   @id @map("_id") @default(auto()) @db.ObjectId

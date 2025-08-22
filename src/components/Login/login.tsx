@@ -119,7 +119,7 @@ export default function Login() {
           <button type="submit" className={styles.validate}>{texts.validate}</button>
         </form>
 
-        <a href="/reset-password" className={styles.passwordIssue}>{texts.passwordIssue}</a>
+        <a href="/forgot-password" className={styles.passwordIssue}>{texts.passwordIssue}</a>
       </div>
 
       <ChangeLanguageModal isOpen={isLangModalOpen} onClose={() => setLangModalOpen(false)} currentLanguage={language} />

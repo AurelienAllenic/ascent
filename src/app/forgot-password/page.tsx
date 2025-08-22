@@ -1,12 +1,12 @@
 "use client";
 
 import { LanguageProvider } from "@/app/context/LanguageContext";
-import ResetPassword from "@/components/ResetPassword/ResetPassword";
+import ForgotPassword from "@/components/ForgotPassword/ForgotPassword";
 
-export default function ResetPasswordPage() {
+export default function ForgotPasswordPage() {
   return (
     <LanguageProvider>
-      <ResetPassword />
+      <ForgotPassword />
     </LanguageProvider>
   );
 }
