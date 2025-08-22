@@ -5,6 +5,7 @@ import Image from "next/image";
 import styles from "./resetpassword.module.scss";
 import { useLanguage } from "@/app/context/LanguageContext";
 import ChangeLanguageModal from "../ChangeLanguageModal/ChangeLanguageModal";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function ResetPassword() {
   const { language, setLanguage } = useLanguage();
@@ -13,8 +14,9 @@ export default function ResetPassword() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [statusMessage, setStatusMessage] = useState("");
   const [token, setToken] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  // Extract token on the client side to avoid SSR issues
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
     const tokenFromUrl = searchParams.get("token");
@@ -28,6 +30,8 @@ export default function ResetPassword() {
     passwordIssue: language === "fr" ? "Page de connexion" : "Login page",
     toggleLangButton: language === "fr" ? "EN / FR" : "FR / EN",
     pageTitle: language === "fr" ? "Réinitialisation du mot de passe" : "Reset password",
+    showPassword: language === "fr" ? "Afficher le mot de passe" : "Show password",
+    hidePassword: language === "fr" ? "Masquer le mot de passe" : "Hide password",
   };
 
   const toggleLang = () => {
@@ -95,40 +99,58 @@ export default function ResetPassword() {
       <div className={styles.content}>
         <p className={styles.loginLink}>{texts.pageTitle}</p>
         <form className={styles.form} onSubmit={handleSubmit}>
+          {/* Nouveau mot de passe */}
           <div className={styles.formPart}>
             <label className={styles.label}>{texts.passwordLabel}</label>
-            <input
-              type="password"
-              placeholder={texts.passwordLabel}
-              className={styles.input}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+            <div className={styles.passwordContainer}>
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder={texts.passwordLabel}
+                className={styles.input}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <button
+                type="button"
+                className={styles.passwordToggle}
+                aria-label={showPassword ? texts.hidePassword : texts.showPassword}
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
           </div>
 
+          {/* Confirmer le mot de passe */}
           <div className={styles.formPart}>
             <label className={styles.label}>{texts.confirmPasswordLabel}</label>
-            <input
-              type="password"
-              placeholder={texts.confirmPasswordLabel}
-              className={styles.input}
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-            />
+            <div className={styles.passwordContainer}>
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                placeholder={texts.confirmPasswordLabel}
+                className={styles.input}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+              />
+              <button
+                type="button"
+                className={styles.passwordToggle}
+                aria-label={showConfirmPassword ? texts.hidePassword : texts.showPassword}
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              >
+                {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
           </div>
 
-          <button type="submit" className={styles.validate}>
-            {texts.validate}
-          </button>
+          <button type="submit" className={styles.validate}>{texts.validate}</button>
         </form>
 
         {statusMessage && <p className={styles.statusMessage}>{statusMessage}</p>}
 
-        <a href="/login" className={styles.passwordIssue}>
-          {texts.passwordIssue}
-        </a>
+        <a href="/login" className={styles.passwordIssue}>{texts.passwordIssue}</a>
       </div>
 
       <ChangeLanguageModal
