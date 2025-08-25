@@ -9,7 +9,7 @@ import { FaRegEye } from "react-icons/fa";
 
 export default function UserBar() {
   const { logout } = useAuth();
-  const { editableAbout, editableNumberSection } = useEditableContent();
+  const { editableHome, editableAbout, editableNumberSection } = useEditableContent();
   const { language } = useLanguage();
 
   const [message, setMessage] = useState<string | null>(null);
@@ -17,6 +17,23 @@ export default function UserBar() {
 
   const handleSave = async () => {
     try {
+      // Sauvegarde pour Home
+      if (editableHome) {
+        const homeBody: Record<string, any> = {};
+        Object.entries(editableHome).forEach(([key, value]) => {
+          if (value !== undefined) homeBody[key] = value;
+        });
+        const homeRes = await fetch("/api/homeSection", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(homeBody),
+        });
+
+        if (!homeRes.ok) {
+          const errorData = await homeRes.json().catch(() => null);
+          throw new Error(errorData?.message || "Erreur inconnue (home)");
+        }
+      }
       // Sauvegarde pour About
       if (editableAbout) {
         const aboutBody: Record<string, any> = {};

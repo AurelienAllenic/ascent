@@ -31,22 +31,13 @@ export default function Hero({ onSave, isEditMode }: HeroProps) {
     setEditableHome(prev => (prev ? { ...prev, [field]: value } : null));
   };
 
-  const handleSave = async () => {
-    if (!editableHome || !onSave) return;
-    try {
-      await onSave(editableHome);
-    } catch (err) {
-      console.error("Erreur lors de la sauvegarde :", err);
-    }
-  };
-
   const title = language === "fr" ? editableHome?.titleFr : editableHome?.titleEn;
   const subtitle = language === "fr" ? editableHome?.subtitleFr : editableHome?.subtitleEn;
   const content = language === "fr" ? editableHome?.contentFr : editableHome?.contentEn;
 
   return (
     <div className={styles.heroContainer} id="home">
-      <NavBar isEditMode={isEditMode}/>
+      <NavBar isEditMode={isEditMode} />
 
       <Image
         src={editableHome?.imageUrl || "/assets/background.png"}

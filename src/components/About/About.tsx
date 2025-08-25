@@ -130,14 +130,7 @@ export default function About({ onSave, isEditMode }: AboutProps) {
     setEditableAbout(prev => (prev ? { ...prev, [field]: value } : null));
   };
 
-  const handleSave = async () => {
-    if (!editableAbout || !onSave) return;
-    try {
-      await onSave(editableAbout);
-    } catch (err) {
-      console.error("Erreur lors de la sauvegarde :", err);
-    }
-  };
+
 
   const leftText = language === "fr" ? editableAbout?.leftPartTitleFr : editableAbout?.leftPartTitleEn;
   const firstRightText = language === "fr" ? editableAbout?.rightPartContent1Fr : editableAbout?.rightPartContent1En;
