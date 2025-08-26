@@ -6,6 +6,7 @@ import styles from "./userBar.module.scss";
 import { CiSaveDown1 } from "react-icons/ci";
 import { IoLogOutOutline } from "react-icons/io5";
 import { FaRegEye } from "react-icons/fa";
+import { FaCheckCircle } from "react-icons/fa";
 
 export default function UserBar() {
   const { logout } = useAuth();
@@ -14,6 +15,7 @@ export default function UserBar() {
 
   const [message, setMessage] = useState<string | null>(null);
   const [isError, setIsError] = useState(false);
+  const [messageConnexion, setMessageConnexion] = useState(false);
 
   const handleSave = async () => {
     try {
@@ -85,10 +87,21 @@ export default function UserBar() {
     window.open("/", "_blank");
   };
 
+  const toggleMessage = () => {
+    setMessageConnexion(!messageConnexion);
+  };
+
   return (
     <div className={styles.userBar}>
       <h2 className={styles.userBarText}>
-        {language === "fr" ? "Vous êtes connecté !" : "You are connected !"}
+        <FaCheckCircle className={styles.icon} color="rgb(33 142 73)" onClick={toggleMessage}/>
+        {
+          messageConnexion && (
+            <span className={styles.hoverText}>
+              {language === "fr" ? "connecté !" : "connected !"}
+            </span>
+          )
+        }
       </h2>
       <div className={styles.innerUserBar}>
         <button className={styles.userBarButtonSave} onClick={handleSave}>
@@ -112,7 +125,7 @@ export default function UserBar() {
             top: 20,
             right: 20,
             padding: "10px 20px",
-            backgroundColor: isError ? "#f87171" : "#4ade80", // rouge ou vert
+            backgroundColor: isError ? "#f87171" : "#4ade80",
             color: "#fff",
             borderRadius: "5px",
             boxShadow: "0 2px 6px rgba(0,0,0,0.2)",

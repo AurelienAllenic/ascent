@@ -74,7 +74,7 @@ const NavBar = ({ isEditMode }: { isEditMode?: boolean }) => {
   return (
     <>
     <header
-      className={`${styles.navbar} ${
+      className={`${isEditMode ? styles.navbarEdit : styles.navbar} ${
         windowWidth < 768 && !isVisible ? styles.mobileBackground : ""
       }`}
     >
@@ -151,7 +151,7 @@ const NavBar = ({ isEditMode }: { isEditMode?: boolean }) => {
           } ${isClosing ? styles.closing : ""}`}
         >
           <button
-            className={styles.closeBtn}
+            className={isEditMode ? styles.closeBtnEdit : styles.closeBtn}
             onClick={handleCloseMenu}
             aria-label={language === "fr" ? "Fermer le menu" : "Close menu"}
           >
@@ -176,12 +176,7 @@ const NavBar = ({ isEditMode }: { isEditMode?: boolean }) => {
           </div>
 
           <div className={styles.mobileBottom}>
-            {isLoggedIn ? <a
-            href="/edit-page"
-            className={styles.loginBtn}
-          >
-            {language === "fr" ? "EDITER" : "EDIT"}
-          </a>: 
+            {isLoggedIn ? "": 
             <a
             href="/login"
             className={styles.loginBtn}

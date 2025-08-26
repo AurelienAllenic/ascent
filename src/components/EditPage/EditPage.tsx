@@ -40,6 +40,7 @@ function ConditionalContent() {
       <About isEditMode={true} />
       <SecondNav />
       <Numbers isEditMode={true}/>
+      {/* <Projects isEditMode={true}/> */}
       <Projects />
       <Contact />
       <Footer />
