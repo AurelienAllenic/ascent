@@ -8,6 +8,7 @@ import ChangeLanguageModal from "../ChangeLanguageModal/ChangeLanguageModal";
 import { Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { FaArrowLeftLong } from "react-icons/fa6";
+import { signIn } from "next-auth/react";
 
 export default function Login() {
   const { language, setLanguage } = useLanguage();
@@ -41,36 +42,27 @@ export default function Login() {
     setShowPassword(!showPassword);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  // 🔑 Connexion avec CredentialsProvider
+  const handleCredentialsLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-  
-    try {
-      const res = await fetch("/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-  
-      if (!res.ok) {
-        const text = await res.text();
-        setError(text);
-        return;
-      }
-  
-      const data = await res.json();
-  
-      // ⚡ Sauvegarde du token dans le localStorage
-      if (data.token) {
-        localStorage.setItem("token", data.token);
-      }
-  
-      // Redirection après connexion réussie
-      router.push("/edit-page");
-    } catch (err) {
-      console.error(err);
-      setError("Erreur serveur");
+
+    const res = await signIn("credentials", {
+      redirect: false,
+      email,
+      password,
+    });
+
+    if (res?.error) {
+      setError(res.error);
+    } else {
+      router.push("/edit-page"); // redirection après succès
     }
+  };
+
+  // 🔑 Connexion avec Google
+  const handleGoogleLogin = () => {
+    signIn("google", { callbackUrl: "/edit-page" });
   };
 
   const returnToHome = () => {
@@ -83,11 +75,18 @@ export default function Login() {
         {texts.toggleLangButton}
       </button>
 
-      <Image src="/assets/background.png" alt="Background" fill className={styles.background} priority style={{ zIndex: 1 }} />
+      <Image
+        src="/assets/background.png"
+        alt="Background"
+        fill
+        className={styles.background}
+        priority
+        style={{ zIndex: 1 }}
+      />
 
       <div className={styles.content}>
         <p className={styles.loginLink}>{texts.loginText}</p>
-        <form className={styles.form} onSubmit={handleSubmit}>
+        <form className={styles.form} onSubmit={handleCredentialsLogin}>
           <div className={styles.formPart}>
             <label className={styles.label} htmlFor="email">{texts.emailLabel}</label>
             <div className={styles.passwordContainer}>
@@ -113,7 +112,12 @@ export default function Login() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <button type="button" onClick={togglePasswordVisibility} className={styles.passwordToggle} aria-label={showPassword ? texts.hidePassword : texts.showPassword}>
+              <button
+                type="button"
+                onClick={togglePasswordVisibility}
+                className={styles.passwordToggle}
+                aria-label={showPassword ? texts.hidePassword : texts.showPassword}
+              >
                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
             </div>
@@ -122,14 +126,27 @@ export default function Login() {
           {error && <p className={styles.error}>{error}</p>}
 
           <button type="submit" className={styles.validate}>{texts.validate}</button>
+
+          <button
+            onClick={handleGoogleLogin}
+            className={styles.googleButton}
+            type="button"
+          >
+            Se connecter avec Google
+          </button>
         </form>
+
         <button onClick={returnToHome} className={styles.returnToHome}>
           <FaArrowLeftLong size={15} /> {texts.returnToHome}
         </button>
         <a href="/forgot-password" className={styles.passwordIssue}>{texts.passwordIssue}</a>
       </div>
 
-      <ChangeLanguageModal isOpen={isLangModalOpen} onClose={() => setLangModalOpen(false)} currentLanguage={language} />
+      <ChangeLanguageModal
+        isOpen={isLangModalOpen}
+        onClose={() => setLangModalOpen(false)}
+        currentLanguage={language}
+      />
     </div>
   );
 }
