@@ -46,4 +46,3 @@ export async function PUT(request: Request) {
     return new Response("Erreur lors de la mise à jour", { status: 500 });
   }
 }
-
