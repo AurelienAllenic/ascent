@@ -9,6 +9,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { signIn } from "next-auth/react";
+import { FcGoogle } from "react-icons/fc";
 
 export default function Login() {
   const { language, setLanguage } = useLanguage();
@@ -132,7 +133,7 @@ export default function Login() {
             className={styles.googleButton}
             type="button"
           >
-            Se connecter avec Google
+           <FcGoogle />
           </button>
         </form>
 
