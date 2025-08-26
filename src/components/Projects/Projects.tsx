@@ -159,11 +159,11 @@ const Projects: React.FC = () => {
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.intersectionRatio < 0.5) {
+        if (entry.intersectionRatio < 0.1) {
           handleBack();
         }
       },
-      { root: null, threshold: [0.5] }
+      { root: null, threshold: [0.1] }
     );
 
     observer.observe(projectsRef.current);
