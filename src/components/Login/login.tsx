@@ -62,10 +62,15 @@ export default function Login() {
   };
 
   // 🔑 Connexion avec Google
-  const handleGoogleLogin = () => {
+  {
+    /*
+     const handleGoogleLogin = () => {
     signIn("google", { callbackUrl: "/edit-page" });
   };
 
+    */
+  }
+ 
   const returnToHome = () => {
     router.push("/");
   };
@@ -127,14 +132,14 @@ export default function Login() {
           {error && <p className={styles.error}>{error}</p>}
 
           <button type="submit" className={styles.validate}>{texts.validate}</button>
-
+        {/* 
           <button
             onClick={handleGoogleLogin}
             className={styles.googleButton}
             type="button"
           >
            <FcGoogle />
-          </button>
+          </button>*/}
         </form>
 
         <button onClick={returnToHome} className={styles.returnToHome}>
