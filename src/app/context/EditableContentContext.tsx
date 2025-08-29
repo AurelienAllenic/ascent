@@ -21,6 +21,13 @@ export interface ProjectType {
   }>;
 }
 
+export interface SiteSettingType {
+  siteTitleEn: string;
+  siteTitleFr: string;
+  updatedAt: string;
+}
+
+
 // Mettre à jour le type du contexte
 type EditableContentContextType = {
   editableHome: HomeSectionType | null;
@@ -37,6 +44,8 @@ type EditableContentContextType = {
   setFooter: React.Dispatch<React.SetStateAction<FooterSectionType | null>>;
   cgu: CguSectionType[] | null;
   setCgu: React.Dispatch<React.SetStateAction<CguSectionType[] | null>>;
+  siteSetting: SiteSettingType | null;
+  setSiteSetting: React.Dispatch<React.SetStateAction<SiteSettingType | null>>;
 };
 
 const EditableContentContext = createContext<EditableContentContextType | undefined>(undefined);
@@ -48,6 +57,7 @@ export function EditableContentProvider({ children }: { children: ReactNode }) {
   const [projects, setProjects] = useState<ProjectType[] | null>(null);
   const [footer, setFooter] = useState<FooterSectionType | null>(null);
   const [cgu, setCgu] = useState<CguSectionType[] | null>(null);
+  const [siteSetting, setSiteSetting] = useState<SiteSettingType | null>(null);
   const [loading, setLoading] = useState(true);
   const [fadeOut, setFadeOut] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -85,14 +95,19 @@ export function EditableContentProvider({ children }: { children: ReactNode }) {
         if (!res.ok) throw new Error("Failed to fetch cgu");
         return res.json();
       }),
+      fetch("/api/siteSettings").then(res => {
+        if (!res.ok) throw new Error("Failed to fetch site settings");
+        return res.json();
+      }),
     ])
-      .then(([homeData, aboutData, numberSectionData, projectsData, footerData, cguData]) => {
+      .then(([homeData, aboutData, numberSectionData, projectsData, footerData, cguData, siteSettingData]) => {
         setEditableHome(homeData);
         setEditableAbout(aboutData);
         setEditableNumberSection(numberSectionData);
         setProjects(projectsData);
         setFooter(footerData);
         setCgu(cguData);
+        setSiteSetting(siteSettingData);
         setError(null);
       })
       .catch(err => {
@@ -175,6 +190,8 @@ export function EditableContentProvider({ children }: { children: ReactNode }) {
         setFooter,
         cgu,
         setCgu,
+        siteSetting,
+        setSiteSetting,
       }}
     >
       {children}

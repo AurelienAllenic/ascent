@@ -6,6 +6,7 @@ import styles from "./nav.module.scss";
 import { useLanguage } from "@/app/context/LanguageContext";
 import ChangeLanguageModal from "../ChangeLanguageModal/ChangeLanguageModal";
 import { useAuth } from "@/app/context/AuthContext";
+import { useEditableContent } from "@/app/context/EditableContentContext";
 
 const NavBar = ({ isEditMode }: { isEditMode?: boolean }) => {
   const { language, setLanguage } = useLanguage();
@@ -15,7 +16,7 @@ const NavBar = ({ isEditMode }: { isEditMode?: boolean }) => {
   const [windowWidth, setWindowWidth] = useState(0);
   const [isLangModalOpen, setLangModalOpen] = useState(false);
   const { isLoggedIn } = useAuth();
-
+  const { siteSetting } = useEditableContent();
   const toggleLang = () => {
     setLanguage(language === "en" ? "fr" : "en");
     setLangModalOpen(true);
@@ -80,7 +81,7 @@ const NavBar = ({ isEditMode }: { isEditMode?: boolean }) => {
     >
       <nav className={styles.navContainer}>
         <div className={styles.leftContainer}>
-          <div className={styles.logo}>ASCENT</div>
+          <div className={styles.logo}>{language === "fr" ? siteSetting?.siteTitleFr : siteSetting?.siteTitleEn}</div>
         </div>
 
         <ul className={styles.navLinks}>
