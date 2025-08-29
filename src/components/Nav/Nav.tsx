@@ -176,14 +176,20 @@ const NavBar = ({ isEditMode }: { isEditMode?: boolean }) => {
           </div>
 
           <div className={styles.mobileBottom}>
-            {isLoggedIn ? "": 
-            <a
-            href="/login"
-            className={styles.loginBtn}
-          >
-            {language === "fr" ? "CONNEXION" : "LOGIN"}
-          </a>
-          }
+          {isLoggedIn ? (
+            isEditMode ? (
+              null
+            ) : (
+              <button className={styles.loginBtn}>
+                {language === "fr" ? "ÉDITER" : "EDIT"}
+              </button>
+            )
+          ) : (
+            <a href="/login" className={styles.loginBtn}>
+              {language === "fr" ? "CONNEXION" : "LOGIN"}
+            </a>
+          )}
+
             
             <button onClick={toggleLang} className={styles.langBtnMobile}>
               {language === "fr" ? "FR/EN" : "EN/FR"}
