@@ -173,7 +173,6 @@ model FooterSection {
   updatedAt           DateTime @default(now()) @map("updated_at")
 }
 
-
 model CguSection {
   id            String   @id @map("_id") @default(auto()) @db.ObjectId
   userId        String   @db.ObjectId @map("user_id")
@@ -184,5 +183,10 @@ model CguSection {
   titleFr       String   @map("titleFr")
   contentEn     String   @map("contentEn")
   contentFr     String   @map("contentFr")
+  
+  contactTextEn String?  @map("contact_text_en")
+  contactTextFr String?  @map("contact_text_fr")
+  contactMail   String?  @map("contact_mail")
+
   updatedAt     DateTime @default(now()) @map("updated_at")
 }

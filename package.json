@@ -13,6 +13,7 @@
     "create-numbers": "node scripts/createNumbers.js",
     "create-projects": "node scripts/createProjectsSection.js",
     "create-footer": "node scripts/createFooter.js",
+    "create-cgu": "node scripts/createCgu.js",
     "postinstall": "prisma generate"
   },
   "dependencies": {

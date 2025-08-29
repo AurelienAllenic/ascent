@@ -5,6 +5,7 @@ import type { HomeSectionType } from "@/components/Hero/Hero";
 import type { AboutSectionType } from "@/components/About/About";
 import type { NumberSectionType } from "@/components/Numbers/Numbers";
 import type { FooterSectionType } from "@/components/Footer/Footer";
+import type { CguSectionType } from "@/components/CGU/CGU";
 
 // Définir le type pour les projets
 export interface ProjectType {
@@ -34,6 +35,8 @@ type EditableContentContextType = {
   error: string | null;
   footer: FooterSectionType | null;
   setFooter: React.Dispatch<React.SetStateAction<FooterSectionType | null>>;
+  cgu: CguSectionType[] | null;
+  setCgu: React.Dispatch<React.SetStateAction<CguSectionType[] | null>>;
 };
 
 const EditableContentContext = createContext<EditableContentContextType | undefined>(undefined);
@@ -44,6 +47,7 @@ export function EditableContentProvider({ children }: { children: ReactNode }) {
   const [editableNumberSection, setEditableNumberSection] = useState<NumberSectionType | null>(null);
   const [projects, setProjects] = useState<ProjectType[] | null>(null);
   const [footer, setFooter] = useState<FooterSectionType | null>(null);
+  const [cgu, setCgu] = useState<CguSectionType[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [fadeOut, setFadeOut] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -77,13 +81,18 @@ export function EditableContentProvider({ children }: { children: ReactNode }) {
         if (!res.ok) throw new Error("Failed to fetch footer");
         return res.json();
       }),
+      fetch("/api/cgu").then(res => {
+        if (!res.ok) throw new Error("Failed to fetch cgu");
+        return res.json();
+      }),
     ])
-      .then(([homeData, aboutData, numberSectionData, projectsData, footerData]) => {
+      .then(([homeData, aboutData, numberSectionData, projectsData, footerData, cguData]) => {
         setEditableHome(homeData);
         setEditableAbout(aboutData);
         setEditableNumberSection(numberSectionData);
         setProjects(projectsData);
         setFooter(footerData);
+        setCgu(cguData);
         setError(null);
       })
       .catch(err => {
@@ -164,6 +173,8 @@ export function EditableContentProvider({ children }: { children: ReactNode }) {
         error,
         footer,
         setFooter,
+        cgu,
+        setCgu,
       }}
     >
       {children}
