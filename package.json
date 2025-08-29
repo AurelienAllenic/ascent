@@ -12,6 +12,7 @@
     "create-about-section": "node scripts/createAboutSection.js",
     "create-numbers": "node scripts/createNumbers.js",
     "create-projects": "node scripts/createProjectsSection.js",
+    "create-footer": "node scripts/createFooter.js",
     "postinstall": "prisma generate"
   },
   "dependencies": {

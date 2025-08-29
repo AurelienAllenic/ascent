@@ -4,6 +4,7 @@ import { createContext, useContext, useState, useEffect, ReactNode } from "react
 import type { HomeSectionType } from "@/components/Hero/Hero";
 import type { AboutSectionType } from "@/components/About/About";
 import type { NumberSectionType } from "@/components/Numbers/Numbers";
+import type { FooterSectionType } from "@/components/Footer/Footer";
 
 // Définir le type pour les projets
 export interface ProjectType {
@@ -31,6 +32,8 @@ type EditableContentContextType = {
   setProjects: React.Dispatch<React.SetStateAction<ProjectType[] | null>>;
   loading: boolean;
   error: string | null;
+  footer: FooterSectionType | null;
+  setFooter: React.Dispatch<React.SetStateAction<FooterSectionType | null>>;
 };
 
 const EditableContentContext = createContext<EditableContentContextType | undefined>(undefined);
@@ -40,6 +43,7 @@ export function EditableContentProvider({ children }: { children: ReactNode }) {
   const [editableAbout, setEditableAbout] = useState<AboutSectionType | null>(null);
   const [editableNumberSection, setEditableNumberSection] = useState<NumberSectionType | null>(null);
   const [projects, setProjects] = useState<ProjectType[] | null>(null);
+  const [footer, setFooter] = useState<FooterSectionType | null>(null);
   const [loading, setLoading] = useState(true);
   const [fadeOut, setFadeOut] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -67,14 +71,19 @@ export function EditableContentProvider({ children }: { children: ReactNode }) {
       }),
       fetch("/api/projectsSection").then(res => {
         if (!res.ok) throw new Error("Failed to fetch projects");
-        return res.json().then(data => data.projects); // Extraire le tableau projects
+        return res.json().then(data => data.projects);
+      }),
+      fetch("/api/footer").then(res => {
+        if (!res.ok) throw new Error("Failed to fetch footer");
+        return res.json();
       }),
     ])
-      .then(([homeData, aboutData, numberSectionData, projectsData]) => {
+      .then(([homeData, aboutData, numberSectionData, projectsData, footerData]) => {
         setEditableHome(homeData);
         setEditableAbout(aboutData);
         setEditableNumberSection(numberSectionData);
         setProjects(projectsData);
+        setFooter(footerData);
         setError(null);
       })
       .catch(err => {
@@ -153,6 +162,8 @@ export function EditableContentProvider({ children }: { children: ReactNode }) {
         setProjects,
         loading,
         error,
+        footer,
+        setFooter,
       }}
     >
       {children}

@@ -23,7 +23,7 @@ model User {
   projects         Project[]        @relation("UserProjects")
   contactSections  ContactSection[] @relation("UserContactSections")
   siteSettings     SiteSetting[]    @relation("UserSiteSettings")
-  footerSettings   FooterSetting[]  @relation("UserFooterSettings")
+  footerSection   FooterSection[]   @relation("UserFooterSettings")
   cguSections      CguSection[]     @relation("UserCguSections")
 }
 
@@ -156,19 +156,23 @@ model SiteSetting {
   updatedAt   DateTime @default(now()) @map("updated_at")
 }
 
-model FooterSetting {
-  id                String   @id @map("_id") @default(auto()) @db.ObjectId
-  userId            String   @db.ObjectId @map("user_id")
+model FooterSection {
+  id                  String   @id @map("_id") @default(auto()) @db.ObjectId
+  userId              String   @db.ObjectId @map("user_id")
   user              User     @relation("UserFooterSettings", fields: [userId], references: [id])
 
-  cguButtonTextEn   String   @default("CGU") @map("cgu_button_textEn")
-  cguButtonTextFr   String   @default("CGU") @map("cgu_button_textFr")
-  cguButtonLink     String?  @map("cgu_button_link")
+  cguButtonTextEn     String   @default("CGU") @map("cgu_button_textEn")
+  cguButtonTextFr     String   @default("CGU") @map("cgu_button_textFr")
+  cguButtonLink       String?  @map("cgu_button_link")
 
-  showCguButton     Boolean  @default(true) @map("show_cgu_button")
+  showCguButton       Boolean  @default(true) @map("show_cgu_button")
 
-  updatedAt         DateTime @default(now()) @map("updated_at")
+  copyrightTextEn     String   @default("© Ascent. All rights reserved.") @map("copyright_textEn")
+  copyrightTextFr     String   @default("© Ascent. Tous droits réservés.") @map("copyright_textFr")
+
+  updatedAt           DateTime @default(now()) @map("updated_at")
 }
+
 
 model CguSection {
   id            String   @id @map("_id") @default(auto()) @db.ObjectId
