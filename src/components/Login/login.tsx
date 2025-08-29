@@ -57,19 +57,14 @@ export default function Login() {
     if (res?.error) {
       setError(res.error);
     } else {
-      router.push("/edit-page"); // redirection après succès
+      router.push("/edit-page");
     }
   };
 
   // 🔑 Connexion avec Google
-  {
-    /*
      const handleGoogleLogin = () => {
     signIn("google", { callbackUrl: "/edit-page" });
   };
-
-    */
-  }
  
   const returnToHome = () => {
     router.push("/");
@@ -131,15 +126,14 @@ export default function Login() {
 
           {error && <p className={styles.error}>{error}</p>}
 
-          <button type="submit" className={styles.validate}>{texts.validate}</button>
-        {/* 
+          <button type="submit" className={styles.validate}>{texts.validate}</button> 
           <button
             onClick={handleGoogleLogin}
             className={styles.googleButton}
             type="button"
           >
            <FcGoogle />
-          </button>*/}
+          </button>
         </form>
 
         <button onClick={returnToHome} className={styles.returnToHome}>
