@@ -7,6 +7,24 @@ import styles from "./contact.module.scss";
 import TitleSection from "../TitleSection/TitleSection";
 import { useLanguage } from "@/app/context/LanguageContext";
 
+export interface ContactSectionType {
+  _id: string;
+  image_url: string;
+  titleEn: string;
+  titleFr: string;
+  button_textEn: string;
+  button_textFr: string;
+  button_link: string;
+  form_title_1En: string;
+  form_title_1Fr: string;
+  form_title_2En: string;
+  form_title_2Fr: string;
+  submit_button_textEn: string;
+  submit_button_textFr: string;
+  updated_at: string;
+}
+
+
 export default function ContactSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
