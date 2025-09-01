@@ -15,6 +15,7 @@
     "create-footer": "node scripts/createFooter.js",
     "create-cgu": "node scripts/createCgu.js",
     "create-site-settings": "node scripts/createSiteSettings.js",
+    "create-contact-section": "node scripts/createContactSection.js",
     "postinstall": "prisma generate"
   },
   "dependencies": {

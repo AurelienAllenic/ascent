@@ -6,6 +6,7 @@ import type { AboutSectionType } from "@/components/About/About";
 import type { NumberSectionType } from "@/components/Numbers/Numbers";
 import type { FooterSectionType } from "@/components/Footer/Footer";
 import type { CguSectionType } from "@/components/CGU/CGU";
+import type { ContactSectionType } from "@/components/Contact/Contact";
 
 // Définir le type pour les projets
 export interface ProjectType {
@@ -46,6 +47,8 @@ type EditableContentContextType = {
   setCgu: React.Dispatch<React.SetStateAction<CguSectionType[] | null>>;
   siteSetting: SiteSettingType | null;
   setSiteSetting: React.Dispatch<React.SetStateAction<SiteSettingType | null>>;
+  contactSection: ContactSectionType | null;
+  setContactSection: React.Dispatch<React.SetStateAction<ContactSectionType | null>>;
 };
 
 const EditableContentContext = createContext<EditableContentContextType | undefined>(undefined);
@@ -58,6 +61,7 @@ export function EditableContentProvider({ children }: { children: ReactNode }) {
   const [footer, setFooter] = useState<FooterSectionType | null>(null);
   const [cgu, setCgu] = useState<CguSectionType[] | null>(null);
   const [siteSetting, setSiteSetting] = useState<SiteSettingType | null>(null);
+  const [contactSection, setContactSection] = useState<ContactSectionType | null>(null);
   const [loading, setLoading] = useState(true);
   const [fadeOut, setFadeOut] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -99,8 +103,12 @@ export function EditableContentProvider({ children }: { children: ReactNode }) {
         if (!res.ok) throw new Error("Failed to fetch site settings");
         return res.json();
       }),
+      fetch("/api/contactSection").then(res => {
+        if (!res.ok) throw new Error("Failed to fetch contact section");
+        return res.json();
+      }),
     ])
-      .then(([homeData, aboutData, numberSectionData, projectsData, footerData, cguData, siteSettingData]) => {
+      .then(([homeData, aboutData, numberSectionData, projectsData, footerData, cguData, siteSettingData, contactSectionData]) => {
         setEditableHome(homeData);
         setEditableAbout(aboutData);
         setEditableNumberSection(numberSectionData);
@@ -108,6 +116,7 @@ export function EditableContentProvider({ children }: { children: ReactNode }) {
         setFooter(footerData);
         setCgu(cguData);
         setSiteSetting(siteSettingData);
+        setContactSection(contactSectionData);
         setError(null);
       })
       .catch(err => {
@@ -192,6 +201,8 @@ export function EditableContentProvider({ children }: { children: ReactNode }) {
         setCgu,
         siteSetting,
         setSiteSetting,
+        contactSection,
+        setContactSection,
       }}
     >
       {children}

@@ -134,16 +134,19 @@ model ContactSection {
 
 model ContactFormField {
   id               String   @id @map("_id") @default(auto()) @db.ObjectId
-  contactSectionId  String   @db.ObjectId @map("contact_section_id")
+  contactSectionId String   @db.ObjectId @map("contact_section_id")
   contactSection   ContactSection @relation(fields: [contactSectionId], references: [id])
 
+  // Champs à gérer dans le formulaire
   fieldNameEn      String   @map("field_nameEn")
   fieldNameFr      String   @map("field_nameFr")
   fieldTypeEn      String   @map("field_typeEn")
   fieldTypeFr      String   @map("field_typeFr")
+  
   required         Boolean  @default(true)
   order            Int?
 }
+
 
 model SiteSetting {
   id          String   @id @map("_id") @default(auto()) @db.ObjectId
