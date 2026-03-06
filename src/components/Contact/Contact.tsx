@@ -53,6 +53,7 @@ export default function ContactSection() {
   const closeRef = useRef<HTMLButtonElement>(null);
   const learnMoreRef = useRef<HTMLButtonElement>(null);
   const tl = useRef<gsap.core.Timeline | null>(null);
+  const justClosedRef = useRef(false);
   const [isMainImgZoomed, setIsMainImgZoomed] = useState(false);
   const { language } = useLanguage();
   const { contactSection } = useEditableContent();
@@ -141,9 +142,15 @@ export default function ContactSection() {
       gsap.set(formParent, { autoAlpha: 0, y: 0, display: "none" });
       gsap.set(closeRef.current, { autoAlpha: 0, display: "none" });
       gsap.set(learnMoreRef.current, { autoAlpha: 1, display: "block" });
-      gsap.set(imageRef.current, { scale: 1, width: "50%", x: 0, overflow: "hidden" });
-      gsap.set(secondImageRef.current, { scale: 1, width: "100%", x: 0, y: 0 });
       gsap.set(overlayRef.current, { autoAlpha: 0 });
+
+      const justClosed = justClosedRef.current;
+      if (justClosed) justClosedRef.current = false;
+
+      if (!justClosed) {
+        gsap.set(imageRef.current, { scale: 1, width: "50%", x: 0 });
+        gsap.set(secondImageRef.current, { scale: 1, width: "100%", x: 0, y: 0 });
+      }
 
       const tlInstance = gsap.timeline({ paused: true });
       const isMobile = window.innerWidth <= 767;
@@ -151,9 +158,8 @@ export default function ContactSection() {
       const xOffset = isMobile ? "0%" : "-100%";
 
       tlInstance.to(textRef.current, { autoAlpha: isMobile ? 1 : 0, y: 0, duration: 0.5, ease: "power2.out" }, 0);
-      tlInstance.to(imageRef.current, { width: zoomWidth, duration: 1, ease: "power3.inOut", onStart: () => { setIsMainImgZoomed(true); if (imageRef.current && isMobile) imageRef.current.style.overflow = "visible"; } }, 0);
+      tlInstance.to(imageRef.current, { width: zoomWidth, duration: 1, ease: "power3.inOut", onStart: () => setIsMainImgZoomed(true) }, 0);
       tlInstance.to(imageRef.current, { x: xOffset, duration: 1, ease: "power3.inOut" }, 0);
-      tlInstance.to(imageRef.current, { overflow: "visible", duration: 0 }, 0);
       tlInstance.to(secondImageRef.current, { width: "100%", x: isMobile ? "0%" : "-15%", y: isMobile ? 0 : -20, duration: 1, ease: "power3.inOut" }, 0);
       tlInstance.to(overlayRef.current, { autoAlpha: 1, duration: 0.5, ease: "power2.out" }, 0.1);
       tlInstance.to(formParent, { autoAlpha: 1, y: 0, duration: 0.8, ease: "power2.out", display: "block" }, 0.3);
@@ -193,6 +199,9 @@ export default function ContactSection() {
 
   const openModal = () => {
     trackClick("section_contact_learn_more");
+    if (tl.current && tl.current.progress() >= 0.99) {
+      tl.current.progress(0);
+    }
     tl.current?.play();
     if (window.innerWidth <= 767 && learnMoreRef.current) {
       gsap.set(learnMoreRef.current, { autoAlpha: 0, display: "none" });
@@ -202,17 +211,37 @@ export default function ContactSection() {
   const closeModal = (e?: React.MouseEvent<HTMLButtonElement>) => {
     e?.preventDefault();
     trackClick("section_contact_close");
-    if (tl.current && tl.current.progress() > 0) {
-      tl.current.reverse().then(() => {
-        setIsMainImgZoomed(false);
-        if (imageRef.current) gsap.set(imageRef.current, { scale: 1, width: "50%", x: 0, overflow: "hidden" });
-        if (secondImageRef.current) gsap.set(secondImageRef.current, { scale: 1, width: "100%", x: 0, y: 0 });
-        if (formRef.current && formRef.current.parentElement) gsap.set(formRef.current.parentElement, { display: "none" });
+    if (!imageRef.current || !secondImageRef.current || !overlayRef.current || !formRef.current?.parentElement || !closeRef.current || !learnMoreRef.current || !textRef.current) return;
+    if (!tl.current || tl.current.progress() <= 0) return;
+
+    justClosedRef.current = true;
+    const duration = 1;
+    const ease = "power3.inOut" as const;
+    const isMobile = window.innerWidth <= 767;
+    const openWidth = isMobile ? "150%" : "200%";
+    const openX = isMobile ? "0%" : "-100%";
+    const openSecond = { width: "100%" as const, x: isMobile ? "0%" : "-15%", y: isMobile ? 0 : -20 };
+
+    gsap.set(imageRef.current, { width: openWidth, x: openX });
+    gsap.set(secondImageRef.current, openSecond);
+    tl.current.kill();
+
+    const closeTl = gsap.timeline({
+      onComplete: () => {
+        if (formRef.current?.parentElement) gsap.set(formRef.current.parentElement, { display: "none" });
         if (closeRef.current) gsap.set(closeRef.current, { display: "none" });
         if (overlayRef.current) gsap.set(overlayRef.current, { autoAlpha: 0 });
         if (learnMoreRef.current) gsap.set(learnMoreRef.current, { autoAlpha: 1, display: "block" });
-      });
-    }
+        requestAnimationFrame(() => setIsMainImgZoomed(false));
+      },
+    });
+
+    closeTl.to(overlayRef.current, { autoAlpha: 0, duration: 0.4, ease: "power2.out" }, 0);
+    closeTl.to(formRef.current.parentElement, { autoAlpha: 0, duration: 0.3, ease: "power2.out" }, 0);
+    closeTl.to(closeRef.current, { autoAlpha: 0, duration: 0.3, ease: "power2.out" }, 0);
+    closeTl.to(textRef.current, { autoAlpha: 1, duration: 0.4, ease: "power2.out" }, 0);
+    closeTl.to(imageRef.current, { width: "50%", x: 0, duration, ease }, 0);
+    closeTl.to(secondImageRef.current, { width: "100%", x: 0, y: 0, duration, ease }, 0);
   };
 
   return (
