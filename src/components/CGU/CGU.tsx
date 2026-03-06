@@ -58,6 +58,22 @@ export default function CguPage() {
             </section>
           ))}
 
+          <section className={styles.section} aria-labelledby="tracking-title">
+            <h2 id="tracking-title">
+              {isFr ? "Suivi d’audience (tracking) sur ce site" : "Audience tracking on this site"}
+            </h2>
+            <p>
+              {isFr
+                ? "Ce site utilise un système de suivi d’audience interne et personnalisé, afin de mesurer la fréquentation des différentes pages et interactions (clics sur certains liens ou boutons). Aucune donnée personnelle n’est collectée : les données sont strictement anonymisées et ne permettent pas de vous identifier. Aucun cookie tiers ni outil publicitaire n’est utilisé dans le cadre de ce suivi."
+                : "This site uses an internal, custom audience tracking system to measure page visits and interactions (clicks on certain links or buttons). No personal data is collected: all data is strictly anonymized and cannot be used to identify you. No third-party cookies or advertising tools are used for this tracking."}
+            </p>
+            <p>
+              {isFr
+                ? "Ces informations nous aident à améliorer l’ergonomie et le contenu du site. Vous pouvez utiliser le site en sachant qu’aucune donnée nominative ni trace permettant une identification personnelle n’est enregistrée."
+                : "This information helps us improve the site’s usability and content. You can use the site knowing that no nominative data or trace allowing personal identification is recorded."}
+            </p>
+          </section>
+
           {footerSection && (
             <footer className={styles.footer}>
               <p>
