@@ -1,4 +1,4 @@
-@import "../../app/styles/abstract/variables";
+@use "../../app/styles/abstract/variables" as *;
 
 .aboutContainer {
   min-height: 800px;

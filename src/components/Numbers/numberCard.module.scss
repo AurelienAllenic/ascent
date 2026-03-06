@@ -1,4 +1,4 @@
-@import "../../app/styles/abstract/variables";
+@use "../../app/styles/abstract/variables" as *;
 
 .numberCard {
   color: $color-text-white;

@@ -1,4 +1,4 @@
-@import "../../app/styles/abstract/variables";
+@use "../../app/styles/abstract/variables" as *;
 
 .numbersSection {
   background-color: $color-background-dark;
