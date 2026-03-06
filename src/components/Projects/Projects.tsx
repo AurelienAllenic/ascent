@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import gsap from "gsap";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import styles from "./projects.module.scss";
 import TitleSection from "../TitleSection/TitleSection";
 import { useLanguage } from "@/app/context/LanguageContext";
@@ -496,52 +497,18 @@ const Projects: React.FC = () => {
 
     const { translateX, scale, heightScale } = positionStyles;
 
+    const duration = 0.32;
+    const ease = "power2.out" as const;
     if (direction === "left") {
       timeline
-        .to(items[2], {
-          x: translateX,
-          opacity: 0.7,
-          scaleX: scale,
-          scaleY: heightScale,
-          duration: 0.5,
-        })
-        .to(items[1], {
-          x: `-${translateX}`,
-          opacity: 0.7,
-          scaleX: scale,
-          scaleY: heightScale,
-          duration: 0.5,
-        })
-        .to(items[0], {
-          x: "0%",
-          opacity: 1,
-          scaleX: 1,
-          scaleY: 1,
-          duration: 0.5,
-        });
+        .to(items[2], { x: translateX, opacity: 0.7, scaleX: scale, scaleY: heightScale, duration, ease }, 0)
+        .to(items[1], { x: `-${translateX}`, opacity: 0.7, scaleX: scale, scaleY: heightScale, duration, ease }, 0)
+        .to(items[0], { x: "0%", opacity: 1, scaleX: 1, scaleY: 1, duration, ease }, 0);
     } else {
       timeline
-        .to(items[0], {
-          x: `-${translateX}`,
-          opacity: 0.7,
-          scaleX: scale,
-          scaleY: heightScale,
-          duration: 0.5,
-        })
-        .to(items[1], {
-          x: translateX,
-          opacity: 0.7,
-          scaleX: scale,
-          scaleY: heightScale,
-          duration: 0.5,
-        })
-        .to(items[2], {
-          x: "0%",
-          opacity: 1,
-          scaleX: 1,
-          scaleY: 1,
-          duration: 0.5,
-        });
+        .to(items[0], { x: `-${translateX}`, opacity: 0.7, scaleX: scale, scaleY: heightScale, duration, ease }, 0)
+        .to(items[1], { x: translateX, opacity: 0.7, scaleX: scale, scaleY: heightScale, duration, ease }, 0)
+        .to(items[2], { x: "0%", opacity: 1, scaleX: 1, scaleY: 1, duration, ease }, 0);
     }
   };
 
@@ -577,52 +544,18 @@ const Projects: React.FC = () => {
 
     const { translateX, scale, heightScale } = positionStyles;
 
+    const duration = 0.32;
+    const ease = "power2.out" as const;
     if (direction === "left") {
       timeline
-        .to(items[2], {
-          x: translateX,
-          opacity: 0.7,
-          scaleX: scale,
-          scaleY: heightScale,
-          duration: 0.5,
-        })
-        .to(items[1], {
-          x: `-${translateX}`,
-          opacity: 0.7,
-          scaleX: scale,
-          scaleY: heightScale,
-          duration: 0.5,
-        })
-        .to(items[0], {
-          x: "0%",
-          opacity: 1,
-          scaleX: 1,
-          scaleY: 1,
-          duration: 0.5,
-        });
+        .to(items[2], { x: translateX, opacity: 0.7, scaleX: scale, scaleY: heightScale, duration, ease }, 0)
+        .to(items[1], { x: `-${translateX}`, opacity: 0.7, scaleX: scale, scaleY: heightScale, duration, ease }, 0)
+        .to(items[0], { x: "0%", opacity: 1, scaleX: 1, scaleY: 1, duration, ease }, 0);
     } else {
       timeline
-        .to(items[0], {
-          x: `-${translateX}`,
-          opacity: 0.7,
-          scaleX: scale,
-          scaleY: heightScale,
-          duration: 0.5,
-        })
-        .to(items[1], {
-          x: translateX,
-          opacity: 0.7,
-          scaleX: scale,
-          scaleY: heightScale,
-          duration: 0.5,
-        })
-        .to(items[2], {
-          x: "0%",
-          opacity: 1,
-          scaleX: 1,
-          scaleY: 1,
-          duration: 0.5,
-        });
+        .to(items[0], { x: `-${translateX}`, opacity: 0.7, scaleX: scale, scaleY: heightScale, duration, ease }, 0)
+        .to(items[1], { x: translateX, opacity: 0.7, scaleX: scale, scaleY: heightScale, duration, ease }, 0)
+        .to(items[2], { x: "0%", opacity: 1, scaleX: 1, scaleY: 1, duration, ease }, 0);
     }
   };
 
@@ -745,38 +678,56 @@ const Projects: React.FC = () => {
         >
           {selectedProject === null ? (
             <>
-              <div
-                className={styles.carousel}
-                ref={carouselRef}
-                onMouseDown={handleStart}
-                onMouseMove={handleMove}
-                onMouseUp={() => (dragStartX.current = null)}
-                onTouchStart={handleStart}
-                onTouchMove={handleMove}
-                onTouchEnd={() => (dragStartX.current = null)}
-              >
-                {[getItemIndex(-1), getItemIndex(0), getItemIndex(1)].map(
-                  (projectIndex, positionIndex) => (
-                    <div
-                      key={projectIndex}
-                      className={styles.carouselItem}
-                      style={{
-                        cursor: animating.current ? "wait" : "pointer",
-                        transition: animating.current
-                          ? "none"
-                          : "transform 0.3s ease, opacity 0.3s ease",
-                      }}
-                      onClick={() => handleImageClick(positionIndex)}
-                    >
-                      <p>{language === "fr" ? projects[projectIndex].titleFr : projects[projectIndex].titleEn}</p>
-                      <img
-                        src={projects[projectIndex].featuredImage}
-                        alt={language === "fr" ? projects[projectIndex].titleFr : projects[projectIndex].titleEn}
-                        loading="lazy"
-                      />
-                    </div>
-                  )
-                )}
+              <div className={styles.carouselWithArrows}>
+                <button
+                  type="button"
+                  className={`${styles.carouselArrow} ${styles.carouselArrowLeft}`}
+                  onClick={(e) => { e.stopPropagation(); goLeft(); }}
+                  aria-label={language === "fr" ? "Projet précédent" : "Previous project"}
+                >
+                  <ChevronLeft size={28} strokeWidth={2} />
+                </button>
+                <div
+                  className={styles.carousel}
+                  ref={carouselRef}
+                  onMouseDown={handleStart}
+                  onMouseMove={handleMove}
+                  onMouseUp={() => (dragStartX.current = null)}
+                  onTouchStart={handleStart}
+                  onTouchMove={handleMove}
+                  onTouchEnd={() => (dragStartX.current = null)}
+                >
+                  {[getItemIndex(-1), getItemIndex(0), getItemIndex(1)].map(
+                    (projectIndex, positionIndex) => (
+                      <div
+                        key={projectIndex}
+                        className={styles.carouselItem}
+                        style={{
+                          cursor: animating.current ? "wait" : "pointer",
+                          transition: animating.current
+                            ? "none"
+                            : "transform 0.28s ease-out, opacity 0.28s ease-out",
+                        }}
+                        onClick={() => handleImageClick(positionIndex)}
+                      >
+                        <p>{language === "fr" ? projects[projectIndex].titleFr : projects[projectIndex].titleEn}</p>
+                        <img
+                          src={projects[projectIndex].featuredImage}
+                          alt={language === "fr" ? projects[projectIndex].titleFr : projects[projectIndex].titleEn}
+                          loading="lazy"
+                        />
+                      </div>
+                    )
+                  )}
+                </div>
+                <button
+                  type="button"
+                  className={`${styles.carouselArrow} ${styles.carouselArrowRight}`}
+                  onClick={(e) => { e.stopPropagation(); goRight(); }}
+                  aria-label={language === "fr" ? "Projet suivant" : "Next project"}
+                >
+                  <ChevronRight size={28} strokeWidth={2} />
+                </button>
               </div>
               <div className={styles.carouselCaption}>
                 <p>Feel free to explore our projects</p>
@@ -791,52 +742,70 @@ const Projects: React.FC = () => {
                 <p ref={descriptionRef} className={styles.generalDescription}>
                   {language === "fr" ? projects[selectedProject].generalDescriptionFr : projects[selectedProject].generalDescriptionEn}
                 </p>
-                <div
-                  className={styles.detailCarousel}
-                  ref={detailCarouselRef}
-                  onMouseDown={handleStart}
-                  onMouseMove={handleMove}
-                  onMouseUp={() => (dragStartX.current = null)}
-                  onTouchStart={handleStart}
-                  onTouchMove={handleMove}
-                  onTouchEnd={() => (dragStartX.current = null)}
-                >
-                  {[
-                    getDetailItemIndex(
-                      -1,
-                      projects[selectedProject].images.length
-                    ),
-                    getDetailItemIndex(
-                      0,
-                      projects[selectedProject].images.length
-                    ),
-                    getDetailItemIndex(
-                      1,
-                      projects[selectedProject].images.length
-                    ),
-                  ].map((imageIndex, positionIndex) => (
-                    <div
-                      key={imageIndex}
-                      className={styles.carouselItem}
-                      style={{
-                        cursor: detailAnimating.current ? "wait" : "pointer",
-                        transition: detailAnimating.current
-                          ? "none"
-                          : "transform 0.3s ease, opacity 0.3s ease",
-                      }}
-                    >
-                      <img
-                        src={projects[selectedProject].images[imageIndex].url}
-                        alt={`${language === "fr" ? projects[selectedProject].titleFr : projects[selectedProject].titleEn} - ${imageIndex}`}
-                        loading="lazy"
-                      />
-                      <p>
-                        {language === "fr"
-                          ? projects[selectedProject].images[imageIndex].descriptionFr
-                          : projects[selectedProject].images[imageIndex].descriptionEn}
-                      </p>
-                    </div>
-                  ))}
+                <div className={styles.carouselWithArrows}>
+                  <button
+                    type="button"
+                    className={`${styles.carouselArrow} ${styles.carouselArrowLeft} ${styles.detailCarouselArrow}`}
+                    onClick={(e) => { e.stopPropagation(); goDetailLeft(); }}
+                    aria-label={language === "fr" ? "Image précédente" : "Previous image"}
+                  >
+                    <ChevronLeft size={28} strokeWidth={2} />
+                  </button>
+                  <div
+                    className={styles.detailCarousel}
+                    ref={detailCarouselRef}
+                    onMouseDown={handleStart}
+                    onMouseMove={handleMove}
+                    onMouseUp={() => (dragStartX.current = null)}
+                    onTouchStart={handleStart}
+                    onTouchMove={handleMove}
+                    onTouchEnd={() => (dragStartX.current = null)}
+                  >
+                    {[
+                      getDetailItemIndex(
+                        -1,
+                        projects[selectedProject].images.length
+                      ),
+                      getDetailItemIndex(
+                        0,
+                        projects[selectedProject].images.length
+                      ),
+                      getDetailItemIndex(
+                        1,
+                        projects[selectedProject].images.length
+                      ),
+                    ].map((imageIndex, positionIndex) => (
+                      <div
+                        key={imageIndex}
+                        className={styles.carouselItem}
+                        style={{
+                          cursor: detailAnimating.current ? "wait" : "pointer",
+                          transition: detailAnimating.current
+                            ? "none"
+                            : "transform 0.28s ease-out, opacity 0.28s ease-out",
+                        }}
+                      >
+                        <img
+                          src={projects[selectedProject].images[imageIndex].url}
+                          alt={`${language === "fr" ? projects[selectedProject].titleFr : projects[selectedProject].titleEn} - ${imageIndex}`}
+                          loading="lazy"
+                        />
+                        <p>
+                          {language === "fr"
+                            ? projects[selectedProject].images[imageIndex].descriptionFr
+                            : projects[selectedProject].images[imageIndex].descriptionEn}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                  <button
+                    type="button"
+                    className={`${styles.carouselArrow} ${styles.carouselArrowRight} ${styles.detailCarouselArrow}`}
+                    onClick={(e) => { e.stopPropagation(); goDetailRight(); }}
+                    aria-label={language === "fr" ? "Image suivante" : "Next image"}
+                  >
+                    <ChevronRight size={28} strokeWidth={2} />
+                  </button>
                 </div>
               </div>
               <button ref={buttonRef} onClick={handleBack}>

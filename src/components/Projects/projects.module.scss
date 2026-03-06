@@ -41,16 +41,76 @@
   align-items: center;
   justify-content: center; // Commencer en haut pour laisser le texte en bas
 
+  .carouselWithArrows {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 1200px;
+    position: relative;
+    margin-bottom: 2rem;
+    gap: 0.5rem;
+  }
+
+  .carouselArrow {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 50%;
+    background-color: $color-background-light;
+    color: $color-text-headline;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    z-index: 10;
+
+    &:hover {
+      background-color: $color-text-headline;
+      color: $color-background-light;
+    }
+    &:active {
+      transform: scale(0.96);
+    }
+    &:disabled,
+    &[aria-disabled="true"] {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  }
+
+  .carouselArrowLeft {
+    margin-right: 0.25rem;
+    margin-left: 65px;
+  }
+
+  .carouselArrowRight {
+    margin-left: 0.25rem;
+    margin-right: 65px;
+  }
+
+  .detailCarouselArrow {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.35);
+    color: $color-background-light;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.95);
+      color: $color-text-headline;
+    }
+  }
+
   .carousel {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100%;
-    max-width: 1200px;
+    flex: 1;
     min-height: 500px; // Hauteur minimale pour le carousel
     position: relative;
     overflow: visible;
-    margin-bottom: 2rem; // Espace pour le texte en dessous
 
     .carouselItem {
       position: absolute;
@@ -59,7 +119,7 @@
       aspect-ratio: 3 / 4;
       min-height: 400px;
       max-height: 450px;
-      transition: transform 0.3s ease, opacity 0.3s ease, scale 0.3s ease;
+      transition: transform 0.28s ease-out, opacity 0.28s ease-out;
 
       img {
         width: 100%;
@@ -147,12 +207,15 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      width: 100%;
-      max-width: 1200px;
+      flex: 1;
       min-height: 400px;
       position: relative;
       overflow: visible;
       user-select: none;
+
+      &.noTransition .carouselItem {
+        transition: none !important;
+      }
 
       .carouselItem {
         position: absolute;
@@ -160,7 +223,7 @@
         max-width: 400px;
         aspect-ratio: 3 / 4; // Changé pour correspondre au carousel principal
         min-height: 300px;
-        transition: transform 0.3s ease, opacity 0.3s ease, scale 0.3s ease;
+        transition: transform 0.28s ease-out, opacity 0.28s ease-out;
 
         img {
           width: 100%;
@@ -204,9 +267,15 @@
   }
 
   @media (max-width: 1024px) {
+    .carouselWithArrows {
+      margin-bottom: 1.5rem;
+    }
+    .carouselArrow {
+      width: 44px;
+      height: 44px;
+    }
     .carousel {
       min-height: 400px;
-      margin-bottom: 1.5rem;
 
       .carouselItem {
         width: 45vw;
@@ -222,9 +291,16 @@
   }
 
   @media (max-width: 768px) {
+    .carouselWithArrows {
+      margin-bottom: 1rem;
+      gap: 0.25rem;
+    }
+    .carouselArrow {
+      width: 40px;
+      height: 40px;
+    }
     .carousel {
       min-height: 350px;
-      margin-bottom: 1rem;
 
       .carouselItem {
         width: 50vw;
