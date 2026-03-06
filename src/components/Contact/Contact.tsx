@@ -6,22 +6,38 @@ import { gsap } from "gsap";
 import styles from "./contact.module.scss";
 import TitleSection from "../TitleSection/TitleSection";
 import { useLanguage } from "@/app/context/LanguageContext";
+import { useEditableContent } from "@/app/context/EditableContentContext";
+
+export interface ContactFormFieldType {
+  id: string;
+  field_nameEn: string;
+  field_nameFr: string;
+  field_typeEn: string;
+  field_typeFr: string;
+  required: boolean;
+  order: number;
+  contact_section_id: string;
+}
 
 export interface ContactSectionType {
-  _id: string;
+  id: string;
+  user_id: string;
   image_url: string;
   titleEn: string;
   titleFr: string;
-  button_textEn: string;
-  button_textFr: string;
-  button_link: string;
-  form_title_1En: string;
-  form_title_1Fr: string;
-  form_title_2En: string;
-  form_title_2Fr: string;
-  submit_button_textEn: string;
-  submit_button_textFr: string;
-  updated_at: string;
+  titleEn2: string;
+  titleFr2: string;
+  buttonTextEn: string;
+  buttonTextFr: string;
+  buttonLink: string;
+  formTitle1En: string;
+  formTitle2En: string;
+  formTitle1Fr: string;
+  formTitle2Fr: string;
+  submitButtonTextEn: string;
+  submitButtonTextFr: string;
+  updatedAt: string;
+  formFields: ContactFormFieldType[];
 }
 
 
@@ -37,6 +53,8 @@ export default function ContactSection() {
   const tl = useRef<gsap.core.Timeline | null>(null);
   const [isMainImgZoomed, setIsMainImgZoomed] = useState(false);
   const { language } = useLanguage();
+  const { contactSection } = useEditableContent();
+
 
   // Modal et données du formulaire
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -46,6 +64,8 @@ export default function ContactSection() {
     message: "",
     accepted: false,
   });
+
+  if (!contactSection) return null;
 
   // Gestion des inputs
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -195,14 +215,14 @@ export default function ContactSection() {
       <div className={styles.contactContent}>
         <div ref={textRef} className={styles.textContent}>
           <h2 className={styles.title}>
-            {language === "fr" ? "NOUS NOUS" : "WE CAN TAKE"} <span>{language === "fr" ? "OCCUPONS" : "CARE"}</span>
+            {language === "fr" ? contactSection.titleFr : contactSection.titleEn}
           </h2>
           <h2 className={styles.secondTitle}>
-            {language === "fr" ? "DE VOS" : "OF YOUR"} <span>{language === "fr" ? "PROJETS" : "PROJECTS"}</span>
+            {language === "fr" ? contactSection.titleFr2 : contactSection.titleEn2}
           </h2>
           <div className={styles.learnMoreContainer}>
             <button ref={learnMoreRef} className={styles.learnMore} onClick={openModal}>
-              {language === "fr" ? "En savoir plus" : "Learn more"}
+              {language === "fr" ? contactSection.buttonTextFr : contactSection.buttonTextEn}
             </button>
           </div>
         </div>
@@ -213,7 +233,7 @@ export default function ContactSection() {
           <div className={styles.formWrapper}>
             <form ref={formRef} className={styles.form}>
               <div className={styles.formRow}>
-                <label>{language === "fr" ? "Qui êtes-vous ?" : "Who are you?"}</label>
+                <label>{language === "fr" ? contactSection.formTitle1Fr : contactSection.formTitle1En}</label>
                 <div className={styles.inputsRow}>
                   <div className={styles.inputAndLabel}>
                     <label>{language === "fr" ? "Votre nom" : "Your Name"}</label>
@@ -226,7 +246,7 @@ export default function ContactSection() {
                 </div>
               </div>
               <div className={styles.formRow}>
-                <label>{language === "fr" ? "Quel est votre projet ?" : "What is your project?"}</label>
+                <label>{language === "fr" ? contactSection.formTitle2Fr : contactSection.formTitle2En}</label>
                 <textarea name="message" placeholder={language === "fr" ? "Veuillez décrire votre projet ici..." : "Please, describe your project here..."} value={formData.message} onChange={handleChange} />
               </div>
               <div className={styles.checkboxValidate}>
@@ -236,7 +256,7 @@ export default function ContactSection() {
                 </div>
                 <div className={styles.containerValidateForm}>
                   <button className={styles.validateFormBtn} onClick={sendMessage}>
-                    {language === "fr" ? "Envoyer" : "Send a message"}
+                    {language === "fr" ? contactSection.submitButtonTextFr : contactSection.submitButtonTextEn}
                   </button>
                 </div>
               </div>

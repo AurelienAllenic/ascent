@@ -12,6 +12,8 @@ async function main() {
       imageUrl: "/assets/contact/center.jpg",
       titleEn: "WE CAN TAKE CARE",
       titleFr: "NOUS NOUS OCCUPONS",
+      titleEn2: "OF YOUR PROJECT",
+      titleFr2: "DE VOTRE PROJET",
       buttonTextEn: "Learn more",
       buttonTextFr: "En savoir plus",
       buttonLink: "#contact",

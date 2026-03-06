@@ -114,6 +114,8 @@ model ContactSection {
   imageUrl           String   @map("image_url")
   titleEn            String   @map("titleEn")
   titleFr            String   @map("titleFr")
+  titleEn2            String   @map("titleEn2")
+  titleFr2           String   @map("titleFr2")
 
   buttonTextEn       String   @map("button_textEn")
   buttonTextFr       String   @map("button_textFr")
