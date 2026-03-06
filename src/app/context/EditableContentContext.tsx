@@ -10,12 +10,14 @@ import type { ContactSectionType } from "@/components/Contact/Contact";
 
 // Définir le type pour les projets
 export interface ProjectType {
+  id?: string;
   titleEn: string;
   titleFr: string;
   featuredImage: string;
   generalDescriptionEn?: string;
   generalDescriptionFr?: string;
   images: Array<{
+    id?: string;
     url: string;
     descriptionEn: string;
     descriptionFr: string;

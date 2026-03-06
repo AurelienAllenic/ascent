@@ -9,8 +9,12 @@
   left: 0;
   width: 100%;
   height: 100%;
+  z-index: 0;
+  pointer-events: none; // laisse passer les clics vers le contenu (inputs, boutons)
 }
 .projectsContainer {
+  position: relative;
+  z-index: 1;
   background-color: $color-background-light;
   padding: 1rem;
   overflow-x: hidden;
@@ -144,13 +148,80 @@
   }
 
   .carouselCaption {
+    position: relative;
+    z-index: 15;
     margin-top: 5rem;
     padding: 1rem;
     text-align: center;
-    z-index: 10; // Assure que le texte est au-dessus des images
     font-size: $font-size-body-desktop;
     color: $color-text-secondary;
     margin-right: 22px;
+  }
+  .carouselCaptionEditBand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+    margin-top: 2rem;
+    padding: 1.5rem 1.75rem;
+    background: rgba($color-text-headline, 0.06);
+    border: 1px solid rgba($color-text-headline, 0.12);
+    border-radius: 12px;
+    max-width: 560px;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+  }
+  .carouselCaptionEditBand > div {
+    width: 100%;
+    max-width: 400px;
+  }
+  .carouselCaptionEditBand label {
+    display: block;
+    font-family: $font-family-primary;
+    font-size: 0.875rem;
+    font-weight: $font-weight-semibold;
+    color: $color-text-headline;
+    margin-bottom: 0.35rem;
+  }
+  .carouselCaptionEditBand input {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid rgba($color-text-headline, 0.2);
+    border-radius: 8px;
+    font-family: $font-family-text;
+    font-size: $font-size-body-mobile;
+    color: $color-text-body;
+    background: #fff;
+    box-sizing: border-box;
+    &:focus {
+      outline: none;
+      border-color: $color-text-headline;
+      box-shadow: 0 0 0 2px rgba($color-text-headline, 0.15);
+    }
+  }
+  .addProjectBtnBand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    font-size: $font-size-body-mobile;
+    font-weight: 600;
+    font-family: $font-family-primary;
+    color: $color-background-light;
+    background: linear-gradient(135deg, $color-text-headline 0%, darken($color-text-headline, 6%) 100%);
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+    }
+    &:active {
+      transform: translateY(0);
+    }
   }
   .projectDetailBack {
     height: 100vh;
@@ -264,6 +335,339 @@
     @media(min-width: 767px){
       font-size: $font-size-body-tab;
     }
+  }
+
+  // Mode édition (style cohérent avec About / Hero)
+  .editableInput,
+  .editableTextarea {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 4px;
+    color: $color-text-body;
+    font-size: $font-size-body-mobile;
+    font-family: $font-family-text;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.35rem 0.5rem;
+    &:focus {
+      outline: none;
+      border-color: $color-text-headline;
+    }
+  }
+  .editableTextarea {
+    resize: vertical;
+    min-height: 60px;
+  }
+  .projectDetail .editableInput,
+  .projectDetail .editableTextarea {
+    color: $color-background-light;
+    border-color: rgba(255, 255, 255, 0.35);
+    font-family: $font-family-text;
+    font-size: $font-size-body-mobile;
+    @media (min-width: 767px) {
+      font-size: $font-size-body-desktop;
+    }
+    &::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+    &:focus {
+      border-color: rgba(255, 255, 255, 0.7);
+      box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.15);
+    }
+  }
+  .projectDetailEditForm {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 560px;
+    margin: 0 auto;
+  }
+  .projectDetailEditGroup {
+    margin-bottom: 1.25rem;
+    label {
+      display: block;
+      margin-bottom: 0.35rem;
+      font-family: $font-family-primary;
+      font-size: 0.875rem;
+      font-weight: $font-weight-semibold;
+      color: rgba(255, 255, 255, 0.95);
+      letter-spacing: 0.02em;
+    }
+    input[type="text"],
+    textarea {
+      width: 100%;
+      box-sizing: border-box;
+    }
+  }
+  .projectDetailFeaturedBlock {
+    margin-top: 1.25rem;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-family: $font-family-primary;
+      font-size: 0.875rem;
+      font-weight: $font-weight-semibold;
+      color: rgba(255, 255, 255, 0.95);
+    }
+    .projectDetailFeaturedPreview {
+      width: 140px;
+      height: 105px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 0.75rem;
+      display: block;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    input[type="file"] {
+      width: 100%;
+      font-family: $font-family-text;
+      font-size: $font-size-body-mobile;
+      color: rgba(255, 255, 255, 0.9);
+      &::file-selector-button {
+        font-family: $font-family-primary;
+        font-size: 0.85rem;
+        padding: 0.4rem 0.75rem;
+        margin-right: 0.5rem;
+        border-radius: 6px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.1);
+        color: $color-background-light;
+        cursor: pointer;
+      }
+    }
+  }
+  .editActionsHint {
+    margin: 0;
+    font-size: 0.9rem;
+    font-family: $font-family-text;
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1.4;
+  }
+  .editActions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1rem;
+    justify-content: center;
+    align-items: center;
+  }
+  .deleteProjectBtn {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
+    background: transparent;
+    color: #e11d48;
+    border: 1px solid #e11d48;
+    border-radius: 5px;
+    cursor: pointer;
+    &:hover {
+      background: #e11d48;
+      color: white;
+    }
+  }
+  .addProjectBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    font-size: $font-size-body-mobile;
+    font-weight: 600;
+    font-family: $font-family-primary;
+    color: $color-background-light;
+    background: linear-gradient(135deg, $color-text-headline 0%, darken($color-text-headline, 6%) 100%);
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+    }
+    &:active {
+      transform: translateY(0);
+    }
+  }
+  .carouselItemEditWrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    width: 100%;
+  }
+  .carouselItemDeleteBtn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    background: rgba(225, 29, 72, 0.2);
+    color: #e11d48;
+    border: 1px solid #e11d48;
+    border-radius: 4px;
+    cursor: pointer;
+    &:hover {
+      background: #e11d48;
+      color: white;
+    }
+  }
+  .modalOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 1rem;
+  }
+  .modalContent {
+    background: $color-background-light;
+    color: $color-text-body;
+    padding: 1.75rem;
+    border-radius: 12px;
+    max-width: 480px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+  }
+  .modalContent h3 {
+    margin-top: 0;
+    margin-bottom: 1.25rem;
+    font-family: $font-family-primary;
+    font-size: $font-size-h2-desktop;
+    font-weight: $font-weight-semibold;
+    color: $color-text-headline;
+  }
+  .modalContent label {
+    display: block;
+    margin-top: 1rem;
+    margin-bottom: 0.35rem;
+    font-family: $font-family-primary;
+    font-size: 0.9rem;
+    font-weight: $font-weight-semibold;
+    color: $color-text-headline;
+  }
+  .modalContent input[type="text"],
+  .modalContent textarea {
+    width: 100%;
+    margin-top: 0;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid rgba($color-text-headline, 0.2);
+    border-radius: 8px;
+    font-family: $font-family-text;
+    font-size: $font-size-body-mobile;
+    color: $color-text-body;
+    background: #fff;
+    box-sizing: border-box;
+    &:focus {
+      outline: none;
+      border-color: $color-text-headline;
+      box-shadow: 0 0 0 2px rgba($color-text-headline, 0.15);
+    }
+  }
+  .modalContent textarea {
+    min-height: 80px;
+    resize: vertical;
+  }
+  .modalContent input[type="file"] {
+    width: 100%;
+    font-family: $font-family-text;
+    font-size: $font-size-body-mobile;
+    color: $color-text-body;
+    &::file-selector-button {
+      font-family: $font-family-primary;
+      padding: 0.45rem 0.85rem;
+      margin-right: 0.5rem;
+      border-radius: 6px;
+      border: 1px solid rgba($color-text-headline, 0.3);
+      background: $color-text-headline;
+      color: $color-background-light;
+      cursor: pointer;
+      font-weight: $font-weight-semibold;
+    }
+  }
+  .modalActions {
+    margin-top: 1.5rem;
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-end;
+  }
+  .modalActions button[type="button"] {
+    padding: 0.5rem 1rem;
+    font-family: $font-family-primary;
+    font-size: 0.9rem;
+    border-radius: 8px;
+    border: 1px solid rgba($color-text-headline, 0.3);
+    background: transparent;
+    color: $color-text-headline;
+    cursor: pointer;
+    &:hover {
+      background: rgba($color-text-headline, 0.08);
+    }
+  }
+  .modalActions button[type="submit"] {
+    padding: 0.5rem 1.25rem;
+    font-family: $font-family-primary;
+    font-size: 0.9rem;
+    font-weight: $font-weight-semibold;
+    border-radius: 8px;
+    border: none;
+    background: $color-text-headline;
+    color: $color-background-light;
+    cursor: pointer;
+    &:hover {
+      background: darken($color-text-headline, 8%);
+    }
+  }
+  .imageDescriptionsBlock {
+    margin-top: 1.25rem;
+    width: 100%;
+    p.imageDescriptionsTitle {
+      font-family: $font-family-primary;
+      font-size: 0.875rem;
+      font-weight: $font-weight-semibold;
+      color: rgba(255, 255, 255, 0.95);
+      margin-bottom: 0.75rem;
+    }
+  }
+  .imageDescriptionEdit {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    label {
+      display: block;
+      font-size: 0.8rem;
+      font-family: $font-family-primary;
+      font-weight: $font-weight-semibold;
+      color: rgba(255, 255, 255, 0.85);
+      margin-top: 0.5rem;
+      margin-bottom: 0.2rem;
+      &:first-of-type {
+        margin-top: 0;
+      }
+    }
+    .imageDescriptionThumb {
+      width: 80px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 6px;
+      margin-bottom: 0.5rem;
+      display: block;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+  }
+  .projectDetail .imageDescriptionEdit .editableInput {
+    margin-bottom: 0.25rem;
+  }
+  .editSaveMessage {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.9rem;
+    font-family: $font-family-text;
   }
 
   @media (max-width: 1024px) {

@@ -11,7 +11,7 @@ import { IoBarChartSharp } from "react-icons/io5";
 
 export default function UserBar() {
   const { logout } = useAuth();
-  const { editableHome, editableAbout, editableNumberSection } = useEditableContent();
+  const { editableHome, editableAbout, editableNumberSection, projects, setProjects } = useEditableContent();
   const { language } = useLanguage();
 
   const [message, setMessage] = useState<string | null>(null);
@@ -70,6 +70,39 @@ export default function UserBar() {
         if (!numberRes.ok) {
           const errorData = await numberRes.json().catch(() => null);
           throw new Error(errorData?.message || "Erreur inconnue (numbers)");
+        }
+      }
+
+      // Sauvegarde pour Projects (même principe : contexte → PATCH par projet)
+      if (projects && projects.length > 0) {
+        for (let i = 0; i < projects.length; i++) {
+          const project = projects[i];
+          if (!project.id) continue; // nouveaux projets : créés via le formulaire POST, pas ici
+          const patchBody = {
+            id: project.id,
+            titleEn: project.titleEn,
+            titleFr: project.titleFr,
+            generalDescriptionEn: project.generalDescriptionEn ?? "",
+            generalDescriptionFr: project.generalDescriptionFr ?? "",
+            images: project.images.map((img) => ({
+              id: img.id,
+              descriptionEn: img.descriptionEn ?? "",
+              descriptionFr: img.descriptionFr ?? "",
+            })),
+          };
+          const projectRes = await fetch("/api/projectsSection", {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(patchBody),
+          });
+          if (!projectRes.ok) {
+            const errorData = await projectRes.json().catch(() => null);
+            throw new Error(errorData?.error || errorData?.message || "Erreur (projects)");
+          }
+          const updated = await projectRes.json();
+          setProjects((prev) =>
+            prev ? prev.map((p) => (p.id === updated.id ? updated : p)) : null
+          );
         }
       }
 
