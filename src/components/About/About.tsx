@@ -8,6 +8,8 @@ import styles from "./about.module.scss";
 import TitleSection from "../TitleSection/TitleSection";
 import { useLanguage } from "@/app/context/LanguageContext";
 import { useEditableContent } from "@/app/context/EditableContentContext";
+import { useTrackSectionArrival } from "@/hooks/useTrackSectionArrival";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -39,6 +41,8 @@ export default function About({ onSave, isEditMode }: AboutProps) {
   const buttonRef = useRef<HTMLDivElement>(null);
   const { language } = useLanguage();
   const { editableAbout, setEditableAbout } = useEditableContent();
+  const { trackClick } = useAnalytics();
+  useTrackSectionArrival("section_about");
   const isLoggedIn = true;
 
   useLayoutEffect(() => {
@@ -223,7 +227,7 @@ export default function About({ onSave, isEditMode }: AboutProps) {
             </div>
 
             <div className={styles.aboutBtnContainer} ref={buttonRef}>
-              <button className={styles.aboutBtn}>{btnText}</button>
+              <button className={styles.aboutBtn} onClick={() => trackClick("section_about_cta")}>{btnText}</button>
             </div>
           </div>
         </div>

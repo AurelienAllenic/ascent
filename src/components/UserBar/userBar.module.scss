@@ -1,4 +1,4 @@
-@import "../../app/styles/abstract/variables";
+@use "../../app/styles/abstract/variables" as *;
 
 .userBar{
     display: flex;
@@ -85,6 +85,32 @@
         transition: all 0.3s ease;
         &:hover{
             background-color: #424141;
+            transition: all 0.3s ease;
+        }
+        @media(min-width: 414px){
+            padding: 10px 20px;
+        }
+        @media(min-width: 360px){
+            padding: 5px 10px;
+        }
+    }
+    .userBarButtonAnalytics{
+        background-color: #0d6efd;
+        border: none;
+        font-family: $font-family-primary;
+        padding: 5px 10px;
+        color: $color-text-white;
+        border-radius: 3px;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        &:hover{
+            background-color: #0b5ed7;
+            color: $color-text-white;
             transition: all 0.3s ease;
         }
         @media(min-width: 414px){

@@ -7,6 +7,8 @@ import styles from "./contact.module.scss";
 import TitleSection from "../TitleSection/TitleSection";
 import { useLanguage } from "@/app/context/LanguageContext";
 import { useEditableContent } from "@/app/context/EditableContentContext";
+import { useTrackSectionArrival } from "@/hooks/useTrackSectionArrival";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 export interface ContactFormFieldType {
   id: string;
@@ -54,7 +56,8 @@ export default function ContactSection() {
   const [isMainImgZoomed, setIsMainImgZoomed] = useState(false);
   const { language } = useLanguage();
   const { contactSection } = useEditableContent();
-
+  const { trackClick } = useAnalytics();
+  useTrackSectionArrival("section_contact");
 
   // Modal et données du formulaire
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -81,6 +84,7 @@ export default function ContactSection() {
 
   const sendMessage = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    trackClick("section_contact_submit");
     const { name, email, message, accepted } = formData;
   
     if (!name || !email || !message || !accepted) {
@@ -188,6 +192,7 @@ export default function ContactSection() {
   }, [isMainImgZoomed]);
 
   const openModal = () => {
+    trackClick("section_contact_learn_more");
     tl.current?.play();
     if (window.innerWidth <= 767 && learnMoreRef.current) {
       gsap.set(learnMoreRef.current, { autoAlpha: 0, display: "none" });
@@ -196,6 +201,7 @@ export default function ContactSection() {
 
   const closeModal = (e?: React.MouseEvent<HTMLButtonElement>) => {
     e?.preventDefault();
+    trackClick("section_contact_close");
     if (tl.current && tl.current.progress() > 0) {
       tl.current.reverse().then(() => {
         setIsMainImgZoomed(false);

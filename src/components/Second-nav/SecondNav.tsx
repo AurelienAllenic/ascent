@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import styles from "./secondnav.module.scss";
 import { useLanguage } from "@/app/context/LanguageContext";
 import ChangeLanguageModal from "../ChangeLanguageModal/ChangeLanguageModal";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 const navLinks = [
   { icon: "/assets/secondNav/home.svg", labelFr: "Accueil", labelEn: "Home", id: "home" },
@@ -18,8 +19,10 @@ const SecondNav = () => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const { language, setLanguage } = useLanguage();
   const [isLangModalOpen, setLangModalOpen] = useState(false);
+  const { trackClick } = useAnalytics();
 
   const toggleLang = () => {
+    trackClick(`language_toggle_${language === "en" ? "fr" : "en"}`);
     setLanguage(language === "en" ? "fr" : "en");
     setLangModalOpen(true);
   };
@@ -73,6 +76,7 @@ const SecondNav = () => {
             onMouseLeave={() => setHoveredIndex(null)}
             onClick={() => {
               if (hoveredIndex === index) {
+                trackClick(`nav_${link.id}`);
                 handleScroll(link.id);
               }
             }}

@@ -7,6 +7,7 @@ import { useLanguage } from "@/app/context/LanguageContext";
 import ChangeLanguageModal from "../ChangeLanguageModal/ChangeLanguageModal";
 import { useAuth } from "@/app/context/AuthContext";
 import { useEditableContent } from "@/app/context/EditableContentContext";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 const NavBar = ({ isEditMode }: { isEditMode?: boolean }) => {
   const { language, setLanguage } = useLanguage();
@@ -17,7 +18,9 @@ const NavBar = ({ isEditMode }: { isEditMode?: boolean }) => {
   const [isLangModalOpen, setLangModalOpen] = useState(false);
   const { isLoggedIn } = useAuth();
   const { siteSetting } = useEditableContent();
+  const { trackClick } = useAnalytics();
   const toggleLang = () => {
+    trackClick(`language_toggle_${language === "en" ? "fr" : "en"}`);
     setLanguage(language === "en" ? "fr" : "en");
     setLangModalOpen(true);
   };
@@ -92,6 +95,7 @@ const NavBar = ({ isEditMode }: { isEditMode?: boolean }) => {
                 className={styles.navLink}
                 onClick={(e) => {
                   e.preventDefault();
+                  trackClick(`nav_${id}`);
                   handleScroll(id);
                 }}
               >
@@ -107,6 +111,7 @@ const NavBar = ({ isEditMode }: { isEditMode?: boolean }) => {
             className={styles.contactBtnMobile}
             onClick={(e) => {
               e.preventDefault();
+              trackClick("nav_contact");
               handleScroll("contact");
             }}
           >
@@ -137,7 +142,10 @@ const NavBar = ({ isEditMode }: { isEditMode?: boolean }) => {
 
           <button
             className={styles.burgerBtn}
-            onClick={() => setIsOpen((prev) => !prev)}
+            onClick={() => {
+              trackClick("nav_burger");
+              setIsOpen((prev) => !prev);
+            }}
             aria-label={language === "fr" ? "Ouvrir/Fermer le menu" : "Toggle menu"}
           >
             {isOpen ? <X size={24} /> : <Menu size={24} />}
@@ -167,6 +175,7 @@ const NavBar = ({ isEditMode }: { isEditMode?: boolean }) => {
                 className={styles.mobileNavLink}
                 onClick={(e) => {
                   e.preventDefault();
+                  trackClick(`nav_${id}`); // le hook ajoute _mobile + _LANG_* selon viewport et langue
                   handleScroll(id);
                   handleCloseMenu();
                 }}

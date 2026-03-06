@@ -4,6 +4,7 @@ import Image from "next/image";
 import styles from "./footer.module.scss";
 import { useLanguage } from "@/app/context/LanguageContext";
 import { useEditableContent } from "@/app/context/EditableContentContext";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 export interface FooterSectionType {
   cguButtonTextEn: string;
@@ -17,6 +18,7 @@ export interface FooterSectionType {
 export default function Footer() {
   const { footer } = useEditableContent();
   const { language } = useLanguage();
+  const { trackClick } = useAnalytics();
 
   function getCurrentYear() {
     return new Date().getFullYear();
@@ -42,6 +44,7 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               className={styles.mainTitle}
+              onClick={() => trackClick("footer_cgu")}
             >
               {language === "fr" ? footer?.cguButtonTextFr : footer?.cguButtonTextEn}
             </a>
