@@ -5,6 +5,7 @@ import NavBar from "../Nav/Nav";
 import { useLanguage } from "@/app/context/LanguageContext";
 import { useAuth } from "@/app/context/AuthContext";
 import { useEditableContent } from "@/app/context/EditableContentContext";
+import { useTrackSectionArrival } from "@/hooks/useTrackSectionArrival";
 import styles from "./hero.module.scss";
 
 export type HomeSectionType = {
@@ -26,6 +27,7 @@ export default function Hero({ onSave, isEditMode }: HeroProps) {
   const { language } = useLanguage();
   const { isLoggedIn } = useAuth();
   const { editableHome, setEditableHome } = useEditableContent();
+  useTrackSectionArrival("section_hero");
 
   const handleChange = (field: keyof HomeSectionType, value: string) => {
     setEditableHome(prev => (prev ? { ...prev, [field]: value } : null));

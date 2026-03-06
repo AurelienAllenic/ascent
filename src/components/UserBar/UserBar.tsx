@@ -7,6 +7,7 @@ import { CiSaveDown1 } from "react-icons/ci";
 import { IoLogOutOutline } from "react-icons/io5";
 import { FaRegEye } from "react-icons/fa";
 import { FaCheckCircle } from "react-icons/fa";
+import { IoBarChartSharp } from "react-icons/io5";
 
 export default function UserBar() {
   const { logout } = useAuth();
@@ -112,6 +113,15 @@ export default function UserBar() {
           {language === "fr" ? "Voir" : "See"}
           <FaRegEye className={styles.userBarButtonIcon} />
         </button>
+        <a
+          href="/analytics"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={styles.userBarButtonAnalytics}
+        >
+          Analytics
+          <IoBarChartSharp className={styles.userBarButtonIcon} />
+        </a>
         <button className={styles.userBarButtonLogout} onClick={logout}>
           {language === "fr" ? "Se déconnecter" : "Logout"}
           <IoLogOutOutline className={styles.userBarButtonIcon} />

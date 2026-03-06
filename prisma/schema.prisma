@@ -195,3 +195,45 @@ model CguSection {
 
   updatedAt     DateTime @default(now()) @map("updated_at")
 }
+
+// ——— Analytics (même système que portfolio-fullstack) ———
+model Analytics {
+  id         String   @id @map("_id") @default(auto()) @db.ObjectId
+  visitorId  String   @map("visitor_id")
+  type       String   // PAGE_VIEW | CLICK | SECTION_VIEW | DURATION
+  path       String?
+  label      String?
+  metadata   Json?
+  createdAt  DateTime @default(now()) @map("created_at")
+}
+
+model AnalyticsDaily {
+  id              String   @id @map("_id") @default(auto()) @db.ObjectId
+  date            String   @unique // "YYYY-MM-DD"
+  pageViews       Int      @default(0) @map("page_views")
+  clicks          Json?    // { [label: string]: number }
+  uniqueVisitors  Int      @default(0) @map("unique_visitors")
+  visitorIds      Json?    // string[]
+}
+
+model AnalyticsMonthly {
+  id              String   @id @map("_id") @default(auto()) @db.ObjectId
+  year            Int
+  month           Int
+  pageViews       Int      @default(0) @map("page_views")
+  clicks          Json?
+  uniqueVisitors  Int      @default(0) @map("unique_visitors")
+  visitorIds      Json?
+  dailyStats      Json?    @map("daily_stats") // array of { date, pageViews, clicks, uniqueVisitors, visitorIds }
+  @@unique([year, month])
+}
+
+model AnalyticsYearly {
+  id              String   @id @map("_id") @default(auto()) @db.ObjectId
+  year            Int      @unique
+  pageViews       Int      @default(0) @map("page_views")
+  clicks          Json?
+  uniqueVisitors  Int      @default(0) @map("unique_visitors")
+  visitorIds      Json?
+  monthlyStats    Json?    @map("monthly_stats")
+}

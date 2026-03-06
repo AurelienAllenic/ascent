@@ -6,6 +6,8 @@ import styles from "./projects.module.scss";
 import TitleSection from "../TitleSection/TitleSection";
 import { useLanguage } from "@/app/context/LanguageContext";
 import { useEditableContent, ProjectType } from "@/app/context/EditableContentContext";
+import { useTrackSectionArrival } from "@/hooks/useTrackSectionArrival";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 const Projects: React.FC = () => {
   const { projects, loading, error } = useEditableContent();
@@ -19,6 +21,8 @@ const Projects: React.FC = () => {
     heightScale: 0.75,
   });
   const { language } = useLanguage();
+  const { trackClick } = useAnalytics();
+  useTrackSectionArrival("section_projects");
   const isDragging = useRef(false);
   const dragStartX = useRef<number | null>(null);
   const animating = useRef(false);
@@ -182,9 +186,13 @@ const Projects: React.FC = () => {
 
   const handleImageClick = (positionIndex: number) => {
     if (isDragging.current || animating.current || isTransitioning) return;
-    setIsTransitioning(true);
-
     const projectIndex = getItemIndex(positionIndex - 1);
+    const project = projects?.[projectIndex];
+    if (project) {
+      const slug = (language === "fr" ? project.titleFr : project.titleEn)?.replace(/\s+/g, "_") || String(projectIndex);
+      trackClick(`project_${slug}`);
+    }
+    setIsTransitioning(true);
 
     if (carouselRef.current) {
       const items = carouselRef.current.querySelectorAll(

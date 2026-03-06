@@ -8,6 +8,7 @@ import NumberCard from "@/components/Numbers/NumberCard";
 import styles from "@/components/Numbers/numbers.module.scss";
 import { useLanguage } from "@/app/context/LanguageContext";
 import { useEditableContent } from "@/app/context/EditableContentContext";
+import { useTrackSectionArrival } from "@/hooks/useTrackSectionArrival";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -37,6 +38,7 @@ export default function Numbers({ onSave, isEditMode }: NumberProps) {
   const { language } = useLanguage();
   const { editableNumberSection, setEditableNumberSection } =
     useEditableContent();
+  useTrackSectionArrival("section_numbers");
   const isLoggedIn = true;
 
   useLayoutEffect(() => {
