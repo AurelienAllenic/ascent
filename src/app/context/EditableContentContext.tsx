@@ -68,8 +68,18 @@ export function EditableContentProvider({ children }: { children: ReactNode }) {
   const [contactSection, setContactSection] = useState<ContactSectionType | null>(null);
   const [loading, setLoading] = useState(true);
   const [fadeOut, setFadeOut] = useState(false);
+  const [pageRevealed, setPageRevealed] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!loading && !pageRevealed) {
+      const id = requestAnimationFrame(() => {
+        setPageRevealed(true);
+      });
+      return () => cancelAnimationFrame(id);
+    }
+  }, [loading, pageRevealed]);
 
   useEffect(() => {
     const scrollY = window.scrollY;
@@ -234,7 +244,14 @@ export function EditableContentProvider({ children }: { children: ReactNode }) {
         setSaving,
       }}
     >
-      {children}
+      <div
+        style={{
+          opacity: pageRevealed ? 1 : 0,
+          transition: "opacity 0.35s ease-out",
+        }}
+      >
+        {children}
+      </div>
       {loaderOverlay}
     </EditableContentContext.Provider>
   );
