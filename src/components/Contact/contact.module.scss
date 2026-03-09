@@ -62,6 +62,60 @@
       font-weight: 600;
     }
   }
+  .editableTitle,
+  .editableSecondTitle {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    font-size: 3rem;
+    line-height: 1.2;
+    font-weight: 300;
+    margin: 1rem 0;
+    padding: 0.5rem 0.75rem;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 6px;
+    color: white;
+    font-family: inherit;
+    &::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+  }
+  .editableSecondTitle {
+    transform: translateX(10%);
+  }
+  .editableLearnMore {
+    display: block;
+    width: 100%;
+    max-width: 20rem;
+    margin-top: 1rem;
+    padding: 0.5rem 0.75rem;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 6px;
+    color: white;
+    font-size: 1rem;
+    font-family: inherit;
+  }
+  .editableLinkRow {
+    margin-top: 1rem;
+    .editableLabel {
+      display: block;
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 0.35rem;
+    }
+    .editableInput {
+      width: 100%;
+      max-width: 24rem;
+      padding: 0.5rem 0.75rem;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 6px;
+      color: white;
+      font-size: 0.95rem;
+    }
+  }
   .learnMoreContainer{
     display: flex;
     justify-content: end;
@@ -175,6 +229,19 @@
           display: block;
           font-family: $font-family-secondary;
         }
+        .editableFormLabel {
+          display: block;
+          width: 100%;
+          margin-bottom: 1rem;
+          padding: 0.5rem 0.75rem;
+          background: rgba(255, 255, 255, 0.1);
+          border: 1px solid rgba(255, 255, 255, 0.3);
+          border-radius: 4px;
+          color: #fff;
+          font-size: calc($font-size-body-desktop + 5px);
+          text-transform: uppercase;
+          font-family: $font-family-secondary;
+        }
         .inputsRow{
           display: flex;
           gap: 10px;
@@ -226,11 +293,27 @@
             }
         }
         .containerValidateForm{
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          flex-wrap: wrap;
+          .editableSubmitBtn {
+            flex: 1;
+            min-width: 140px;
+            padding: 0.5rem 0.75rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+            color: #fff;
+            font-size: 1rem;
+            font-family: inherit;
+          }
           .validateFormBtn{
             background: none;
             border: none;
             color: $color-text-white;
             position: relative;
+            cursor: pointer;
             &::after{
               content: "";
               display: block;

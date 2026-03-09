@@ -41,7 +41,7 @@ function ConditionalContent() {
       <SecondNav />
       <Numbers isEditMode={true}/>
       <Projects isEditMode={true} />
-      <Contact />
+      <Contact isEditMode={true} />
       <Footer />
     </>
   );

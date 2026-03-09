@@ -7,6 +7,7 @@ import styles from "./contact.module.scss";
 import TitleSection from "../TitleSection/TitleSection";
 import { useLanguage } from "@/app/context/LanguageContext";
 import { useEditableContent } from "@/app/context/EditableContentContext";
+import { useAuth } from "@/app/context/AuthContext";
 import { useTrackSectionArrival } from "@/hooks/useTrackSectionArrival";
 import { useAnalytics } from "@/hooks/useAnalytics";
 
@@ -23,8 +24,10 @@ export interface ContactFormFieldType {
 
 export interface ContactSectionType {
   id: string;
-  user_id: string;
-  image_url: string;
+  user_id?: string;
+  userId?: string;
+  image_url?: string;
+  imageUrl?: string;
   titleEn: string;
   titleFr: string;
   titleEn2: string;
@@ -38,12 +41,15 @@ export interface ContactSectionType {
   formTitle2Fr: string;
   submitButtonTextEn: string;
   submitButtonTextFr: string;
-  updatedAt: string;
-  formFields: ContactFormFieldType[];
+  updatedAt?: string;
+  formFields?: ContactFormFieldType[];
 }
 
+type ContactProps = {
+  isEditMode?: boolean;
+};
 
-export default function ContactSection() {
+export default function ContactSection({ isEditMode }: ContactProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
@@ -56,9 +62,15 @@ export default function ContactSection() {
   const justClosedRef = useRef(false);
   const [isMainImgZoomed, setIsMainImgZoomed] = useState(false);
   const { language } = useLanguage();
-  const { contactSection } = useEditableContent();
+  const { contactSection, setContactSection } = useEditableContent();
   const { trackClick } = useAnalytics();
+  const { isLoggedIn } = useAuth();
+  const editActive = Boolean(isEditMode && isLoggedIn);
   useTrackSectionArrival("section_contact");
+
+  const handleChangeContact = (field: keyof ContactSectionType, value: string) => {
+    setContactSection((prev) => (prev ? { ...prev, [field]: value } : null));
+  };
 
   // Modal et données du formulaire
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -249,17 +261,57 @@ export default function ContactSection() {
       <TitleSection titleEn="CONTACT" titleFr="CONTACT" color="white" />
       <div className={styles.contactContent}>
         <div ref={textRef} className={styles.textContent}>
-          <h2 className={styles.title}>
-            {language === "fr" ? contactSection.titleFr : contactSection.titleEn}
-          </h2>
-          <h2 className={styles.secondTitle}>
-            {language === "fr" ? contactSection.titleFr2 : contactSection.titleEn2}
-          </h2>
-          <div className={styles.learnMoreContainer}>
-            <button ref={learnMoreRef} className={styles.learnMore} onClick={openModal}>
-              {language === "fr" ? contactSection.buttonTextFr : contactSection.buttonTextEn}
-            </button>
-          </div>
+          {editActive ? (
+            <>
+              <input
+                type="text"
+                className={styles.editableTitle}
+                value={language === "fr" ? contactSection.titleFr : contactSection.titleEn}
+                onChange={(e) => handleChangeContact(language === "fr" ? "titleFr" : "titleEn", e.target.value)}
+              />
+              <input
+                type="text"
+                className={styles.editableSecondTitle}
+                value={language === "fr" ? contactSection.titleFr2 : contactSection.titleEn2}
+                onChange={(e) => handleChangeContact(language === "fr" ? "titleFr2" : "titleEn2", e.target.value)}
+              />
+              <div className={styles.learnMoreContainer}>
+                <input
+                  type="text"
+                  className={styles.editableLearnMore}
+                  value={language === "fr" ? contactSection.buttonTextFr : contactSection.buttonTextEn}
+                  onChange={(e) => handleChangeContact(language === "fr" ? "buttonTextFr" : "buttonTextEn", e.target.value)}
+                />
+                <button ref={learnMoreRef} type="button" className={styles.learnMore} onClick={openModal}>
+                  {language === "fr" ? "→ Ouvrir le formulaire" : "→ Open form"}
+                </button>
+              </div>
+              <div className={styles.editableLinkRow}>
+                <label className={styles.editableLabel}>Lien du bouton (URL)</label>
+                <input
+                  type="text"
+                  className={styles.editableInput}
+                  value={contactSection.buttonLink ?? ""}
+                  onChange={(e) => handleChangeContact("buttonLink", e.target.value)}
+                  placeholder="https://..."
+                />
+              </div>
+            </>
+          ) : (
+            <>
+              <h2 className={styles.title}>
+                {language === "fr" ? contactSection.titleFr : contactSection.titleEn}
+              </h2>
+              <h2 className={styles.secondTitle}>
+                {language === "fr" ? contactSection.titleFr2 : contactSection.titleEn2}
+              </h2>
+              <div className={styles.learnMoreContainer}>
+                <button ref={learnMoreRef} className={styles.learnMore} onClick={openModal}>
+                  {language === "fr" ? contactSection.buttonTextFr : contactSection.buttonTextEn}
+                </button>
+              </div>
+            </>
+          )}
         </div>
         <div ref={imageRef} className={styles.imageContainer}>
           <div ref={overlayRef} className={styles.overlay}></div>
@@ -268,7 +320,16 @@ export default function ContactSection() {
           <div className={styles.formWrapper}>
             <form ref={formRef} className={styles.form}>
               <div className={styles.formRow}>
-                <label>{language === "fr" ? contactSection.formTitle1Fr : contactSection.formTitle1En}</label>
+                {editActive ? (
+                  <input
+                    type="text"
+                    className={styles.editableFormLabel}
+                    value={language === "fr" ? contactSection.formTitle1Fr : contactSection.formTitle1En}
+                    onChange={(e) => handleChangeContact(language === "fr" ? "formTitle1Fr" : "formTitle1En", e.target.value)}
+                  />
+                ) : (
+                  <label>{language === "fr" ? contactSection.formTitle1Fr : contactSection.formTitle1En}</label>
+                )}
                 <div className={styles.inputsRow}>
                   <div className={styles.inputAndLabel}>
                     <label>{language === "fr" ? "Votre nom" : "Your Name"}</label>
@@ -281,7 +342,16 @@ export default function ContactSection() {
                 </div>
               </div>
               <div className={styles.formRow}>
-                <label>{language === "fr" ? contactSection.formTitle2Fr : contactSection.formTitle2En}</label>
+                {editActive ? (
+                  <input
+                    type="text"
+                    className={styles.editableFormLabel}
+                    value={language === "fr" ? contactSection.formTitle2Fr : contactSection.formTitle2En}
+                    onChange={(e) => handleChangeContact(language === "fr" ? "formTitle2Fr" : "formTitle2En", e.target.value)}
+                  />
+                ) : (
+                  <label>{language === "fr" ? contactSection.formTitle2Fr : contactSection.formTitle2En}</label>
+                )}
                 <textarea name="message" placeholder={language === "fr" ? "Veuillez décrire votre projet ici..." : "Please, describe your project here..."} value={formData.message} onChange={handleChange} />
               </div>
               <div className={styles.checkboxValidate}>
@@ -290,9 +360,26 @@ export default function ContactSection() {
                   <label htmlFor="check">{language === "fr" ? "En envoyant ce message, je consent à être recontacté via l'email que j'ai fourni" : "By sending this message, I consent to being recontacted through the email I provided"}</label>
                 </div>
                 <div className={styles.containerValidateForm}>
-                  <button className={styles.validateFormBtn} onClick={sendMessage}>
-                    {language === "fr" ? contactSection.submitButtonTextFr : contactSection.submitButtonTextEn}
-                  </button>
+                  {editActive ? (
+                    <>
+                    <input
+                      type="text"
+                      className={styles.editableSubmitBtn}
+                      value={language === "fr" ? contactSection.submitButtonTextFr : contactSection.submitButtonTextEn}
+                      onChange={(e) => handleChangeContact(language === "fr" ? "submitButtonTextFr" : "submitButtonTextEn", e.target.value)}
+                    />
+                    <button type="button" className={styles.validateFormBtn} onClick={sendMessage}>{language === "fr" ? "Tester" : "Test"}</button>
+                    </>
+                  ) : (
+                    <button type="button" className={styles.validateFormBtn} onClick={sendMessage}>
+                      {language === "fr" ? contactSection.submitButtonTextFr : contactSection.submitButtonTextEn}
+                    </button>
+                  )}
+                  {false && editActive && (
+                    <button type="button" className={styles.validateFormBtn} onClick={sendMessage} style={{ marginLeft: 8 }}>
+                      {language === "fr" ? "Tester l’envoi" : "Test submit"}
+                    </button>
+                  )}
                 </div>
               </div>
             </form>
