@@ -3,6 +3,12 @@
 .containerProjects {
   position: relative;
 }
+
+// Vue détail projet : overlay semi‑transparent pour voir l’image tout en lisant le formulaire
+.containerProjectsDetail .overlayCarousel {
+  background: rgba(0, 0, 0, 0.42) !important;
+  pointer-events: none;
+}
 .overlayCarousel {
   position: absolute;
   top: 0;
@@ -10,7 +16,7 @@
   width: 100%;
   height: 100%;
   z-index: 0;
-  pointer-events: none; // laisse passer les clics vers le contenu (inputs, boutons)
+  pointer-events: none;
 }
 .projectsContainer {
   position: relative;
@@ -34,6 +40,267 @@
 .containerTitleSection {
   padding: 1rem;
   text-align: center;
+}
+
+// Modale « Créer un projet » — styles à la racine pour s’appliquer partout
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1.5rem;
+}
+.modalContent {
+  position: relative;
+  background: $color-background-light;
+  color: $color-text-body;
+  padding: 2rem 2rem 2.25rem;
+  padding-top: 3rem;
+  border-radius: 16px;
+  max-width: 500px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(0, 0, 0, 0.06);
+  font-family: $font-family-text;
+}
+.modalCloseBtn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 2px solid rgba($color-text-headline, 0.25);
+  border-radius: 50%;
+  background: #fff;
+  color: $color-text-headline;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  &:hover {
+    background: $color-text-headline;
+    color: #fff;
+    border-color: $color-text-headline;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  &:active {
+    transform: scale(0.94);
+  }
+}
+.modalContent h3 {
+  margin: 0 0 1.5rem 0;
+  font-family: $font-family-primary;
+  font-size: 1.5rem;
+  font-weight: $font-weight-semibold;
+  color: $color-text-headline;
+  letter-spacing: 0.02em;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid rgba($color-text-headline, 0.15);
+}
+.modalContent label {
+  display: block;
+  margin-top: 1.1rem;
+  margin-bottom: 0.4rem;
+  font-family: $font-family-primary;
+  font-size: 0.9rem;
+  font-weight: $font-weight-semibold;
+  color: $color-text-headline;
+}
+.modalContent label:first-of-type {
+  margin-top: 0;
+}
+.modalContent input[type="text"],
+.modalContent textarea {
+  width: 100%;
+  margin-top: 0;
+  padding: 0.55rem 0.8rem;
+  border: 1px solid rgba($color-text-headline, 0.22);
+  border-radius: 8px;
+  font-family: $font-family-text;
+  font-size: $font-size-body-mobile;
+  color: $color-text-body;
+  background: #fff;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  &:focus {
+    outline: none;
+    border-color: $color-text-headline;
+    box-shadow: 0 0 0 2px rgba($color-text-headline, 0.12);
+  }
+  &::placeholder {
+    color: $color-text-secondary;
+  }
+}
+.modalContent textarea {
+  min-height: 88px;
+  resize: vertical;
+}
+.modalContent input[type="file"] {
+  width: 100%;
+  font-family: $font-family-text;
+  font-size: $font-size-body-mobile;
+  color: $color-text-body;
+  &::file-selector-button {
+    font-family: $font-family-primary;
+    padding: 0.5rem 0.9rem;
+    margin-right: 0.6rem;
+    border-radius: 8px;
+    border: none;
+    background: $color-text-headline;
+    color: $color-background-light;
+    cursor: pointer;
+    font-weight: $font-weight-semibold;
+    font-size: 0.85rem;
+    transition: background 0.2s ease, transform 0.15s ease;
+    &:hover {
+      background: darken($color-text-headline, 6%);
+    }
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+}
+.modalSecondarySection {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba($color-text-headline, 0.12);
+}
+.modalSecondaryTitle {
+  font-family: $font-family-primary;
+  font-size: 0.95rem;
+  font-weight: $font-weight-semibold;
+  color: $color-text-headline;
+  margin: 0 0 0.75rem 0;
+}
+.modalSecondarySlot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  padding: 0.75rem;
+  background: rgba($color-text-headline, 0.04);
+  border-radius: 8px;
+  border: 1px solid rgba($color-text-headline, 0.1);
+}
+.modalSecondarySlotLabel {
+  font-family: $font-family-primary;
+  font-size: 0.85rem;
+  font-weight: $font-weight-semibold;
+  color: $color-text-headline;
+  width: 100%;
+  margin-bottom: 0.25rem;
+}
+.modalSecondarySlot input[type="file"] {
+  flex: 1;
+  min-width: 120px;
+  font-size: 0.8rem;
+  &::file-selector-button {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.8rem;
+  }
+}
+.modalSecondaryInput {
+  flex: 1;
+  min-width: 100px;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid rgba($color-text-headline, 0.2);
+  border-radius: 6px;
+  font-family: $font-family-text;
+  font-size: 0.9rem;
+  color: $color-text-body;
+  &::placeholder {
+    color: $color-text-secondary;
+  }
+  &:focus {
+    outline: none;
+    border-color: $color-text-headline;
+  }
+}
+.modalSecondaryRemove {
+  padding: 0.35rem;
+  border: none;
+  background: transparent;
+  color: #b91c1c;
+  cursor: pointer;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  &:hover {
+    background: rgba(185, 28, 28, 0.1);
+  }
+}
+.modalSecondaryAddBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+  padding: 0.5rem 0.9rem;
+  font-family: $font-family-primary;
+  font-size: 0.9rem;
+  font-weight: $font-weight-semibold;
+  color: $color-text-headline;
+  background: transparent;
+  border: 1px dashed rgba($color-text-headline, 0.35);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+  &:hover {
+    background: rgba($color-text-headline, 0.06);
+    border-color: rgba($color-text-headline, 0.5);
+  }
+}
+.modalActions {
+  margin-top: 1.75rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba($color-text-headline, 0.1);
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+.modalActions button[type="button"] {
+  padding: 0.55rem 1.1rem;
+  font-family: $font-family-primary;
+  font-size: 0.9rem;
+  font-weight: $font-weight-semibold;
+  border-radius: 8px;
+  border: 1px solid rgba($color-text-headline, 0.35);
+  background: transparent;
+  color: $color-text-headline;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+  &:hover {
+    background: rgba($color-text-headline, 0.06);
+    border-color: rgba($color-text-headline, 0.5);
+  }
+}
+.modalActions button[type="submit"] {
+  padding: 0.55rem 1.35rem;
+  font-family: $font-family-primary;
+  font-size: 0.9rem;
+  font-weight: $font-weight-semibold;
+  border-radius: 8px;
+  border: none;
+  background: $color-text-headline;
+  color: $color-background-light;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease;
+  &:hover {
+    background: darken($color-text-headline, 8%);
+  }
+  &:active {
+    transform: scale(0.98);
+  }
 }
 
 .projects {
@@ -360,8 +627,9 @@
   }
   .projectDetail .editableInput,
   .projectDetail .editableTextarea {
-    color: $color-background-light;
-    border-color: rgba(255, 255, 255, 0.35);
+    color: rgba(255, 255, 255, 0.98);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.08);
     font-family: $font-family-text;
     font-size: $font-size-body-mobile;
     @media (min-width: 767px) {
@@ -371,41 +639,84 @@
       color: rgba(255, 255, 255, 0.5);
     }
     &:focus {
-      border-color: rgba(255, 255, 255, 0.7);
+      border-color: rgba(255, 255, 255, 0.55);
       box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.1);
     }
   }
-  .projectDetailEditForm {
+  .projectDetailEditScroll {
     position: relative;
     z-index: 10;
     width: 100%;
     max-width: 560px;
     margin: 0 auto;
+    max-height: min(70vh, 600px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 1.25rem 1.5rem;
+    padding-right: 1rem;
+    background: rgba(0, 0, 0, 0.72);
+    backdrop-filter: blur(12px);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    &::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 3px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.28);
+      border-radius: 3px;
+    }
+  }
+  .projectDetailEditTitle {
+    font-family: $font-family-primary;
+    font-size: 1.1rem;
+    font-weight: $font-weight-semibold;
+    color: rgba(255, 255, 255, 0.98);
+    margin: 0 0 1rem 0;
+    letter-spacing: 0.02em;
+  }
+  .projectDetailEditForm {
+    position: relative;
+    width: 100%;
   }
   .projectDetailEditGroup {
     margin-bottom: 1.25rem;
     label {
       display: block;
-      margin-bottom: 0.35rem;
+      margin-bottom: 0.4rem;
       font-family: $font-family-primary;
-      font-size: 0.875rem;
+      font-size: 0.9rem;
       font-weight: $font-weight-semibold;
-      color: rgba(255, 255, 255, 0.95);
+      color: rgba(255, 255, 255, 0.98);
       letter-spacing: 0.02em;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
     }
     input[type="text"],
     textarea {
       width: 100%;
       box-sizing: border-box;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      border-radius: 6px;
+      padding: 0.5rem 0.65rem;
+      &:focus {
+        border-color: rgba(255, 255, 255, 0.5);
+        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.12);
+      }
     }
   }
   .projectDetailFeaturedBlock {
     margin-top: 1.25rem;
     margin-bottom: 1rem;
     padding: 1rem;
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(0, 0, 0, 0.35);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
     label {
       display: block;
       margin-bottom: 0.5rem;
@@ -512,125 +823,105 @@
       color: white;
     }
   }
-  .modalOverlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.6);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    padding: 1rem;
-  }
-  .modalContent {
-    background: $color-background-light;
-    color: $color-text-body;
-    padding: 1.75rem;
-    border-radius: 12px;
-    max-width: 480px;
-    width: 100%;
-    max-height: 90vh;
-    overflow-y: auto;
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
-  }
-  .modalContent h3 {
-    margin-top: 0;
-    margin-bottom: 1.25rem;
-    font-family: $font-family-primary;
-    font-size: $font-size-h2-desktop;
-    font-weight: $font-weight-semibold;
-    color: $color-text-headline;
-  }
-  .modalContent label {
-    display: block;
-    margin-top: 1rem;
-    margin-bottom: 0.35rem;
-    font-family: $font-family-primary;
-    font-size: 0.9rem;
-    font-weight: $font-weight-semibold;
-    color: $color-text-headline;
-  }
-  .modalContent input[type="text"],
-  .modalContent textarea {
-    width: 100%;
-    margin-top: 0;
-    padding: 0.5rem 0.75rem;
-    border: 1px solid rgba($color-text-headline, 0.2);
-    border-radius: 8px;
-    font-family: $font-family-text;
-    font-size: $font-size-body-mobile;
-    color: $color-text-body;
-    background: #fff;
-    box-sizing: border-box;
-    &:focus {
-      outline: none;
-      border-color: $color-text-headline;
-      box-shadow: 0 0 0 2px rgba($color-text-headline, 0.15);
-    }
-  }
-  .modalContent textarea {
-    min-height: 80px;
-    resize: vertical;
-  }
-  .modalContent input[type="file"] {
-    width: 100%;
-    font-family: $font-family-text;
-    font-size: $font-size-body-mobile;
-    color: $color-text-body;
-    &::file-selector-button {
-      font-family: $font-family-primary;
-      padding: 0.45rem 0.85rem;
-      margin-right: 0.5rem;
-      border-radius: 6px;
-      border: 1px solid rgba($color-text-headline, 0.3);
-      background: $color-text-headline;
-      color: $color-background-light;
-      cursor: pointer;
-      font-weight: $font-weight-semibold;
-    }
-  }
-  .modalActions {
-    margin-top: 1.5rem;
-    display: flex;
-    gap: 0.75rem;
-    justify-content: flex-end;
-  }
-  .modalActions button[type="button"] {
-    padding: 0.5rem 1rem;
-    font-family: $font-family-primary;
-    font-size: 0.9rem;
-    border-radius: 8px;
-    border: 1px solid rgba($color-text-headline, 0.3);
-    background: transparent;
-    color: $color-text-headline;
-    cursor: pointer;
-    &:hover {
-      background: rgba($color-text-headline, 0.08);
-    }
-  }
-  .modalActions button[type="submit"] {
-    padding: 0.5rem 1.25rem;
-    font-family: $font-family-primary;
-    font-size: 0.9rem;
-    font-weight: $font-weight-semibold;
-    border-radius: 8px;
-    border: none;
-    background: $color-text-headline;
-    color: $color-background-light;
-    cursor: pointer;
-    &:hover {
-      background: darken($color-text-headline, 8%);
-    }
-  }
   .imageDescriptionsBlock {
     margin-top: 1.25rem;
     width: 100%;
     p.imageDescriptionsTitle {
       font-family: $font-family-primary;
-      font-size: 0.875rem;
+      font-size: 0.9rem;
       font-weight: $font-weight-semibold;
-      color: rgba(255, 255, 255, 0.95);
+      color: rgba(255, 255, 255, 0.98);
       margin-bottom: 0.75rem;
+    }
+  }
+  .imageDescriptionsEmpty {
+    font-family: $font-family-text;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0 0 1rem 0;
+    font-style: italic;
+  }
+  .addInternalImageForm {
+    margin-top: 1.25rem;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 8px;
+    border: 1px dashed rgba(255, 255, 255, 0.35);
+    label {
+      display: block;
+      font-size: 0.8rem;
+      margin-top: 0.5rem;
+      margin-bottom: 0.2rem;
+      color: rgba(255, 255, 255, 0.9);
+      &:first-of-type {
+        margin-top: 0;
+      }
+    }
+    input[type="text"] {
+      width: 100%;
+      margin-bottom: 0.5rem;
+      box-sizing: border-box;
+    }
+    input[type="file"] {
+      width: 100%;
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 0.5rem;
+      &::file-selector-button {
+        font-size: 0.8rem;
+        padding: 0.35rem 0.6rem;
+        margin-right: 0.5rem;
+        border-radius: 4px;
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        background: rgba(255, 255, 255, 0.12);
+        color: #fff;
+        cursor: pointer;
+      }
+    }
+  }
+  .addInternalImageTitle {
+    font-family: $font-family-primary;
+    font-size: 0.9rem;
+    font-weight: $font-weight-semibold;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0 0 0.75rem 0;
+  }
+  .addInternalImageBtn {
+    margin-top: 0.75rem;
+    padding: 0.45rem 0.9rem;
+    font-size: 0.85rem;
+    font-family: $font-family-primary;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.98);
+    border-radius: 6px;
+    cursor: pointer;
+    &:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+  }
+  .imageDescriptionReplace {
+    margin-bottom: 0.75rem;
+    label {
+      display: block;
+      font-size: 0.8rem;
+      margin-bottom: 0.25rem;
+      color: rgba(255, 255, 255, 0.85);
+    }
+    input[type="file"] {
+      width: 100%;
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.9);
+      &::file-selector-button {
+        font-size: 0.75rem;
+        padding: 0.3rem 0.5rem;
+        margin-right: 0.5rem;
+        border-radius: 4px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+        cursor: pointer;
+      }
     }
   }
   .imageDescriptionEdit {

@@ -146,6 +146,28 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    // Images secondaires optionnelles : secondaryImage_0, secondaryDescEn_0, secondaryDescFr_0, ...
+    for (let i = 0; ; i++) {
+      const file = formData.get(`secondaryImage_${i}`) as File | null;
+      if (!file || typeof file === "string" || !(file as File).size) break;
+      const descEn = ((formData.get(`secondaryDescEn_${i}`) as string) || "").trim();
+      const descFr = ((formData.get(`secondaryDescFr_${i}`) as string) || "").trim();
+      const arrBuf = await (file as File).arrayBuffer();
+      const buf = Buffer.from(arrBuf);
+      const upload = await cloudinary.uploader.upload(
+        `data:${(file as File).type};base64,${buf.toString("base64")}`,
+        { folder: "projects", resource_type: "auto" }
+      );
+      await prisma.projectImage.create({
+        data: {
+          projectId: project.id,
+          url: upload.secure_url,
+          descriptionEn: descEn || "",
+          descriptionFr: descFr || "",
+        },
+      });
+    }
+
     const createdProject = await prisma.project.findUnique({
       where: { id: project.id },
       include: { images: true },

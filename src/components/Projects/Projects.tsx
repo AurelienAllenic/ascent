@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
+import { flushSync } from "react-dom";
 import gsap from "gsap";
-import { ChevronLeft, ChevronRight, Trash2, Plus } from "lucide-react";
+import { ChevronLeft, ChevronRight, Trash2, Plus, X } from "lucide-react";
 import styles from "./projects.module.scss";
 import TitleSection from "../TitleSection/TitleSection";
 import { useLanguage } from "@/app/context/LanguageContext";
@@ -21,6 +22,9 @@ const Projects: React.FC<ProjectsProps> = ({ isEditMode }) => {
   const [detailCurrentIndex, setDetailCurrentIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [addModalSecondaryImages, setAddModalSecondaryImages] = useState<
+    { file: File | null; descriptionEn: string; descriptionFr: string }[]
+  >([]);
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
   const [captionEn, setCaptionEn] = useState("Feel free to explore our projects");
   const [captionFr, setCaptionFr] = useState("N'hésitez pas à explorer nos projets");
@@ -38,6 +42,7 @@ const Projects: React.FC<ProjectsProps> = ({ isEditMode }) => {
   const dragStartX = useRef<number | null>(null);
   const animating = useRef(false);
   const pendingCarouselDirection = useRef<"left" | "right" | null>(null);
+  const mainCarouselNeedResetRef = useRef(false);
   const detailAnimating = useRef(false);
   const carouselRef = useRef<HTMLDivElement>(null);
   const detailCarouselRef = useRef<HTMLDivElement>(null);
@@ -189,6 +194,22 @@ const Projects: React.FC<ProjectsProps> = ({ isEditMode }) => {
       }
     };
   }, [selectedProject, isTransitioning]);
+
+  // Reset des positions des 3 slots après un slide, dans le même cycle que le nouveau contenu
+  // (évite le pop : un seul paint avec contenu + positions à jour)
+  useLayoutEffect(() => {
+    if (selectedProject !== null || !mainCarouselNeedResetRef.current || !carouselRef.current) return;
+    const elts = carouselRef.current.querySelectorAll(`.${styles.carouselItem}`);
+    if (elts.length !== 3) {
+      mainCarouselNeedResetRef.current = false;
+      return;
+    }
+    const { translateX, scale, heightScale } = positionStyles;
+    gsap.set(elts[0], { x: `-${translateX}`, scaleX: scale, scaleY: heightScale, opacity: 0.8, zIndex: 1 });
+    gsap.set(elts[1], { x: "0%", scaleX: 1, scaleY: 1, opacity: 1, zIndex: 5 });
+    gsap.set(elts[2], { x: translateX, scaleX: scale, scaleY: heightScale, opacity: 0.8, zIndex: 1 });
+    mainCarouselNeedResetRef.current = false;
+  }, [carouselAnimating, currentIndex, positionStyles, selectedProject]);
 
   const getItemIndex = (offset: number) =>
     (currentIndex + offset + totalProjects) % totalProjects;
@@ -495,19 +516,22 @@ const Projects: React.FC<ProjectsProps> = ({ isEditMode }) => {
       return;
     }
 
+    const { translateX, scale, heightScale } = positionStyles;
+
     const timeline = gsap.timeline({
       onComplete: () => {
         animating.current = false;
-        setCarouselAnimating(false);
-        setCurrentIndex((prev) =>
-          direction === "left"
-            ? (prev - 1 + totalProjects) % totalProjects
-            : (prev + 1) % totalProjects
-        );
+        mainCarouselNeedResetRef.current = true;
+        flushSync(() => {
+          setCarouselAnimating(false);
+          setCurrentIndex((prev) =>
+            direction === "left"
+              ? (prev - 1 + totalProjects) % totalProjects
+              : (prev + 1) % totalProjects
+          );
+        });
       },
     });
-
-    const { translateX, scale, heightScale } = positionStyles;
 
     const duration = 0.32;
     const ease = "power2.out" as const;
@@ -661,7 +685,14 @@ const Projects: React.FC<ProjectsProps> = ({ isEditMode }) => {
       const res = await fetch("/api/projectsSection/upload-featured", { method: "POST", body: fd });
       if (!res.ok) throw new Error(await res.text());
       const updated = await res.json();
-      setProjects((prev) => (prev ? prev.map((p) => (p.id === updated.id ? updated : p)) : null));
+      setProjects((prev) => {
+        if (!prev) return null;
+        return prev.map((p) =>
+          p.id === updated.id
+            ? { ...p, featuredImage: updated.featuredImage, images: updated.images ?? getProjectImages(p) }
+            : p
+        );
+      });
       setSaveMessage(language === "fr" ? "Image à la une mise à jour." : "Featured image updated.");
       setTimeout(() => setSaveMessage(null), 2500);
     } catch (err) {
@@ -670,7 +701,86 @@ const Projects: React.FC<ProjectsProps> = ({ isEditMode }) => {
     }
   };
 
-  const handleAddProject = () => setShowAddModal(true);
+  const handleReplaceInternalImage = async (projectIndex: number, imageId: string, file: File) => {
+    const project = projects?.[projectIndex];
+    if (!project?.id || !imageId || !file?.size) return;
+    try {
+      const fd = new FormData();
+      fd.append("projectId", project.id);
+      fd.append("imageId", imageId);
+      fd.append("file", file);
+      const res = await fetch("/api/projectsSection/replace-image", { method: "POST", body: fd });
+      if (!res.ok) throw new Error(await res.text());
+      const updated = await res.json();
+      setProjects((prev) => {
+        if (!prev) return null;
+        return prev.map((p) =>
+          p.id === updated.id ? { ...p, images: updated.images ?? getProjectImages(p) } : p
+        );
+      });
+      setSaveMessage(language === "fr" ? "Image mise à jour." : "Image updated.");
+      setTimeout(() => setSaveMessage(null), 2500);
+    } catch (err) {
+      setSaveMessage(language === "fr" ? "Erreur remplacement image." : "Error replacing image.");
+      setTimeout(() => setSaveMessage(null), 3000);
+    }
+  };
+
+  const handleAddInternalImage = async (
+    projectIndex: number,
+    file: File,
+    descriptionEn: string,
+    descriptionFr: string
+  ) => {
+    const project = projects?.[projectIndex];
+    if (!project?.id || !file?.size) return;
+    try {
+      const fd = new FormData();
+      fd.append("projectId", project.id);
+      fd.append("file", file);
+      fd.append("descriptionEn", descriptionEn);
+      fd.append("descriptionFr", descriptionFr);
+      const res = await fetch("/api/projectsSection/add-image", { method: "POST", body: fd });
+      if (!res.ok) throw new Error(await res.text());
+      const updated = await res.json();
+      setProjects((prev) => {
+        if (!prev) return null;
+        return prev.map((p) =>
+          p.id === updated.id ? { ...p, images: updated.images ?? getProjectImages(p) } : p
+        );
+      });
+      setSaveMessage(language === "fr" ? "Image ajoutée." : "Image added.");
+      setTimeout(() => setSaveMessage(null), 2500);
+    } catch (err) {
+      setSaveMessage(language === "fr" ? "Erreur ajout image." : "Error adding image.");
+      setTimeout(() => setSaveMessage(null), 3000);
+    }
+  };
+
+  const handleAddProject = () => {
+    setAddModalSecondaryImages([]);
+    setShowAddModal(true);
+  };
+
+  const addSecondaryImageSlot = () => {
+    setAddModalSecondaryImages((prev) => [...prev, { file: null, descriptionEn: "", descriptionFr: "" }]);
+  };
+
+  const updateSecondaryImageSlot = (
+    index: number,
+    patch: { file?: File | null; descriptionEn?: string; descriptionFr?: string }
+  ) => {
+    setAddModalSecondaryImages((prev) => {
+      const next = [...prev];
+      if (!next[index]) return prev;
+      next[index] = { ...next[index], ...patch };
+      return next;
+    });
+  };
+
+  const removeSecondaryImageSlot = (index: number) => {
+    setAddModalSecondaryImages((prev) => prev.filter((_, i) => i !== index));
+  };
 
   const submitAddProject = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -689,12 +799,20 @@ const Projects: React.FC<ProjectsProps> = ({ isEditMode }) => {
     fd.append("generalDescriptionEn", (formData.get("generalDescriptionEn") as string) || "");
     fd.append("generalDescriptionFr", (formData.get("generalDescriptionFr") as string) || "");
     fd.append("featuredImage", featuredFile);
+    addModalSecondaryImages.forEach((slot, i) => {
+      if (slot.file?.size) {
+        fd.append(`secondaryImage_${i}`, slot.file);
+        fd.append(`secondaryDescEn_${i}`, slot.descriptionEn);
+        fd.append(`secondaryDescFr_${i}`, slot.descriptionFr);
+      }
+    });
     try {
       const res = await fetch("/api/projectsSection", { method: "POST", body: fd });
       if (!res.ok) throw new Error(await res.text());
       const created = await res.json();
       setProjects((prev) => [...(prev || []), created]);
       setShowAddModal(false);
+      setAddModalSecondaryImages([]);
       form.reset();
       setSaveMessage(language === "fr" ? "Projet ajouté." : "Project added.");
       setTimeout(() => setSaveMessage(null), 2500);
@@ -766,6 +884,14 @@ const Projects: React.FC<ProjectsProps> = ({ isEditMode }) => {
               {showAddModal && (
                 <div className={styles.modalOverlay} onClick={() => setShowAddModal(false)}>
                   <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+                    <button
+                      type="button"
+                      className={styles.modalCloseBtn}
+                      onClick={() => setShowAddModal(false)}
+                      aria-label={language === "fr" ? "Fermer" : "Close"}
+                    >
+                      <X size={22} strokeWidth={2} />
+                    </button>
                     <h3>{language === "fr" ? "Ajouter un projet" : "Add project"}</h3>
                     <form onSubmit={submitAddProject}>
                       <label>{language === "fr" ? "Titre (EN)" : "Title (EN)"} *</label>
@@ -778,6 +904,51 @@ const Projects: React.FC<ProjectsProps> = ({ isEditMode }) => {
                       <textarea name="generalDescriptionFr" />
                       <label>{language === "fr" ? "Image à la une *" : "Featured image *"}</label>
                       <input type="file" name="featuredImage" accept="image/*" required />
+                      <div className={styles.modalSecondarySection}>
+                        <p className={styles.modalSecondaryTitle}>
+                          {language === "fr" ? "Images secondaires (optionnel)" : "Secondary images (optional)"}
+                        </p>
+                        {addModalSecondaryImages.map((slot, i) => (
+                          <div key={i} className={styles.modalSecondarySlot}>
+                            <span className={styles.modalSecondarySlotLabel}>{language === "fr" ? `Image ${i + 1}` : `Image ${i + 1}`}</span>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              onChange={(e) => {
+                                const f = e.target.files?.[0];
+                                updateSecondaryImageSlot(i, { file: f ?? null });
+                                e.target.value = "";
+                              }}
+                            />
+                            <input
+                              type="text"
+                              placeholder={language === "fr" ? "Description (EN)" : "Description (EN)"}
+                              value={slot.descriptionEn}
+                              onChange={(e) => updateSecondaryImageSlot(i, { descriptionEn: e.target.value })}
+                              className={styles.modalSecondaryInput}
+                            />
+                            <input
+                              type="text"
+                              placeholder={language === "fr" ? "Description (FR)" : "Description (FR)"}
+                              value={slot.descriptionFr}
+                              onChange={(e) => updateSecondaryImageSlot(i, { descriptionFr: e.target.value })}
+                              className={styles.modalSecondaryInput}
+                            />
+                            <button
+                              type="button"
+                              className={styles.modalSecondaryRemove}
+                              onClick={() => removeSecondaryImageSlot(i)}
+                              aria-label={language === "fr" ? "Retirer" : "Remove"}
+                            >
+                              <Trash2 size={14} />
+                            </button>
+                          </div>
+                        ))}
+                        <button type="button" className={styles.modalSecondaryAddBtn} onClick={addSecondaryImageSlot}>
+                          <Plus size={16} />
+                          {language === "fr" ? "Ajouter une image secondaire" : "Add secondary image"}
+                        </button>
+                      </div>
                       <div className={styles.modalActions}>
                         <button type="button" onClick={() => setShowAddModal(false)}>{language === "fr" ? "Annuler" : "Cancel"}</button>
                         <button type="submit">{language === "fr" ? "Créer" : "Create"}</button>
@@ -794,15 +965,11 @@ const Projects: React.FC<ProjectsProps> = ({ isEditMode }) => {
   }
 
   return (
-    <div className={styles.containerProjects} id="projects">
-      <div
-        className={styles.overlayCarousel}
-        style={
-          selectedProject !== null
-            ? { background: "rgba(0, 0, 0, 0.50)" }
-            : undefined
-        }
-      ></div>
+    <div
+      className={`${styles.containerProjects} ${selectedProject !== null ? styles.containerProjectsDetail : ""}`}
+      id="projects"
+    >
+      <div className={styles.overlayCarousel}></div>
 
       <div
         className={styles.projectsContainer}
@@ -967,91 +1134,160 @@ const Projects: React.FC<ProjectsProps> = ({ isEditMode }) => {
             <>
               <div className={styles.projectDetail}>
                 {editActive ? (
-                  <div className={styles.projectDetailEditForm}>
-                    <div className={styles.projectDetailEditGroup} ref={titleRef}>
-                      <label>{language === "fr" ? "Titre (FR)" : "Title (EN)"}</label>
-                      <input
-                        type="text"
-                        className={styles.editableInput}
-                        value={language === "fr" ? currentProject.titleFr : currentProject.titleEn}
-                        onChange={(e) => handleProjectChange(selectedProject!, language === "fr" ? "titleFr" : "titleEn", e.target.value)}
-                      />
-                    </div>
-                    <div className={styles.projectDetailEditGroup}>
-                      <label>{language === "fr" ? "Titre (EN)" : "Title (FR)"}</label>
-                      <input
-                        type="text"
-                        className={styles.editableInput}
-                        value={language === "fr" ? currentProject.titleEn : currentProject.titleFr}
-                        onChange={(e) => handleProjectChange(selectedProject!, language === "fr" ? "titleEn" : "titleFr", e.target.value)}
-                      />
-                    </div>
-                    <div className={styles.projectDetailEditGroup} ref={descriptionRef}>
-                      <label>{language === "fr" ? "Description (FR)" : "Description (EN)"}</label>
-                      <textarea
-                        className={styles.editableTextarea}
-                        value={language === "fr" ? (currentProject.generalDescriptionFr ?? "") : (currentProject.generalDescriptionEn ?? "")}
-                        onChange={(e) => handleProjectChange(selectedProject!, language === "fr" ? "generalDescriptionFr" : "generalDescriptionEn", e.target.value)}
-                        rows={3}
-                      />
-                    </div>
-                    <div className={styles.projectDetailEditGroup}>
-                      <label>{language === "fr" ? "Description (EN)" : "Description (FR)"}</label>
-                      <textarea
-                        className={styles.editableTextarea}
-                        value={language === "fr" ? (currentProject.generalDescriptionEn ?? "") : (currentProject.generalDescriptionFr ?? "")}
-                        onChange={(e) => handleProjectChange(selectedProject!, language === "fr" ? "generalDescriptionEn" : "generalDescriptionFr", e.target.value)}
-                        rows={3}
-                      />
-                    </div>
-                    <div className={styles.projectDetailFeaturedBlock}>
-                      <label>{language === "fr" ? "Image à la une" : "Featured image"}</label>
-                      <img src={currentProject.featuredImage} alt="" className={styles.projectDetailFeaturedPreview} />
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => {
-                          const f = e.target.files?.[0];
-                          if (f) handleFeaturedImageChange(selectedProject!, f);
-                          e.target.value = "";
-                        }}
-                      />
-                    </div>
-                    <div className={styles.editActions}>
-                      <p className={styles.editActionsHint}>
-                        {language === "fr" ? "Enregistrez avec le bouton « Sauvegarder » en haut de la page." : "Save using the « Save » button at the top of the page."}
-                      </p>
-                      {currentProject.id && (
-                        <button type="button" className={styles.deleteProjectBtn} onClick={() => handleDeleteProject(selectedProject!)}>
-                          {language === "fr" ? "Supprimer le projet" : "Delete project"}
-                        </button>
-                      )}
-                      {saveMessage && <span className={styles.editSaveMessage}>{saveMessage}</span>}
-                    </div>
-                    {detailImages.length > 0 && (
-                      <div className={styles.imageDescriptionsBlock}>
-                        <p className={styles.imageDescriptionsTitle}>{language === "fr" ? "Descriptions des images" : "Image descriptions"}</p>
-                        {detailImages.map((img, imageIndex) => (
-                          <div key={img.id ?? imageIndex} className={styles.imageDescriptionEdit}>
-                            <img src={img.url} alt="" className={styles.imageDescriptionThumb} />
-                            <label>EN</label>
-                            <input
-                              type="text"
-                              className={styles.editableInput}
-                              value={img.descriptionEn ?? ""}
-                              onChange={(e) => handleImageDescChange(selectedProject!, imageIndex, "descriptionEn", e.target.value)}
-                            />
-                            <label>FR</label>
-                            <input
-                              type="text"
-                              className={styles.editableInput}
-                              value={img.descriptionFr ?? ""}
-                              onChange={(e) => handleImageDescChange(selectedProject!, imageIndex, "descriptionFr", e.target.value)}
-                            />
-                          </div>
-                        ))}
+                  <div className={styles.projectDetailEditScroll}>
+                    <h3 className={styles.projectDetailEditTitle}>
+                      {language === "fr" ? "Édition du projet" : "Edit project"}
+                    </h3>
+                    <div className={styles.projectDetailEditForm} ref={titleRef}>
+                      <div className={styles.projectDetailEditGroup}>
+                        <label>{language === "fr" ? "Titre (FR)" : "Title (EN)"}</label>
+                        <input
+                          type="text"
+                          className={styles.editableInput}
+                          value={language === "fr" ? currentProject.titleFr : currentProject.titleEn}
+                          onChange={(e) => handleProjectChange(selectedProject!, language === "fr" ? "titleFr" : "titleEn", e.target.value)}
+                        />
                       </div>
-                    )}
+                      <div className={styles.projectDetailEditGroup}>
+                        <label>{language === "fr" ? "Titre (EN)" : "Title (FR)"}</label>
+                        <input
+                          type="text"
+                          className={styles.editableInput}
+                          value={language === "fr" ? currentProject.titleEn : currentProject.titleFr}
+                          onChange={(e) => handleProjectChange(selectedProject!, language === "fr" ? "titleEn" : "titleFr", e.target.value)}
+                        />
+                      </div>
+                      <div className={styles.projectDetailEditGroup} ref={descriptionRef}>
+                        <label>{language === "fr" ? "Description (FR)" : "Description (EN)"}</label>
+                        <textarea
+                          className={styles.editableTextarea}
+                          value={language === "fr" ? (currentProject.generalDescriptionFr ?? "") : (currentProject.generalDescriptionEn ?? "")}
+                          onChange={(e) => handleProjectChange(selectedProject!, language === "fr" ? "generalDescriptionFr" : "generalDescriptionEn", e.target.value)}
+                          rows={3}
+                        />
+                      </div>
+                      <div className={styles.projectDetailEditGroup}>
+                        <label>{language === "fr" ? "Description (EN)" : "Description (FR)"}</label>
+                        <textarea
+                          className={styles.editableTextarea}
+                          value={language === "fr" ? (currentProject.generalDescriptionEn ?? "") : (currentProject.generalDescriptionFr ?? "")}
+                          onChange={(e) => handleProjectChange(selectedProject!, language === "fr" ? "generalDescriptionEn" : "generalDescriptionFr", e.target.value)}
+                          rows={3}
+                        />
+                      </div>
+                      <div className={styles.projectDetailFeaturedBlock}>
+                        <label>{language === "fr" ? "Image à la une" : "Featured image"}</label>
+                        <img
+                          key={currentProject.featuredImage}
+                          src={currentProject.featuredImage}
+                          alt=""
+                          className={styles.projectDetailFeaturedPreview}
+                        />
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => {
+                            const f = e.target.files?.[0];
+                            if (f) handleFeaturedImageChange(selectedProject!, f);
+                            e.target.value = "";
+                          }}
+                        />
+                      </div>
+                      <div className={styles.imageDescriptionsBlock}>
+                        <p className={styles.imageDescriptionsTitle}>
+                          {language === "fr" ? "Images secondaires et descriptions" : "Secondary images and descriptions"}
+                        </p>
+                        {detailImages.length === 0 && (
+                          <p className={styles.imageDescriptionsEmpty}>
+                            {language === "fr" ? "Aucune image secondaire pour ce projet." : "No secondary images for this project."}
+                          </p>
+                        )}
+                        {detailImages.length > 0 && detailImages.map((img, imageIndex) => (
+                            <div key={img.id ?? imageIndex} className={styles.imageDescriptionEdit}>
+                              <img key={img.url} src={img.url} alt="" className={styles.imageDescriptionThumb} />
+                              {img.id && (
+                                <div className={styles.imageDescriptionReplace}>
+                                  <label>{language === "fr" ? "Remplacer l'image" : "Replace image"}</label>
+                                  <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(e) => {
+                                      const f = e.target.files?.[0];
+                                      if (f) handleReplaceInternalImage(selectedProject!, img.id!, f);
+                                      e.target.value = "";
+                                    }}
+                                  />
+                                </div>
+                              )}
+                              <label>EN</label>
+                              <input
+                                type="text"
+                                className={styles.editableInput}
+                                value={img.descriptionEn ?? ""}
+                                onChange={(e) => handleImageDescChange(selectedProject!, imageIndex, "descriptionEn", e.target.value)}
+                              />
+                              <label>FR</label>
+                              <input
+                                type="text"
+                                className={styles.editableInput}
+                                value={img.descriptionFr ?? ""}
+                                onChange={(e) => handleImageDescChange(selectedProject!, imageIndex, "descriptionFr", e.target.value)}
+                              />
+                            </div>
+                          ))
+                        }
+                        {currentProject.id && (
+                          <form
+                            className={styles.addInternalImageForm}
+                            onSubmit={(e) => {
+                              e.preventDefault();
+                              const form = e.currentTarget;
+                              const formData = new FormData(form);
+                              const file = formData.get("newImageFile") as File | null;
+                              if (!file?.size) {
+                                setSaveMessage(language === "fr" ? "Sélectionnez une image." : "Select an image.");
+                                setTimeout(() => setSaveMessage(null), 2000);
+                                return;
+                              }
+                              handleAddInternalImage(
+                                selectedProject!,
+                                file,
+                                ((formData.get("newImageDescEn") as string) ?? "").trim(),
+                                ((formData.get("newImageDescFr") as string) ?? "").trim()
+                              );
+                              form.reset();
+                            }}
+                          >
+                            <p className={styles.addInternalImageTitle}>
+                              {language === "fr" ? "Ajouter une image" : "Add an image"}
+                            </p>
+                            <input
+                              type="file"
+                              name="newImageFile"
+                              accept="image/*"
+                            />
+                            <label>{language === "fr" ? "Description (EN)" : "Description (EN)"}</label>
+                            <input type="text" name="newImageDescEn" className={styles.editableInput} placeholder="Optional" />
+                            <label>{language === "fr" ? "Description (FR)" : "Description (FR)"}</label>
+                            <input type="text" name="newImageDescFr" className={styles.editableInput} placeholder="Optionnel" />
+                            <button type="submit" className={styles.addInternalImageBtn}>
+                              {language === "fr" ? "Ajouter l'image" : "Add image"}
+                            </button>
+                          </form>
+                        )}
+                      </div>
+                      <div className={styles.editActions}>
+                        <p className={styles.editActionsHint}>
+                          {language === "fr" ? "Enregistrez avec le bouton « Sauvegarder » en haut de la page." : "Save using the « Save » button at the top of the page."}
+                        </p>
+                        {currentProject.id && (
+                          <button type="button" className={styles.deleteProjectBtn} onClick={() => handleDeleteProject(selectedProject!)}>
+                            {language === "fr" ? "Supprimer le projet" : "Delete project"}
+                          </button>
+                        )}
+                        {saveMessage && <span className={styles.editSaveMessage}>{saveMessage}</span>}
+                      </div>
+                    </div>
                   </div>
                 ) : (
                   <>
@@ -1133,6 +1369,14 @@ const Projects: React.FC<ProjectsProps> = ({ isEditMode }) => {
       {editActive && showAddModal && (
         <div className={styles.modalOverlay} onClick={() => setShowAddModal(false)}>
           <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+            <button
+              type="button"
+              className={styles.modalCloseBtn}
+              onClick={() => setShowAddModal(false)}
+              aria-label={language === "fr" ? "Fermer" : "Close"}
+            >
+              <X size={22} strokeWidth={2} />
+            </button>
             <h3>{language === "fr" ? "Ajouter un projet" : "Add project"}</h3>
             <form onSubmit={submitAddProject}>
               <label>{language === "fr" ? "Titre (EN)" : "Title (EN)"} *</label>
@@ -1145,6 +1389,57 @@ const Projects: React.FC<ProjectsProps> = ({ isEditMode }) => {
               <textarea name="generalDescriptionFr" />
               <label>{language === "fr" ? "Image à la une *" : "Featured image *"}</label>
               <input type="file" name="featuredImage" accept="image/*" required />
+              <div className={styles.modalSecondarySection}>
+                <p className={styles.modalSecondaryTitle}>
+                  {language === "fr" ? "Images secondaires (optionnel)" : "Secondary images (optional)"}
+                </p>
+                {addModalSecondaryImages.map((slot, i) => (
+                  <div key={i} className={styles.modalSecondarySlot}>
+                    <span className={styles.modalSecondarySlotLabel}>
+                      {language === "fr" ? `Image ${i + 1}` : `Image ${i + 1}`}
+                    </span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const f = e.target.files?.[0];
+                        updateSecondaryImageSlot(i, { file: f ?? null });
+                        e.target.value = "";
+                      }}
+                    />
+                    <input
+                      type="text"
+                      placeholder={language === "fr" ? "Description (EN)" : "Description (EN)"}
+                      value={slot.descriptionEn}
+                      onChange={(e) => updateSecondaryImageSlot(i, { descriptionEn: e.target.value })}
+                      className={styles.modalSecondaryInput}
+                    />
+                    <input
+                      type="text"
+                      placeholder={language === "fr" ? "Description (FR)" : "Description (FR)"}
+                      value={slot.descriptionFr}
+                      onChange={(e) => updateSecondaryImageSlot(i, { descriptionFr: e.target.value })}
+                      className={styles.modalSecondaryInput}
+                    />
+                    <button
+                      type="button"
+                      className={styles.modalSecondaryRemove}
+                      onClick={() => removeSecondaryImageSlot(i)}
+                      aria-label={language === "fr" ? "Retirer" : "Remove"}
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  className={styles.modalSecondaryAddBtn}
+                  onClick={addSecondaryImageSlot}
+                >
+                  <Plus size={16} />
+                  {language === "fr" ? "Ajouter une image secondaire" : "Add secondary image"}
+                </button>
+              </div>
               <div className={styles.modalActions}>
                 <button type="button" onClick={() => setShowAddModal(false)}>{language === "fr" ? "Annuler" : "Cancel"}</button>
                 <button type="submit">{language === "fr" ? "Créer" : "Create"}</button>
