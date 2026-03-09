@@ -39,10 +39,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Project not found" }, { status: 404 });
     }
 
-    const arrayBuffer = await file.arrayBuffer();
+    const arrayBuffer = await (file as unknown as Blob).arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
     const result = await cloudinary.uploader.upload(
-      `data:${file.type};base64,${buffer.toString("base64")}`,
+      `data:${(file as unknown as { type?: string }).type ?? "image/jpeg"};base64,${buffer.toString("base64")}`,
       { folder: "projects", resource_type: "auto" }
     );
 
