@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "./secondnav.module.scss";
 import { useLanguage } from "@/app/context/LanguageContext";
 import ChangeLanguageModal from "../ChangeLanguageModal/ChangeLanguageModal";
@@ -20,6 +20,8 @@ const SecondNav = () => {
   const { language, setLanguage } = useLanguage();
   const [isLangModalOpen, setLangModalOpen] = useState(false);
   const { trackClick } = useAnalytics();
+  const homeVisibleRef = useRef(true);
+  const contactVisibleRef = useRef(false);
 
   const toggleLang = () => {
     trackClick(`language_toggle_${language === "en" ? "fr" : "en"}`);
@@ -35,9 +37,12 @@ const SecondNav = () => {
 
     const observer = new IntersectionObserver(
       (entries) => {
-        const isHomeVisible = entries.find((entry) => entry.target.id === "home")?.isIntersecting;
-        const isContactVisible = entries.find((entry) => entry.target.id === "contact")?.isIntersecting;
-        setIsVisible(!isHomeVisible && !isContactVisible);
+        entries.forEach((entry) => {
+          if (entry.target.id === "home") homeVisibleRef.current = entry.isIntersecting;
+          if (entry.target.id === "contact") contactVisibleRef.current = entry.isIntersecting;
+        });
+        const showNav = !homeVisibleRef.current && !contactVisibleRef.current;
+        setIsVisible(showNav);
       },
       {
         threshold: 0.05,

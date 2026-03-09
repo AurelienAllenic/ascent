@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
 import { PrismaClient } from "@prisma/client";
 import { v2 as cloudinary } from "cloudinary";
 import formidable, { File } from "formidable";
+import { authOptions } from "../../../../lib/auth";
 
 // Prisma client
 const prisma = new PrismaClient();
@@ -64,14 +66,16 @@ export async function GET() {
       include: { images: true },
     });
 
-    // Map to desired output structure
-    const formattedProjects = projects.map((project: { titleEn: any; titleFr: any; featuredImage: any; generalDescriptionEn: any; generalDescriptionFr: any; images: any; }) => ({
+    // Map to desired output structure (include id for edit/delete)
+    const formattedProjects = projects.map((project: { id: string; titleEn: string; titleFr: string; featuredImage: string; generalDescriptionEn: string | null; generalDescriptionFr: string | null; images: { id: string; url: string; descriptionEn: string; descriptionFr: string }[] }) => ({
+      id: project.id,
       titleEn: project.titleEn,
       titleFr: project.titleFr,
       featuredImage: project.featuredImage,
       generalDescriptionEn: project.generalDescriptionEn ?? undefined,
       generalDescriptionFr: project.generalDescriptionFr ?? undefined,
-      images: project.images.map((image: { url: any; descriptionEn: any; descriptionFr: any; }) => ({
+      images: project.images.map((image: { id: string; url: string; descriptionEn: string; descriptionFr: string }) => ({
+        id: image.id,
         url: image.url,
         descriptionEn: image.descriptionEn,
         descriptionFr: image.descriptionFr,
@@ -86,79 +90,98 @@ export async function GET() {
 }
 
 // ---------------- POST ----------------
+// Utilise request.formData() (compatible App Router) au lieu de formidable
 export async function POST(req: NextRequest) {
   try {
-    const { fields, files } = await parseForm(req);
+    const formData = await req.formData();
+    const titleEn = (formData.get("titleEn") as string | null)?.trim();
+    const titleFr = (formData.get("titleFr") as string | null)?.trim();
+    const generalDescriptionEn = (formData.get("generalDescriptionEn") as string | null) || undefined;
+    const generalDescriptionFr = (formData.get("generalDescriptionFr") as string | null) || undefined;
+    const featuredImageFile = formData.get("featuredImage") as File | null;
 
-    // Validate required fields
-    if (!fields.titleEn || !fields.titleFr || !fields.userId) {
-      return NextResponse.json({ error: "Missing required fields: titleEn, titleFr, userId" }, { status: 400 });
+    let userId: string | null = (formData.get("userId") as string | null)?.trim() || null;
+    if (!userId) {
+      const session = await getServerSession(authOptions);
+      if (!session?.user?.email) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      }
+      // Utiliser l'ObjectId MongoDB du User (session.user.id / token.sub = ID fournisseur OAuth, pas l'_id Prisma)
+      const user = await prisma.user.findUnique({
+        where: { email: session.user.email },
+        select: { id: true },
+      });
+      if (!user) {
+        return NextResponse.json({ error: "User not found" }, { status: 401 });
+      }
+      userId = user.id;
     }
 
-    // Upload featured image
-    let featuredImage = "";
-    if (files.featuredImage) {
-      const file = Array.isArray(files.featuredImage) ? files.featuredImage[0] : files.featuredImage;
-      const result = await cloudinary.uploader.upload(file.filepath, { folder: "projects" });
-      featuredImage = result.secure_url;
-    } else {
+    if (!titleEn || !titleFr) {
+      return NextResponse.json({ error: "Missing required fields: titleEn, titleFr" }, { status: 400 });
+    }
+
+    if (!featuredImageFile || typeof featuredImageFile === "string" || !(featuredImageFile as File).size) {
       return NextResponse.json({ error: "Featured image is required" }, { status: 400 });
     }
 
-    // Create project
+    const file = featuredImageFile as File;
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+
+    const result = await cloudinary.uploader.upload(`data:${file.type};base64,${buffer.toString("base64")}`, {
+      folder: "projects",
+      resource_type: "auto",
+    });
+    const featuredImage = result.secure_url;
+
     const project = await prisma.project.create({
       data: {
-        titleEn: fields.titleEn,
-        titleFr: fields.titleFr,
-        generalDescriptionEn: fields.generalDescriptionEn,
-        generalDescriptionFr: fields.generalDescriptionFr,
+        titleEn,
+        titleFr,
+        generalDescriptionEn: generalDescriptionEn || null,
+        generalDescriptionFr: generalDescriptionFr || null,
         featuredImage,
-        userId: fields.userId,
+        userId,
       },
     });
 
-    // Upload secondary images
-    if (files.images && fields.imageDescriptionsEn && fields.imageDescriptionsFr) {
-      const imagesArray = Array.isArray(files.images) ? files.images : [files.images];
-      const descriptionsEn = fields.imageDescriptionsEn;
-      const descriptionsFr = fields.imageDescriptionsFr;
-
-      if (imagesArray.length !== descriptionsEn.length || imagesArray.length !== descriptionsFr.length) {
-        return NextResponse.json(
-          { error: "Number of images must match number of descriptions" },
-          { status: 400 }
-        );
-      }
-
-      for (let i = 0; i < imagesArray.length; i++) {
-        const img = imagesArray[i];
-        const res = await cloudinary.uploader.upload(img.filepath, { folder: "projects" });
-
-        await prisma.projectImage.create({
-          data: {
-            projectId: project.id,
-            url: res.secure_url,
-            descriptionEn: descriptionsEn[i],
-            descriptionFr: descriptionsFr[i],
-            publicId: res.public_id, // Commented out to avoid type error
-          },
-        });
-      }
+    // Images secondaires optionnelles : secondaryImage_0, secondaryDescEn_0, secondaryDescFr_0, ...
+    for (let i = 0; ; i++) {
+      const file = formData.get(`secondaryImage_${i}`) as File | null;
+      if (!file || typeof file === "string" || !(file as File).size) break;
+      const descEn = ((formData.get(`secondaryDescEn_${i}`) as string) || "").trim();
+      const descFr = ((formData.get(`secondaryDescFr_${i}`) as string) || "").trim();
+      const arrBuf = await (file as File).arrayBuffer();
+      const buf = Buffer.from(arrBuf);
+      const upload = await cloudinary.uploader.upload(
+        `data:${(file as File).type};base64,${buf.toString("base64")}`,
+        { folder: "projects", resource_type: "auto" }
+      );
+      await prisma.projectImage.create({
+        data: {
+          projectId: project.id,
+          url: upload.secure_url,
+          descriptionEn: descEn || "",
+          descriptionFr: descFr || "",
+        },
+      });
     }
 
-    // Fetch the created project with images for response
     const createdProject = await prisma.project.findUnique({
       where: { id: project.id },
       include: { images: true },
     });
 
     const formattedProject = {
+      id: createdProject!.id,
       titleEn: createdProject!.titleEn,
       titleFr: createdProject!.titleFr,
       featuredImage: createdProject!.featuredImage,
       generalDescriptionEn: createdProject!.generalDescriptionEn ?? undefined,
       generalDescriptionFr: createdProject!.generalDescriptionFr ?? undefined,
-      images: createdProject!.images.map((image: { url: any; descriptionEn: any; descriptionFr: any; }) => ({
+      images: createdProject!.images.map((image: { id: string; url: string; descriptionEn: string; descriptionFr: string }) => ({
+        id: image.id,
         url: image.url,
         descriptionEn: image.descriptionEn,
         descriptionFr: image.descriptionFr,
@@ -168,7 +191,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(formattedProject, { status: 201 });
   } catch (error) {
     console.error("Error creating project:", error);
-    return NextResponse.json({ error: "Failed to create project" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to create project", details: error instanceof Error ? error.message : String(error) },
+      { status: 500 }
+    );
   }
 }
 
@@ -253,12 +279,14 @@ export async function PUT(req: NextRequest) {
     });
 
     const formattedProject = {
+      id: updatedProject!.id,
       titleEn: updatedProject!.titleEn,
       titleFr: updatedProject!.titleFr,
       featuredImage: updatedProject!.featuredImage,
       generalDescriptionEn: updatedProject!.generalDescriptionEn ?? undefined,
       generalDescriptionFr: updatedProject!.generalDescriptionFr ?? undefined,
-      images: updatedProject!.images.map((image: { url: any; descriptionEn: any; descriptionFr: any; }) => ({
+      images: updatedProject!.images.map((image: { id: string; url: string; descriptionEn: string; descriptionFr: string }) => ({
+        id: image.id,
         url: image.url,
         descriptionEn: image.descriptionEn,
         descriptionFr: image.descriptionFr,
@@ -269,6 +297,85 @@ export async function PUT(req: NextRequest) {
   } catch (error) {
     console.error("Error updating project:", error);
     return NextResponse.json({ error: "Failed to update project" }, { status: 500 });
+  }
+}
+
+// ---------------- PATCH (text & image descriptions only, no file upload) ----------------
+interface PatchBody {
+  id: string;
+  titleEn?: string;
+  titleFr?: string;
+  generalDescriptionEn?: string;
+  generalDescriptionFr?: string;
+  images?: { id: string; descriptionEn: string; descriptionFr: string }[];
+}
+
+export async function PATCH(req: NextRequest) {
+  try {
+    const body: PatchBody = await req.json();
+    const { id: projectId, titleEn, titleFr, generalDescriptionEn, generalDescriptionFr, images } = body;
+    if (!projectId) {
+      return NextResponse.json({ error: "Project ID is required" }, { status: 400 });
+    }
+
+    const data: {
+      titleEn?: string;
+      titleFr?: string;
+      generalDescriptionEn?: string;
+      generalDescriptionFr?: string;
+    } = {};
+    if (titleEn !== undefined) data.titleEn = titleEn;
+    if (titleFr !== undefined) data.titleFr = titleFr;
+    if (generalDescriptionEn !== undefined) data.generalDescriptionEn = generalDescriptionEn;
+    if (generalDescriptionFr !== undefined) data.generalDescriptionFr = generalDescriptionFr;
+
+    if (Object.keys(data).length > 0) {
+      await prisma.project.update({
+        where: { id: projectId },
+        data,
+      });
+    }
+
+    if (images && Array.isArray(images)) {
+      for (const img of images) {
+        if (img.id && (img.descriptionEn !== undefined || img.descriptionFr !== undefined)) {
+          await prisma.projectImage.update({
+            where: { id: img.id },
+            data: {
+              ...(img.descriptionEn !== undefined && { descriptionEn: img.descriptionEn }),
+              ...(img.descriptionFr !== undefined && { descriptionFr: img.descriptionFr }),
+            },
+          });
+        }
+      }
+    }
+
+    const updatedProject = await prisma.project.findUnique({
+      where: { id: projectId },
+      include: { images: true },
+    });
+
+    const formattedProject = updatedProject
+      ? {
+          id: updatedProject.id,
+          titleEn: updatedProject.titleEn,
+          titleFr: updatedProject.titleFr,
+          featuredImage: updatedProject.featuredImage,
+          generalDescriptionEn: updatedProject.generalDescriptionEn ?? undefined,
+          generalDescriptionFr: updatedProject.generalDescriptionFr ?? undefined,
+          images: updatedProject.images.map((image: { id: string; url: string; descriptionEn: string; descriptionFr: string }) => ({
+            id: image.id,
+            url: image.url,
+            descriptionEn: image.descriptionEn,
+            descriptionFr: image.descriptionFr,
+          })),
+        }
+      : null;
+
+    return NextResponse.json(formattedProject);
+  } catch (error) {
+    console.error("Error patching project:", error);
+    return NextResponse.json({ error: "Failed to patch project" }, { status: 500 });
   }
 }
 
