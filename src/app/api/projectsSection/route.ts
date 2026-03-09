@@ -126,10 +126,11 @@ export async function POST(req: NextRequest) {
     }
 
     const file = featuredImageFile as File;
-    const arrayBuffer = await file.arrayBuffer();
+    const arrayBuffer = await (file as unknown as Blob).arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
-    const result = await cloudinary.uploader.upload(`data:${file.type};base64,${buffer.toString("base64")}`, {
+    const fileType = (file as unknown as { type?: string }).type ?? "image/jpeg";
+    const result = await cloudinary.uploader.upload(`data:${fileType};base64,${buffer.toString("base64")}`, {
       folder: "projects",
       resource_type: "auto",
     });
@@ -152,10 +153,10 @@ export async function POST(req: NextRequest) {
       if (!file || typeof file === "string" || !(file as File).size) break;
       const descEn = ((formData.get(`secondaryDescEn_${i}`) as string) || "").trim();
       const descFr = ((formData.get(`secondaryDescFr_${i}`) as string) || "").trim();
-      const arrBuf = await (file as File).arrayBuffer();
+      const arrBuf = await (file as unknown as Blob).arrayBuffer();
       const buf = Buffer.from(arrBuf);
       const upload = await cloudinary.uploader.upload(
-        `data:${(file as File).type};base64,${buf.toString("base64")}`,
+        `data:${(file as unknown as { type?: string }).type ?? "image/jpeg"};base64,${buf.toString("base64")}`,
         { folder: "projects", resource_type: "auto" }
       );
       await prisma.projectImage.create({
