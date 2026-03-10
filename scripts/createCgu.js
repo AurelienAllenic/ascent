@@ -88,7 +88,7 @@ async function main() {
       contentFr: "Les présentes CGU peuvent être modifiées. La version en ligne est celle opposable aux utilisateurs. La date de dernière mise à jour est indiquée sur la page.",
       contactTextEn: "For any questions regarding these terms or personal data, contact:",
       contactTextFr: "Pour toute question relative aux CGU ou aux données personnelles, contactez :",
-      contactMail: "contact@ascent.example"
+      contactMail: "aurelienallenic.dev@gmail.com"
     }
   ];
 

@@ -78,7 +78,9 @@ export default function CguPage() {
             <footer className={styles.footer}>
               <p>
                 {isFr ? footerSection.contactTextFr : footerSection.contactTextEn}{" "}
-                <a href={`mailto:${footerSection.contactMail}`}>{footerSection.contactMail}</a>
+                <a href={`mailto:${footerSection.contactMail === "contact@ascent.example" ? "aurelienallenic.dev@gmail.com" : footerSection.contactMail}`}>
+                  {footerSection.contactMail === "contact@ascent.example" ? "aurelienallenic.dev@gmail.com" : footerSection.contactMail}
+                </a>
               </p>
             </footer>
           )}
