@@ -53,6 +53,82 @@ type EditableContentContextType = {
   setContactSection: React.Dispatch<React.SetStateAction<ContactSectionType | null>>;
   saving: boolean;
   setSaving: React.Dispatch<React.SetStateAction<boolean>>;
+  hasSiteError: boolean;
+};
+
+const FALLBACK_HOME: HomeSectionType = {
+  imageUrl: "/assets/background.png",
+  titleEn: "Title",
+  titleFr: "Titre",
+  subtitleEn: "Subtitle",
+  subtitleFr: "Sous-titre",
+  contentEn: "Content unavailable.",
+  contentFr: "Contenu indisponible.",
+};
+
+const FALLBACK_ABOUT: AboutSectionType = {
+  id: "",
+  leftPartTitleEn: "Title",
+  leftPartTitleFr: "Titre",
+  rightPartContent1En: "Content unavailable.",
+  rightPartContent1Fr: "Contenu indisponible.",
+  btnTextEn: "Learn more",
+  btnTextFr: "En savoir plus",
+  btnLink: "#",
+};
+
+const FALLBACK_NUMBERS: NumberSectionType = {
+  id: "",
+  userId: "",
+  updatedAt: new Date(),
+  cards: [
+    { id: "1", numberSectionId: "", number: "—", textEn: "Stat", textFr: "Statistique", size: "medium" },
+    { id: "2", numberSectionId: "", number: "—", textEn: "Stat", textFr: "Statistique", size: "medium" },
+    { id: "3", numberSectionId: "", number: "—", textEn: "Stat", textFr: "Statistique", size: "medium" },
+  ],
+};
+
+const FALLBACK_FOOTER: FooterSectionType = {
+  cguButtonTextEn: "Terms & Conditions",
+  cguButtonTextFr: "CGU",
+  cguButtonLink: "/cgu",
+  showCguButton: true,
+  copyrightTextEn: `© ${new Date().getFullYear()}`,
+  copyrightTextFr: `© ${new Date().getFullYear()}`,
+};
+
+const FALLBACK_CGU: CguSectionType[] = [
+  {
+    sectionNumber: 1,
+    titleEn: "Content temporarily unavailable",
+    titleFr: "Contenu temporairement indisponible",
+    contentEn: "The terms of use are currently unavailable. Please try again later.",
+    contentFr: "Les conditions générales d'utilisation sont temporairement indisponibles. Veuillez réessayer ultérieurement.",
+  },
+];
+
+const FALLBACK_CONTACT: ContactSectionType = {
+  id: "",
+  titleEn: "Contact",
+  titleFr: "Contact",
+  titleEn2: "Get in touch",
+  titleFr2: "Prenez contact",
+  buttonTextEn: "Send",
+  buttonTextFr: "Envoyer",
+  buttonLink: "#",
+  formTitle1En: "Contact",
+  formTitle2En: "Fill in the form",
+  formTitle1Fr: "Contact",
+  formTitle2Fr: "Remplissez le formulaire",
+  submitButtonTextEn: "Send",
+  submitButtonTextFr: "Envoyer",
+  formFields: [],
+};
+
+const FALLBACK_SITE_SETTING: SiteSettingType = {
+  siteTitleEn: "Ascent",
+  siteTitleFr: "Ascent",
+  updatedAt: new Date().toISOString(),
 };
 
 const EditableContentContext = createContext<EditableContentContextType | undefined>(undefined);
@@ -71,6 +147,7 @@ export function EditableContentProvider({ children }: { children: ReactNode }) {
   const [pageRevealed, setPageRevealed] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [failedSections, setFailedSections] = useState<string[]>([]);
 
   useEffect(() => {
     if (!loading && !pageRevealed) {
@@ -89,54 +166,38 @@ export function EditableContentProvider({ children }: { children: ReactNode }) {
 
     const startTime = Date.now();
 
-    Promise.all([
-      fetch("/api/homeSection").then(res => {
-        if (!res.ok) throw new Error("Failed to fetch home section");
-        return res.json();
-      }),
-      fetch("/api/aboutSection").then(res => {
-        if (!res.ok) throw new Error("Failed to fetch about section");
-        return res.json();
-      }),
-      fetch("/api/numberSection").then(res => {
-        if (!res.ok) throw new Error("Failed to fetch number section");
-        return res.json();
-      }),
-      fetch("/api/projectsSection").then(res => {
-        if (!res.ok) throw new Error("Failed to fetch projects");
-        return res.json().then(data => data.projects);
-      }),
-      fetch("/api/footer").then(res => {
-        if (!res.ok) throw new Error("Failed to fetch footer");
-        return res.json();
-      }),
-      fetch("/api/cgu").then(res => {
-        if (!res.ok) throw new Error("Failed to fetch cgu");
-        return res.json();
-      }),
-      fetch("/api/siteSettings").then(res => {
-        if (!res.ok) throw new Error("Failed to fetch site settings");
-        return res.json();
-      }),
-      fetch("/api/contactSection").then(res => {
-        if (!res.ok) throw new Error("Failed to fetch contact section");
-        return res.json();
-      }),
+    const safeFetch = (url: string, transform?: (data: unknown) => unknown) =>
+      fetch(url)
+        .then(res => (res.ok ? res.json() : Promise.reject(new Error(`Failed to fetch ${url}`))))
+        .then(data => (transform ? transform(data) : data))
+        .catch(() => null);
+
+    Promise.allSettled([
+      safeFetch("/api/homeSection"),
+      safeFetch("/api/aboutSection"),
+      safeFetch("/api/numberSection"),
+      safeFetch("/api/projectsSection", (data: unknown) => (data as { projects: unknown }).projects),
+      safeFetch("/api/footer"),
+      safeFetch("/api/cgu"),
+      safeFetch("/api/siteSettings"),
+      safeFetch("/api/contactSection"),
     ])
-      .then(([homeData, aboutData, numberSectionData, projectsData, footerData, cguData, siteSettingData, contactSectionData]) => {
-        setEditableHome(homeData);
-        setEditableAbout(aboutData);
-        setEditableNumberSection(numberSectionData);
-        setProjects(projectsData);
-        setFooter(footerData);
-        setCgu(cguData);
-        setSiteSetting(siteSettingData);
-        setContactSection(contactSectionData);
-        setError(null);
-      })
-      .catch(err => {
-        console.error("Erreur fetch sections éditables:", err);
-        setError(err.message);
+      .then(([homeRes, aboutRes, numberRes, projectsRes, footerRes, cguRes, siteSettingRes, contactRes]) => {
+        const failed: string[] = [];
+        const resolve = <T,>(res: PromiseSettledResult<T>, fallback: T, name: string): T => {
+          if (res.status === "fulfilled" && res.value !== null) return res.value;
+          failed.push(name);
+          return fallback;
+        };
+        setEditableHome(resolve(homeRes, FALLBACK_HOME, "home") as HomeSectionType);
+        setEditableAbout(resolve(aboutRes, FALLBACK_ABOUT, "about") as AboutSectionType);
+        setEditableNumberSection(resolve(numberRes, FALLBACK_NUMBERS, "numbers") as NumberSectionType);
+        setProjects(resolve(projectsRes, [], "projects") as ProjectType[]);
+        setFooter(resolve(footerRes, FALLBACK_FOOTER, "footer") as FooterSectionType);
+        setCgu(resolve(cguRes, FALLBACK_CGU, "cgu") as CguSectionType[]);
+        setSiteSetting(resolve(siteSettingRes, FALLBACK_SITE_SETTING, "settings") as SiteSettingType);
+        setContactSection(resolve(contactRes, FALLBACK_CONTACT, "contact") as ContactSectionType);
+        if (failed.length > 0) setFailedSections(failed);
       })
       .finally(() => {
         const elapsed = Date.now() - startTime;
@@ -219,6 +280,24 @@ export function EditableContentProvider({ children }: { children: ReactNode }) {
     return <>{loaderOverlay}</>;
   }
 
+  const errorBanner = failedSections.length > 0 ? (
+    <div style={{
+      position: "fixed",
+      top: 0,
+      left: 0,
+      right: 0,
+      zIndex: 99998,
+      background: "#c0392b",
+      color: "white",
+      textAlign: "center",
+      padding: "10px 16px",
+      fontSize: "14px",
+      fontFamily: "sans-serif",
+    }}>
+      ⚠️ Le site rencontre un problème de chargement. Certaines sections affichent du contenu par défaut.
+    </div>
+  ) : null;
+
   return (
     <EditableContentContext.Provider
       value={{
@@ -242,8 +321,10 @@ export function EditableContentProvider({ children }: { children: ReactNode }) {
         setContactSection,
         saving,
         setSaving,
+        hasSiteError: failedSections.length > 0,
       }}
     >
+      {errorBanner}
       <div
         style={{
           opacity: pageRevealed ? 1 : 0,

@@ -17,7 +17,7 @@ const NavBar = ({ isEditMode }: { isEditMode?: boolean }) => {
   const [windowWidth, setWindowWidth] = useState(0);
   const [isLangModalOpen, setLangModalOpen] = useState(false);
   const { isLoggedIn } = useAuth();
-  const { siteSetting } = useEditableContent();
+  const { siteSetting, hasSiteError } = useEditableContent();
   const { trackClick } = useAnalytics();
   const toggleLang = () => {
     trackClick(`language_toggle_${language === "en" ? "fr" : "en"}`);
@@ -81,6 +81,7 @@ const NavBar = ({ isEditMode }: { isEditMode?: boolean }) => {
       className={`${isEditMode ? styles.navbarEdit : styles.navbar} ${
         windowWidth < 768 && !isVisible ? styles.mobileBackground : ""
       }`}
+      style={hasSiteError ? { top: "40px" } : undefined}
     >
       <nav className={styles.navContainer}>
         <div className={styles.leftContainer}>
